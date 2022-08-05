@@ -1,0 +1,228 @@
+{
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+		{
+			"path": "pages/tabs/index/index",
+			"style": {
+				"navigationStyle": "custom",
+				"navigationBarTitleText": "首页",
+				"enablePullDownRefresh": true
+			}
+		}, {
+			"path": "pages/tabs/forum/forum",
+			"style": {
+				"navigationBarTitleText": "全部圈子",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/tabs/create/create",
+			"style": {
+				"navigationBarTitleText": "发帖",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/tabs/notice/notice",
+			"style": {
+				"navigationBarTitleText": "消息",
+				"enablePullDownRefresh": false
+			}
+		}, {
+			"path": "pages/tabs/mine/mine",
+			"style": {
+				"navigationBarTitleText": "我的",
+				"navigationStyle": "custom",
+				"navigationBarTextStyle": "white",
+				"enablePullDownRefresh": false
+			}
+		}
+	],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F5F5F5",
+		"backgroundColor": "#F5F5F5"
+	},
+	"tabBar": {
+		"borderStyle": "white",
+		"backgroundColor": "#FFFFFF",
+		"color": "#8F8F94",
+		"selectedColor": "#000000",
+		// #ifndef MP-WEIXIN
+		"iconWidth": "28px",
+		// #endif
+		"list": [{
+				"pagePath": "pages/tabs/index/index",
+				"iconPath": "static/tabbar/index.png",
+				"selectedIconPath": "static/tabbar/index_p.png",
+				"text": "首页"
+			},
+			{
+				"pagePath": "pages/tabs/forum/forum",
+				"iconPath": "static/tabbar/discover.png",
+				"selectedIconPath": "static/tabbar/discover_p.png",
+				"text": "圈子"
+			},
+			// #ifdef MP-WEIXIN
+			{
+				"pagePath": "pages/tabs/create/create",
+				"iconPath": "static/tabbar/plus.png",
+				"selectedIconPath": "static/tabbar/plus_p.png",
+				"text": ""
+			},
+			// #endif
+			// #ifdef MP-BAIDU || MP-QQ || H5
+			{
+				"pagePath": "pages/tabs/create/create",
+				"iconPath": "static/tabbar/plus.png",
+				"selectedIconPath": "static/tabbar/plus_p.png",
+				"text": " "
+			},
+			// #endif
+			{
+				"pagePath": "pages/tabs/notice/notice",
+				"iconPath": "static/tabbar/notice.png",
+				"selectedIconPath": "static/tabbar/notice_p.png",
+				"text": "消息"
+			},
+			{
+				"pagePath": "pages/tabs/mine/mine",
+				"iconPath": "static/tabbar/mine.png",
+				"selectedIconPath": "static/tabbar/mine_p.png",
+				"text": "我的"
+			}
+		]
+	},
+	"subPackages": [{
+			"root": "pages/base",
+			"pages": [{
+				"path": "about/about",
+				"style": {
+					"navigationBarTitleText": "关于",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "page/page",
+				"style": {
+					"navigationBarTitleText": "单页",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "search/search",
+				"style": {
+					"navigationBarTitleText": "搜索",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "list/list",
+				"style": {
+					"navigationBarTitleText": "列表",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "webview/webview",
+				"style": {
+					"navigationBarTitleText": "",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "notice_list/notice_list",
+				"style": {
+					"navigationBarTitleText": "通知",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "comments/comments",
+				"style": {
+					"navigationBarTitleText": "评论",
+					"enablePullDownRefresh": false
+				}
+			}]
+		},
+		{
+			"root": "pages/user",
+			"pages": [{
+				"path": "friend/friend",
+				"style": {
+					"navigationBarTitleText": "关注/粉丝",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "home/home",
+				"style": {
+					"navigationBarTitleText": "个人主页",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "info/info",
+				"style": {
+					"navigationBarTitleText": "个人资料",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "login/login",
+				"style": {
+					"navigationBarTitleText": "登录",
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"enablePullDownRefresh": false
+				}
+			}]
+		},
+		{
+			"root": "pages/bbs",
+			"pages": [{
+				"path": "detail/detail",
+				"style": {
+					"navigationBarTitleText": "详情",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "subject/subject",
+				"style": {
+					"navigationBarTitleText": "话题",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "forum/forum",
+				"style": {
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "list/list",
+				"style": {
+					"navigationBarTitleText": "列表",
+					"enablePullDownRefresh": true
+				}
+			}, {
+				"path": "post/post",
+				"style": {
+					"navigationBarTitleText": "发布",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "forum-select/forum-select",
+				"style": {
+					"navigationBarTitleText": "选择圈子",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "forum-users/forum-users",
+				"style": {
+					"navigationBarTitleText": "圈子成员",
+					"enablePullDownRefresh": false
+				}
+
+			}    ,{
+                    "path" : "forum-create/forum-create",
+                    "style" :                                                                                    
+                {
+                    "navigationBarTitleText": "创建圈子",
+                    "enablePullDownRefresh": false
+                }
+                
+                }
+            ]
+		}
+	]
+}

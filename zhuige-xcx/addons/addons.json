@@ -1,0 +1,1 @@
+{"addon":["zhuige-bbs"],"sql":["zhuige-bbs\/sql.php"],"func":["zhuige-bbs\/function.php"],"post_type":["post-type.php","zhuige-bbs\/post-type.php"],"admin":["zhuige-bbs\/admin.php"],"rest":["zhuige-bbs\/forum-controller.php","zhuige-bbs\/topic-controller.php"],"ajax":[],"crud":[],"user":[]}

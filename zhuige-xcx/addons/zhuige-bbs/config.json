@@ -1,0 +1,27 @@
+{
+    "name": "追格圈子",
+    "version": "1.0.0",
+    "description": "追格圈子",
+    "keywords": [
+        "追格",
+        "圈子"
+    ],
+    "sql": [
+        "zhuige-bbs/sql.php"
+    ],
+    "func": [
+        "zhuige-bbs/function.php"
+    ],
+    "post_type": [
+        "zhuige-bbs/post-type.php"
+    ],
+    "admin": [
+        "zhuige-bbs/admin.php"
+    ],
+    "rest": [
+        "zhuige-bbs/forum-controller.php",
+        "zhuige-bbs/topic-controller.php"
+    ],
+    "ajax": [],
+    "crud": []
+}
