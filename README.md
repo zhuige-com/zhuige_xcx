@@ -58,7 +58,7 @@ https://www.zhuige.com/
 
 #### 免责声明
 
-用户在接受酱茄服务之前，请务必仔细阅读本条款（https://www.zhuige.com/about/5.html）并同意本声明
+用户在接受酱茄服务之前，请务必仔细阅读本条款（ https://www.zhuige.com/about/5.html ）并同意本声明
 
 
 #### 特别声明
