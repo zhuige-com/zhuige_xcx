@@ -43,11 +43,11 @@ https://www.zhuige.com/
 
 #### 产品介绍与代码下载
 
-产品介绍与代码下载：[https://www.zhuige.com/product/zg](https://www.zhuige.com/product/zg)
+产品介绍与代码下载
+[https://www.zhuige.com/product/zg](https://www.zhuige.com/product/zg)
 
 
 #### 安装文档与常见问题
-
 [https://www.zhuige.com/docs/zg](https://www.zhuige.com/docs/zg)
 
 
@@ -70,7 +70,7 @@ https://www.zhuige.com/
 
 #### 特别鸣谢
 
-我们借助了开源的力量，才得以快速构建出酱茄企业官网小程序，在此特别感谢他们（排名不分先后）：
+我们借助了开源的力量，才得以快速构建出追格小程序，在此特别感谢他们（排名不分先后）：
 
 1. https://cn.wordpress.org
 
