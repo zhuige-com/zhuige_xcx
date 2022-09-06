@@ -21,7 +21,7 @@
 									<!-- 图1 vip-->
 									<image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image>
 									<!-- 图2 认证-->
-									<image v-if="user.certify" mode="aspectFill" src="/static/lvv.png"></image>
+									<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
 								</view>
 								<view>
 									<text>作品 {{user.post_count}}</text>
@@ -39,7 +39,7 @@
 					</view>
 				</template>
 				<template v-else>
-					<zhuige-nodata v-if="loadedFollow"></zhuige-nodata>
+					<zhuige-nodata v-if="loadedFollow" :tip="noDataTip"></zhuige-nodata>
 				</template>
 			</view>
 
@@ -59,7 +59,7 @@
 									<!-- 图1 vip-->
 									<image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image>
 									<!-- 图2 认证-->
-									<image v-if="user.certify" mode="aspectFill" src="/static/lvv.png"></image>
+									<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
 								</view>
 								<view>
 									<text>作品 {{user.post_count}}</text>
@@ -75,7 +75,7 @@
 					</view>
 				</template>
 				<template v-else>
-					<zhuige-nodata v-if="loadedFan"></zhuige-nodata>
+					<zhuige-nodata v-if="loadedFan" :tip="noDataTip"></zhuige-nodata>
 				</template>
 			</view>
 
@@ -115,6 +115,8 @@
 				loadMoreFan: 'more',
 				fans: [],
 				loadedFan: false,
+				
+				noDataTip: '哇哦，什么也没有',
 			}
 		},
 

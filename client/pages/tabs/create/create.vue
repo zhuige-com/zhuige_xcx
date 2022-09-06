@@ -13,6 +13,8 @@
 
 			</view>
 		</view>
+		
+		<view :class="{animation:do_animation}"></view>
 	</view>
 </template>
 
@@ -26,6 +28,7 @@
 
 	export default {
 		data() {
+			this.cache = false;
 			return {
 				items: [],
 				active: false,
@@ -38,8 +41,23 @@
 
 		onLoad(options) {
 			Util.addShareScore(options.source);
-
-			this.loadSetting();
+		},
+		
+		onShow() {
+			if (this.cache && this.cache.length>0) {
+				this.items = this.cache;
+				setTimeout(() => {
+					this.active = true;
+				}, 100);
+			} else {
+				this.loadSetting();
+			}
+		},
+		
+		onHide() {
+			this.active = false;
+			this.cache = this.items;
+			this.items = [];
 		},
 
 		onShareAppMessage() {

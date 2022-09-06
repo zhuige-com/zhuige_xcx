@@ -12,13 +12,13 @@
 						<text>{{topic.author.nickname}}</text>
 						<image v-if="topic.author.vip" mode="aspectFill" src="/static/vv-1.png">
 						</image>
-						<image v-if="topic.author.certify" mode="aspectFill" src="/static/lvv.png">
+						<image v-if="topic.author.certify && topic.author.certify.status==1" mode="aspectFill" :src="topic.author.certify.icon">
 						</image>
 					</view>
 					<view>
 						<text>{{topic.time}}</text>
-						<text v-if="topic.author.certify">/</text>
-						<text v-if="topic.author.certify">认证信息</text>
+						<text v-if="topic.author.certify && topic.author.certify.status==1">/</text>
+						<text v-if="topic.author.certify && topic.author.certify.status==1">{{topic.author.certify.name}}</text>
 					</view>
 				</view>
 			</view>

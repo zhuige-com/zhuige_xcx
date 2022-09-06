@@ -170,6 +170,12 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			]);
 		}
 
+		// 文章浏览数
+		$post_views = (int) get_post_meta($topic_id, 'zhuige_views', true);
+		if (!update_post_meta($topic_id, 'zhuige_views', ($post_views + 1))) {
+			add_post_meta($topic_id, 'zhuige_views', 1, true);
+		}
+
 		$topic = [
 			'id' => $post->ID,
 			'title' => $post->post_title,
@@ -206,6 +212,9 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			'avatar' => ZhuiGe_Xcx::user_avatar($user_id),
 			'reward' => get_user_meta($user_id, 'zhuige_xcx_user_reward', true)
 		];
+		if (function_exists('zhuige_xcx_certify_is_certify')) {
+			$author['certify'] = zhuige_xcx_certify_is_certify($user_id);
+		}
 		// “我”是否关注了作者
 		$table_follow_user = $wpdb->prefix . 'zhuige_xcx_follow_user';
 		$follow_user_id_exist = $wpdb->get_var(
@@ -380,7 +389,11 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			$poster['thumb'] = ZhuiGe_Xcx::option_image_url($detail_poster['thumb_video'], 'placeholder.jpg');
 		}
 
-		return $this->success(['topic' => $topic, 'poster' => $poster]);
+		$data = ['topic' => $topic, 'poster' => $poster];
+
+		$data['is_report'] = ZhuiGe_Xcx_Addon::is_active('zhuige-report') ? 1 : 0;
+
+		return $this->success($data);
 	}
 
 	/**

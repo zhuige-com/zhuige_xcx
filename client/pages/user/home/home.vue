@@ -17,7 +17,10 @@
 						</view>
 						<view>
 							<text>{{user.nickname}}</text>
-							<image v-if="user.certify" mode="aspectFill" src="/static/lvv.png"></image>
+							
+							<!-- 
+							<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
+						 -->
 						</view>
 					</view>
 					<!-- 操作相关 -->
@@ -59,10 +62,10 @@
 					<text>签名：</text>
 					<text>{{user.sign}}</text>
 				</view>
-				<view v-if="user.certify" class="zhuige-user-line">
-					<image mode="aspectFill" src="/static/logo.png"></image>
+				<view v-if="user.certify && user.certify.status==1" class="zhuige-user-line">
+					<image mode="aspectFill" :src="user.certify.icon"></image>
 					<text>认证：</text>
-					<text>美食领域资深作者</text>
+					<text>{{user.certify.name}}</text>
 				</view>
 			</view>
 		</view>
@@ -86,7 +89,7 @@
 				<zhuige-topic v-for="(topic, index) in posts" :key="index" :topic="topic"></zhuige-topic>
 			</template>
 			<template v-else-if="loaded">
-				<zhuige-nodata :buttons="false"></zhuige-nodata>
+				<zhuige-nodata :buttons="false" :tip="noDataTip"></zhuige-nodata>
 			</template>
 		</view>
 
@@ -139,6 +142,8 @@
 				posts: [],
 				loadMore: 'more',
 				loaded: false,
+				
+				noDataTip: '哇哦，什么也没有',
 			}
 		},
 
@@ -311,6 +316,7 @@
 					this.posts = refresh ? res.data.posts : this.posts.concat(res.data.posts);
 					this.loadMore = 'nomore';
 					this.loaded = true;
+					this.noDataTip = res.data.tip;
 				}, err => {
 					console.log(err)
 				});
@@ -398,7 +404,7 @@
 
 	.zhuige-user-info-block view:nth-child(2) image {
 		height: 36rpx;
-		width: 72rpx;
+		width: 36rpx;
 		margin-left: 12rpx;
 	}
 

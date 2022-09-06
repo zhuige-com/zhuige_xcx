@@ -401,4 +401,7 @@
 	.zhuige-tab-block {
 		padding-bottom: 60rpx;
 	}
+	.zhuige-tab {
+		padding: 10rpx 0 20rpx!important;
+	}
 </style>

@@ -116,6 +116,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 					'fans_count' => zhuige_xcx_user_fans_count($user_id->follow_user_id),
 				];
 
+				if (function_exists('zhuige_xcx_certify_is_certify')) {
+					$item['certify'] = zhuige_xcx_certify_is_certify($user_id->follow_user_id);
+				}
+
 				$users[] = $item;
 			}
 			$follow_user['users'] = $users;
@@ -279,6 +283,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		$tab = $this->param($request, 'tab', '');
 		if (empty($tab)) {
 			return $this->error('缺少参数');
+		}
+
+		if ($my_user_id != $user_id && (int)(get_user_meta($user_id, 'zhuige_user_secret_' . $tab, true)) == 1) {
+			return $this->success(['tip' => '已关闭对他人可见', 'posts' => [], 'more' => 'nomore']);
 		}
 
 		$offset = $this->param_int($request, 'offset', 0);

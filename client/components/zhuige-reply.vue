@@ -5,6 +5,7 @@
 			<view class="zhugie-reply-user" @click="openLink('/pages/user/home/home?user_id=' + item.user.user_id)">
 				<view>
 					<image mode="aspectFill" :src="item.user.avatar"></image>
+					<image class="zhuige-certify" v-if="item.user.certify" mode="aspectFill" :src="item.user.certify.icon"></image>
 				</view>
 				<view>
 					<view>{{item.user.nickname}}</view>
@@ -26,6 +27,7 @@
 						@click="openLink('/pages/user/home/home?user_id=' + reply.user.user_id)">
 						<view>
 							<image mode="aspectFill" :src="reply.user.avatar"></image>
+							<image v-if="reply.user.certify" mode="aspectFill" :src="reply.user.certify.icon"></image>
 						</view>
 						<view>
 							<view>{{reply.user.nickname}}</view>

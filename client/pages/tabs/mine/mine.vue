@@ -20,8 +20,14 @@
 						<view class="zhuige-mine-login-user-info">
 							<view>{{nickname}}</view>
 							<view v-if="certify">
-								<image mode="aspectFill" src="/static/logo.png"></image>
-								<text>未认证</text>
+								<template v-if="certify.status == 1">
+									<image mode="aspectFill" :src="certify.icon"></image>
+									<text>{{certify.name}}</text>
+								</template>
+								<template v-else>
+									<image class="no-certify" mode="aspectFill" src="/static/lvv.png"></image>
+									<text>未认证</text>
+								</template>
 							</view>
 						</view>
 					</view>
@@ -136,13 +142,19 @@
 					this.follow_count = res.data.follow_count;
 					this.likeme_count = res.data.likeme_count;
 
-					this.nickname = res.data.nickname;
-					this.avatar = res.data.avatar;
-					this.certify = res.data.certify;
-					// this.vip = res.data.vip;
-
-					// this.notify_count = res.data.notify_count;
-					// this.audit_count = res.data.audit_count;
+					if (res.data.nickname) {
+						this.nickname = res.data.nickname;
+					} else {//用户token未验证通过，则清空
+						uni.clearStorageSync();
+					}
+					
+					if (res.data.avatar) {
+						this.avatar = res.data.avatar;
+					}
+					
+					if (res.data.certify) {
+						this.certify = res.data.certify;
+					}
 				}, err => {
 					console.log(err)
 				});
@@ -205,9 +217,6 @@
 				Rest.post(Api.URL('setting', 'mine')).then(res => {
 					this.background = res.data.background;
 					this.slides = res.data.slides;
-					// if (res.data.ad) {
-					// 	this.ad = res.data.ad;
-					// }
 					this.menus = res.data.menus;
 
 					if (res.data.copyright) {
@@ -281,21 +290,26 @@
 	.zhuige-mine-login-user-info view:nth-child(1) {
 		font-size: 36rpx;
 		font-weight: 600;
+		line-height: 1.6em;
 	}
 
 	.zhuige-mine-login-user-info view:nth-child(2) {
 		display: flex;
 		align-items: center;
-		height: 48rpx;
+		/* height: 48rpx;
 		line-height: 48rpx;
 		padding: 0 30rpx;
 		border-radius: 48rpx;
-		border: 1rpx solid #EEEEEE;
+		border: 1rpx solid #EEEEEE; */
 	}
 
 	.zhuige-mine-login-user-info view:nth-child(2) image {
 		height: 12px;
 		width: 12px;
+	}
+	.zhuige-mine-login-user-info view:nth-child(2) image.no-certify {
+		filter: grayscale(100%);
+		opacity: .7;
 	}
 
 	.zhuige-mine-login-user-info view:nth-child(2) text {

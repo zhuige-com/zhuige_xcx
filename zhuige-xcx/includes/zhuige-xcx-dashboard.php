@@ -23,7 +23,7 @@ function zhuige_xcx_custom_dashboard()
 
 function zhuige_xcx_add_dashboard_widgets()
 {
-	wp_add_dashboard_widget('zhuige_xcx_dashboard_widget', '追格圈子', 'zhuige_xcx_custom_dashboard');
+	wp_add_dashboard_widget('zhuige_xcx_dashboard_widget', '追格小程序', 'zhuige_xcx_custom_dashboard');
 }
 
 add_action('wp_dashboard_setup', 'zhuige_xcx_add_dashboard_widgets');

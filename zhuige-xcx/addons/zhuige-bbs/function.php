@@ -47,6 +47,9 @@ if (!function_exists('zhuige_bbs_topic_format')) {
 			'nickname' => get_user_meta($user_id, 'nickname', true),
 			'avatar' => ZhuiGe_Xcx::user_avatar($user_id),
 		];
+		if (function_exists('zhuige_xcx_certify_is_certify')) {
+			$author['certify'] = zhuige_xcx_certify_is_certify($user_id);
+		}
 		$item['author'] = $author;
 
 		// 所属圈子
@@ -106,5 +109,30 @@ if (!function_exists('zhuige_bbs_forum_topic_count')) {
 		);
 
 		return (int)$post_count;
+	}
+}
+
+/**
+ * 获取帖子缩略图
+ */
+if (!function_exists('zhuige_bbs_topic_thumb')) {
+	function zhuige_bbs_topic_thumb($topic_id)
+	{
+		$thumb = '';
+
+		$options = get_post_meta($topic_id, 'zhuige-bbs-topic-option', true);
+		if ($options['type'] == 'image') {
+			if (!empty($options['images'])) {
+				$thumb = $options['images'][0]['image']['url'];
+			}
+		} else if ($options['type'] == 'video') {
+			$thumb = $options['video_cover']['url'];
+		}
+
+		if (empty($thumb)) {
+			$thumb = ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg';
+		}
+
+		return $thumb;
 	}
 }

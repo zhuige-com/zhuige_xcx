@@ -18,11 +18,11 @@
 			<!-- 认证表单 -->
 			<view class="zhuige-info-form">
 				<view v-if="certify || vip" class="zhuige-info-line form-title">
-					<template v-if="certify">
+					<template v-if="certify && certify.status==1">
 						<view>认证</view>
 						<view>
-							<image mode="aspectFill" src="/static/lvv.png"></image>
-							<text>追格官方团队成员</text>
+							<image mode="aspectFill" :src="certify.icon"></image>
+							<text>{{certify.name}}</text>
 						</view>
 					</template>
 

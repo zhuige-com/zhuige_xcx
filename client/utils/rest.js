@@ -34,6 +34,7 @@ function request(url, data = {}, method = "GET") {
 			method: method,
 			success(res) {
 				if (res.statusCode == 500 && res.data.code == 'user_not_login') {
+					uni.clearStorageSync();
 					uni.navigateTo({
 					    url: '/pages/user/login/login',
 					});
@@ -46,6 +47,7 @@ function request(url, data = {}, method = "GET") {
 				}
 
 				if (res.data.code == 'user_not_login') {
+					uni.clearStorageSync();
 					uni.navigateTo({
 					    url: '/pages/user/login/login',
 					});

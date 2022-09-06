@@ -27,19 +27,30 @@
 						<view class="zhuige-social-poster-info">
 							<view>
 								<text>{{topic.author.nickname}}</text>
+								<image v-if="topic.author.vip" mode="aspectFill" src="/static/vv-1.png">
+								</image>
+								<image v-if="topic.author.certify && topic.author.certify.status==1" mode="aspectFill" :src="topic.author.certify.icon">
+								</image>
 							</view>
 							<view>
 								<text>{{topic.time}}</text>
 							</view>
 						</view>
 					</view>
-					<view @click="clickFollowAuthor" class="zhuige-social-opt">
-						<view v-if="topic.author.is_follow">已关注</view>
-						<view v-else>+关注</view>
+					<view class="zhuige-social-opt">
+						<view v-if="is_report" @click="openLink('/pages/plugins/report/report?post_id=' + topic.id)">
+							<uni-icons type="more-filled" size="20"></uni-icons>
+						</view>
+						<view @click="clickFollowAuthor" v-if="topic.author.is_follow">已关注</view>
+						<view @click="clickFollowAuthor" v-else>+关注</view>
 					</view>
 				</view>
 
-				<video v-if="topic.video" :src="topic.video.url"></video>
+				<!-- <video v-if="topic.video" :src="topic.video.url"></video> -->
+				<video v-if="topic.video" :src="topic.video.url" :poster="topic.video_cover.url" object-fit="cover" :style="{
+					width: parseInt(topic.video.width)>parseInt(topic.video.height)?'674rpx':parseInt(topic.video.width)/parseInt(topic.video.height)*674 + 'rpx',
+					height: parseInt(topic.video.width)<parseInt(topic.video.height)?'674rpx':parseInt(topic.video.height)/parseInt(topic.video.width)*674 + 'rpx'
+				}"></video>
 
 				<!-- 贴内图片广告 -->
 				<view v-if="topic.top_img_ad" class="zhuige-wide-image-ad">
@@ -271,6 +282,9 @@
 				comment_content: '',
 				// 评论框 底部举例
 				comment_bottom: 0,
+				
+				// 举报功能
+				is_report: false,
 			}
 		},
 
@@ -612,6 +626,7 @@
 				}).then(res => {
 					this.topic = res.data.topic;
 					this.poster = res.data.poster;
+					this.is_report = res.data.is_report;
 
 					if (this.topic.images) {
 						this.curImage = 0;
@@ -1023,7 +1038,7 @@
 		margin: 0 24rpx;
 	}
 
-	.zhuige-social-poster-blcok {
+	.zhuige-detail-block .zhuige-social-poster-blcok {
 		border-bottom: 1rpx solid #EEEEEE;
 		padding-bottom: 20rpx;
 	}
@@ -1079,7 +1094,11 @@
 		margin-bottom: 20rpx;
 	}
 
-	.zhuige-article-swiper * {
-		transition: .5s cubic-bezier(0.6, 2, 0.3, 0.8);
+	/* .zhuige-article-swiper * {
+		transition: all .4s cubic-bezier(0.6, 2, 0.3, 0.8);
+	} */
+	
+	.zhuige-article-swiper, .zhuige-article-swiper swiper, .zhuige-article-swiper swiper image {
+		transition: all 0.3s linear;
 	}
 </style>

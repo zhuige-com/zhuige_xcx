@@ -56,6 +56,11 @@ class ZhuiGe_Xcx_Addon
 	public static $users = [];
 
 	/**
+	 * 已安装的插件
+	 */
+	public static $install_addons = [];
+
+	/**
 	 * 获取配置
 	 */
 	public static function load()
@@ -174,7 +179,11 @@ class ZhuiGe_Xcx_Addon
 		if (isset($config['func'])) {
 			foreach ($config['func'] as $func) {
 				if (!in_array($func, ZhuiGe_Xcx_Addon::$funcs)) {
-					array_push(ZhuiGe_Xcx_Addon::$funcs, $func);
+					// if (in_array($addon, ['zhuige-certify'])) {
+					// 	array_unshift(ZhuiGe_Xcx_Addon::$funcs, $func);
+					// } else {
+						array_push(ZhuiGe_Xcx_Addon::$funcs, $func);
+					// }
 				}
 			}
 		}
@@ -307,5 +316,23 @@ class ZhuiGe_Xcx_Addon
 		}
 
 		return $res;
+	}
+
+	/**
+	 * 是否已安装
+	 */
+	public static function is_installed($test) {
+		if (empty($install_addons)) {
+			$addons = scandir(ZHUIGE_XCX_ADDONS_DIR);
+			foreach ($addons as $addon) {
+				if ($addon == '.' || $addon == '..' || !is_dir(ZHUIGE_XCX_ADDONS_DIR . $addon)) {
+					continue;
+				}
+	
+				$install_addons[] = $addon;
+			}
+		}
+
+		return in_array($test, $install_addons);
 	}
 }

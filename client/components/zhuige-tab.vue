@@ -73,7 +73,6 @@
 		position: relative;
 		background: #FFFFFF;
 		border-radius: 12rpx;
-
 	}
 
 	.zhuige-tab-nav {

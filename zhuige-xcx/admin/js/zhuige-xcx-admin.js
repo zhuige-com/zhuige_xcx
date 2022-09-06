@@ -30,29 +30,7 @@
 	 */
 
 	$(function () {
-		//激活追格插件
-		$('.btn-zhuige-addon-active').click(function () {
-			$.post("/wp-admin/admin-ajax.php",
-				{
-					action: 'admin_active_addon',
-					addon: $(this).data('addon')
-				},
-				function (res, status) {
-					window.location.reload();
-				});
-		});
-
-		//禁用追格插件
-		$('.btn-zhuige-addon-deactive').click(function () {
-			$.post("/wp-admin/admin-ajax.php",
-				{
-					action: 'admin_deactive_addon',
-					addon: $(this).data('addon')
-				},
-				function (res, status) {
-					window.location.reload();
-				});
-		});
+		
 	});
 
 })(jQuery);

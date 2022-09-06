@@ -7,7 +7,7 @@
 				:class="user.owner==1 ? 'coterie-master' : ''">
 				<view class="zhuige-user-avatar">
 					<image mode="aspectFill" :src="user.avatar"></image>
-					<image v-if="user.certify" mode="aspectFill" src="/static/lvv.png"></image>
+					<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
 				</view>
 				<view class="zhuige-user-name">{{user.nickname}}</view>
 			</view>

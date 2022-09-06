@@ -1,7 +1,9 @@
 <template>
 	<view class="content">
-		<view class="zhuige-block">
-			<mp-html :content="post.content" />
+		<view class="zhuige-page-box">
+			<view class="zhuige-block">
+				<mp-html :content="post.content" />
+			</view>
 		</view>
 	</view>
 </template>
@@ -100,4 +102,10 @@
 	page {
 		background-color: #F5F5F5;
 	}
+	.zhuige-page-box {
+		padding: 20rpx;
+	}
+		.zhuige-block {
+			padding: 30rpx;
+		}
 </style>

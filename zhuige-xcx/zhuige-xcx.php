@@ -4,7 +4,7 @@
  * Plugin Name:       追格小程序
  * Plugin URI:        https://www.zhuige.com/
  * Description:       追格小程序是一个积木式小程序搭建框架。
- * Version:           1.2.0
+ * Version:           1.1.0
  * Author:            追格
  * Author URI:        https://www.zhuige.com/
  * Text Domain:       zhuige-xcx
@@ -15,7 +15,7 @@ if (!defined('WPINC')) {
 }
 
 define('ZHUIGE_XCX', 'zhuige-xcx');
-define('ZHUIGE_XCX_VERSION', '1.0.0');
+define('ZHUIGE_XCX_VERSION', '1.1.0');
 define('ZHUIGE_XCX_BASE_NAME', plugin_basename(__FILE__));
 define('ZHUIGE_XCX_BASE_DIR', plugin_dir_path(__FILE__));
 define('ZHUIGE_XCX_BASE_URL', plugin_dir_url(__FILE__));
@@ -66,6 +66,7 @@ ZhuiGe_Xcx_Addon::load();
 require ZHUIGE_XCX_BASE_DIR . 'includes/zhuige-xcx-function.php';
 require ZHUIGE_XCX_BASE_DIR . 'includes/zhuige-xcx-user-column.php';
 require ZHUIGE_XCX_BASE_DIR . 'includes/zhuige-xcx-dashboard.php';
+require ZHUIGE_XCX_BASE_DIR . 'includes/zhuige-xcx-plugins.php';
 
 foreach (ZhuiGe_Xcx_Addon::$post_types as $post_type) {
 	$file_path = ZHUIGE_XCX_ADDONS_DIR . $post_type;

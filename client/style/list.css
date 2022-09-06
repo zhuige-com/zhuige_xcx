@@ -23,6 +23,7 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 .zhugie-reply-user>view:nth-child(1) {
 	width: 72rpx;
 	height: 72rpx;
+	position: relative;
 }
 
 .zhugie-reply-user view:nth-child(1) image {
@@ -30,6 +31,14 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	height: 100%;
 	border-radius: 50%;
 }
+	.zhugie-reply-user view:nth-child(1) image.zhuige-certify {
+		position: absolute;
+		z-index: 3;
+		height: 28rpx;
+		width: 28rpx;
+		right: -4rpx;
+		bottom: 0rpx;
+	}
 
 .zhugie-reply-user>view:nth-child(2) {
 	padding-left: 20rpx;
@@ -207,6 +216,9 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 .zhuige-social-list {
 	padding: 0 20rpx;
 }
+.zhuige-social-list .zhuige-block {
+	padding: 30rpx 20rpx;
+}
 
 .zhuige-social-list-head {
 	height: 2em;
@@ -221,12 +233,16 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+	margin-bottom: 20rpx;
 }
 
 .zhuige-social-poster {
-	width: 75%;
+	width: 84%;
 	display: flex;
 	align-items: center;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .zhuige-social-poster-avatar {
@@ -244,6 +260,11 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 .zhuige-social-poster-info {
 	padding-left: 20rpx;
 	margin-bottom: -4rpx;
+	display: block;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	color: #999999;
 }
 
 .zhuige-social-poster-info view {
@@ -259,12 +280,14 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	font-weight: 600;
 	margin-right: 12rpx;
 	margin-top: 12rpx;
+	color: #010101
 }
 
 .zhuige-social-poster-info view:nth-child(1) image:nth-child(2) {
-	height: 32rpx;
-	width: 32rpx;
+	height: 28rpx;
+	width: 28rpx;
 	margin-right: 12rpx;
+	margin-top: 12rpx;
 }
 
 .zhuige-social-poster-info view:nth-child(1) image:nth-child(3) {
@@ -272,10 +295,18 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	width: 64rpx;
 }
 
+.zhuige-social-poster-info view:nth-child(2) {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	display: block;
+}
+
 .zhuige-social-poster-info view:nth-child(2) text {
 	font-size: 26rpx;
-	font-weight: 300;
+	font-weight: 400;
 	color: #999999;
+	white-space: nowrap
 }
 
 .zhuige-social-poster-info view:nth-child(2) text:nth-child(2) {
@@ -287,9 +318,15 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 }
 
 .zhuige-social-opt {
-	width: 25%;
-	text-align: right;
+	width: 16%;
+	display: flex;
+	justify-content: end;
 }
+	.zhuige-social-opt view {
+		white-space: nowrap;
+		margin-left: 20rpx;
+		line-height: 2em;
+	}
 
 .zhuige-social-cont {
 	padding: 10rpx 0;

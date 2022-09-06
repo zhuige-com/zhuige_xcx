@@ -103,8 +103,11 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 					'avatar' => get_user_meta($user_id, 'zhuige_xcx_user_avatar', true),
 					'post_count' => zhuige_xcx_user_post_count($user_id),
 					'fans_count' => zhuige_xcx_user_fans_count($user_id),
-
 				];
+
+				if (function_exists('zhuige_xcx_certify_is_certify')) {
+					$user['certify'] = zhuige_xcx_certify_is_certify($user_id);
+				}
 
 				$follow_user_id_exist = 0;
 				if ($my_user_id) {

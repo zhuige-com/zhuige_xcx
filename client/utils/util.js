@@ -140,9 +140,15 @@ function openLink(link) {
 		link = htmlRestore(link);
 		uni.navigateTo({
 			url: link,
-			fail(res) {
+			fail: (res) => {
 				uni.redirectTo({
-					url: link
+					url: link,
+					fail: (res) => {
+						uni.showToast({
+							icon: 'none',
+							title: '未配置该模块'
+						})
+					}
 				});
 			}
 		});

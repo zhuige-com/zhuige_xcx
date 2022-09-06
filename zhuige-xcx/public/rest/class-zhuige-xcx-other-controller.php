@@ -136,7 +136,7 @@ class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		$ext = strrchr($file['name'], '.');
-		if ($ext != '.jpg' && $ext != '.jpeg' &&  $ext != '.png') {
+		if ($ext != '.jpg' && $ext != '.jpeg' && $ext != '.png' && $ext != '.gif') {
 			return ['error' => '错误的上传文件！'];
 		}
 
@@ -207,7 +207,7 @@ class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		$ext = strrchr($file['name'], '.');
-		if ($ext != '.jpg' && $ext != '.jpeg' &&  $ext != '.png') {
+		if ($ext != '.jpg' && $ext != '.jpeg' && $ext != '.png' && $ext != '.gif') {
 			return ['error' => '错误的上传文件！'];
 		}
 

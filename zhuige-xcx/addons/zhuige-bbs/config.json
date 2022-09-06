@@ -1,11 +1,13 @@
 {
-    "name": "追格圈子",
-    "version": "1.0.0",
-    "description": "追格圈子",
+    "name": "圈子（社区）",
+    "version": "1.0.2",
+    "description": "简单配置即可搭建一个圈子社区小程序",
     "keywords": [
         "追格",
-        "圈子"
+        "社区论坛"
     ],
+    "help": "https://www.zhuige.com/docs/cat/39.html",
+    "setting" : "admin.php?page=zhuige-xcx#tab=%e8%bf%bd%e6%a0%bc%e5%9c%88%e5%ad%90/%e5%9c%88%e5%ad%90",
     "sql": [
         "zhuige-bbs/sql.php"
     ],

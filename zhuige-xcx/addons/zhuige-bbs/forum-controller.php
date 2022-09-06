@@ -92,7 +92,7 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		$hots = [];
 		$bbs_subject_hot = ZhuiGe_Xcx::option_value('bbs_subject_hot');
 		if (!empty($bbs_subject_hot)) {
-			$terms = get_terms(['taxonomy' => 'zhuige_bbs_topic_tag', 'hide_empty' => false, 'include' => $bbs_subject_hot, 'orderby' => $bbs_subject_hot]);
+			$terms = get_terms(['taxonomy' => 'zhuige_bbs_topic_tag', 'hide_empty' => false, 'include' => $bbs_subject_hot, 'orderby' => 'include']);
 			foreach ($terms as $term) {
 				$hots[] = [
 					'id' => $term->term_id,
@@ -105,7 +105,7 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		$recs = [];
 		$bbs_subject_rec = ZhuiGe_Xcx::option_value('bbs_subject_rec');
 		if (!empty($bbs_subject_rec)) {
-			$terms = get_terms(['taxonomy' => 'zhuige_bbs_topic_tag', 'hide_empty' => false, 'include' => $bbs_subject_rec, 'orderby' => $bbs_subject_rec]);
+			$terms = get_terms(['taxonomy' => 'zhuige_bbs_topic_tag', 'hide_empty' => false, 'include' => $bbs_subject_rec, 'orderby' => 'include']);
 			foreach ($terms as $term) {
 				$recs[] = [
 					'id' => $term->term_id,
@@ -422,12 +422,17 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		// 圈子成员
 		$users = [];
-		$users[] = [
+		$auser = [
 			'user_id' => $post->post_author,
 			'nickname' => get_user_meta($post->post_author, 'nickname', true),
 			'avatar' => ZhuiGe_Xcx::user_avatar($post->post_author),
 			'owner' => 1,
 		];
+
+		if (function_exists('zhuige_xcx_certify_is_certify')) {
+			$auser['certify'] = zhuige_xcx_certify_is_certify($post->post_author);
+		}
+		$users[] = $auser;
 
 		$user_ids = $wpdb->get_results(
 			$wpdb->prepare(
@@ -437,12 +442,18 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		);
 		$user_ids = array_column($user_ids, 'user_id');
 		foreach ($user_ids as $user_id) {
-			$users[] = [
+			$item = [
 				'user_id' => $user_id,
 				'nickname' => get_user_meta($user_id, 'nickname', true),
 				'avatar' => ZhuiGe_Xcx::user_avatar($user_id),
 				'owner' => 0
 			];
+
+			if (function_exists('zhuige_xcx_certify_is_certify')) {
+				$item['certify'] = zhuige_xcx_certify_is_certify($user_id);
+			}
+
+			$users[] = $item;
 		}
 		$forum['users'] = $users;
 
@@ -507,6 +518,10 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 				'avatar' => ZhuiGe_Xcx::user_avatar($owner_id),
 			];
 
+			if (function_exists('zhuige_xcx_certify_is_certify')) {
+				$owner['certify'] = zhuige_xcx_certify_is_certify($owner_id);
+			}
+
 			$my_user_id = get_current_user_id();
 			$table_follow_user = $wpdb->prefix . 'zhuige_xcx_follow_user';
 			if ($my_user_id) {
@@ -557,6 +572,10 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 				'nickname' => get_user_meta($user_id['user_id'], 'nickname', true),
 				'avatar' => ZhuiGe_Xcx::user_avatar($user_id['user_id']),
 			];
+
+			if (function_exists('zhuige_xcx_certify_is_certify')) {
+				$user['certify'] = zhuige_xcx_certify_is_certify($user_id['user_id']);
+			}
 
 			if ($my_user_id) {
 				$follow_user = $wpdb->get_var(

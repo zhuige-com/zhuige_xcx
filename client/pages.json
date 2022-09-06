@@ -213,16 +213,14 @@
 					"enablePullDownRefresh": false
 				}
 
-			}    ,{
-                    "path" : "forum-create/forum-create",
-                    "style" :                                                                                    
-                {
-                    "navigationBarTitleText": "创建圈子",
-                    "enablePullDownRefresh": false
-                }
-                
-                }
-            ]
+			}, {
+				"path": "forum-create/forum-create",
+				"style": {
+					"navigationBarTitleText": "创建圈子",
+					"enablePullDownRefresh": false
+				}
+
+			}]
 		}
 	]
 }
