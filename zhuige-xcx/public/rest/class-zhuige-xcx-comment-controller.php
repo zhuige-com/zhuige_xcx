@@ -104,6 +104,11 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 		]);
 		// --------------------------------------------------
 
+		//添加积分
+		if (function_exists('zhuige_xcx_add_user_score_by_task')) {
+			zhuige_xcx_add_user_score_by_task('comment', $post->post_type . ',' . $post_id);
+		}
+
 		if ($comment_approved) {
 			return $this->success();
 		} else {

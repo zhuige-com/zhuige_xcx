@@ -13,8 +13,9 @@
 						@click="openLink('/pages/user/home/home?user_id=' + user.user_id)" class="zhuige-user-block">
 						<view class="zhuige-user-avatar">
 							<image mode="aspectFill" :src="user.avatar"></image>
-							<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
-							<image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image>
+							<image v-if="user.certify && user.certify.status==1" mode="aspectFill"
+								:src="user.certify.icon"></image>
+							<!-- <image v-if="user.vip && user.vip.status==1" mode="aspectFill" :src="user.vip.icon"></image> -->
 						</view>
 						<view class="zhuige-user-name">{{user.nickname}}</view>
 						<view class="zhuige-user-info">
@@ -38,8 +39,9 @@
 					<!-- 用户基础信息块 -->
 					<view class="zhuige-user-avatar">
 						<image mode="aspectFill" :src="user.avatar"></image>
-						<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
-						<image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image>
+						<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon">
+						</image>
+						<image v-if="user.vip && user.vip.status==1" mode="aspectFill" :src="user.vip.icon"></image>
 					</view>
 					<view class="zhuige-user-name">{{user.nickname}}</view>
 					<view class="zhuige-user-info">

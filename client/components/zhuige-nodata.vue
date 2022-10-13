@@ -3,13 +3,13 @@
 		<!-- 无内容提示 -->
 		<view class="zhuige-none-tips">
 			<image class="image" mode="aspectFill" src="/static/404.png"></image>
-			<view v-if="isLogin" class="view">{{tip}}</view>
-			<template v-else>
+			<template v-if="buttons && !isLogin">
 				<view class="view">什么也没有，登录后再看看</view>
-				<view v-if="buttons" class="zhuige-form-btn">
+				<view class="zhuige-form-btn">
 					<view @click="openLink('/pages/user/login/login')" class="view">登录</view>
 				</view>
 			</template>
+			<view v-else class="view">{{tip}}</view>
 		</view>
 	</view>
 </template>
@@ -22,17 +22,13 @@
 		name: "zhuige-nodata",
 
 		props: {
-			prop: {
-				type: String,
-				default: "prop"
-			},
 			tip: {
 				type: String,
-				default: '哇哦，什么也没有'
+				default: '哇哦，什么也没有~'
 			},
 			buttons: {
 				type: Boolean,
-				default: true
+				default: false
 			}
 		},
 

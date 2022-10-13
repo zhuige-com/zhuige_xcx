@@ -125,7 +125,7 @@
 		</template>
 		<template v-else>
 			<view class="zhugie-notice">
-				<zhuige-nodata></zhuige-nodata>
+				<zhuige-nodata :buttons="true"></zhuige-nodata>
 			</view>
 		</template>
 	</view>

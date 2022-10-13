@@ -13,7 +13,7 @@
 
 			</view>
 		</view>
-		
+
 		<view :class="{animation:do_animation}"></view>
 	</view>
 </template>
@@ -42,9 +42,9 @@
 		onLoad(options) {
 			Util.addShareScore(options.source);
 		},
-		
+
 		onShow() {
-			if (this.cache && this.cache.length>0) {
+			if (this.cache && this.cache.length > 0) {
 				this.items = this.cache;
 				setTimeout(() => {
 					this.active = true;
@@ -53,7 +53,7 @@
 				this.loadSetting();
 			}
 		},
-		
+
 		onHide() {
 			this.active = false;
 			this.cache = this.items;

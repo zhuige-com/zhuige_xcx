@@ -223,7 +223,7 @@
 							let path = res.tempFilePaths[i];
 							Rest.upload(Api.URL('other', 'upload2'), path).then(oo => {
 								if (oo.code != 0) {
-									Alert.error(oo.msg);
+									Alert.error(oo.message);
 									return;
 								}
 								this.images.push({
@@ -261,7 +261,7 @@
 								this.video.height = res.height;
 								console.log(this.video);
 							} else {
-								Alert.toast(oo.msg);
+								Alert.toast(oo.message);
 							}
 						}, err => {
 							Alert.error(err);
@@ -281,7 +281,7 @@
 						let path = res.tempFilePaths[0];
 						Rest.upload(Api.URL('other', 'upload2'), path).then(oo => {
 							if (oo.code != 0) {
-								Alert.error(oo.msg);
+								Alert.error(oo.message);
 								return;
 							}
 							this.video_cover = oo.data;
@@ -384,7 +384,7 @@
 
 				Rest.post(Api.URL('bbs', 'topic_create'), params).then(res => {
 					if (res.code != 0) {
-						Alert.error(res.msg);
+						Alert.error(res.message);
 						return;
 					}
 

@@ -5,10 +5,15 @@
 			<view class="zhugie-reply-user" @click="openLink('/pages/user/home/home?user_id=' + item.user.user_id)">
 				<view>
 					<image mode="aspectFill" :src="item.user.avatar"></image>
-					<image class="zhuige-certify" v-if="item.user.certify" mode="aspectFill" :src="item.user.certify.icon"></image>
 				</view>
 				<view>
-					<view>{{item.user.nickname}}</view>
+					<view>
+						<text>{{item.user.nickname}}</text>
+						<image class="zhuige-certify" v-if="item.user.certify && item.user.certify.status==1"
+							mode="aspectFill" :src="item.user.certify.icon"></image>
+						<image v-if="item.user.vip && item.user.vip.status==1" class="zhuige-replay-vip"
+							mode="aspectFill" :src="item.user.vip.icon"></image>
+					</view>
 					<view>{{item.time}}</view>
 				</view>
 			</view>
@@ -27,10 +32,15 @@
 						@click="openLink('/pages/user/home/home?user_id=' + reply.user.user_id)">
 						<view>
 							<image mode="aspectFill" :src="reply.user.avatar"></image>
-							<image v-if="reply.user.certify" mode="aspectFill" :src="reply.user.certify.icon"></image>
 						</view>
 						<view>
-							<view>{{reply.user.nickname}}</view>
+							<view>
+								<text>{{reply.user.nickname}}</text>
+								<image v-if="reply.user.certify && reply.user.certify.status==1" mode="aspectFill"
+									:src="reply.user.certify.icon"></image>
+								<image v-if="reply.user.vip && reply.user.vip.status==1" class="zhuige-replay-vip"
+									mode="aspectFill" :src="reply.user.vip.icon"></image>
+							</view>
 							<view>{{reply.time}}</view>
 						</view>
 					</view>

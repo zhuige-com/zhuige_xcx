@@ -229,6 +229,7 @@
 
 	.zhuige-classify-key view text {
 		color: #555555;
+		font-weight: 400;
 	}
 
 	.zhuige-classify-key view.active text {
@@ -247,8 +248,6 @@
 	.zhuige-classify-swiper {
 		padding: 0 20rpx 20rpx;
 	}
-
-
 
 	.zhuige-classify-creat {
 		position: fixed;

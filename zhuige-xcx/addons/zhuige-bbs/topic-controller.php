@@ -134,6 +134,11 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			wp_set_post_terms($post_id, $subjects, 'zhuige_bbs_topic_tag');
 		}
 
+		//添加积分
+		if (function_exists('zhuige_xcx_add_user_score_by_task')) {
+			zhuige_xcx_add_user_score_by_task('topic_add', 'topic,' . $post_id);
+		}
+
 		return $this->success(['post_id' => $post_id, 'status' => $status, 'options' => $options]);
 	}
 
@@ -214,6 +219,9 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		];
 		if (function_exists('zhuige_xcx_certify_is_certify')) {
 			$author['certify'] = zhuige_xcx_certify_is_certify($user_id);
+		}
+		if (function_exists('zhuige_xcx_vip_is_vip')) {
+			$author['vip'] = zhuige_xcx_vip_is_vip($user_id);
 		}
 		// “我”是否关注了作者
 		$table_follow_user = $wpdb->prefix . 'zhuige_xcx_follow_user';
@@ -296,7 +304,7 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		// 收藏数量
-		$topic['fav_count'] = (int) get_post_meta($post->ID, 'fav_count', true);
+		$topic['favorites'] = (int) get_post_meta($post->ID, 'zhuige_favorites', true);
 		// “我”是否已收藏
 		if ($my_user_id) {
 			$table_post_favorite = $wpdb->prefix . 'zhuige_xcx_post_favorite';
@@ -392,6 +400,22 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		$data = ['topic' => $topic, 'poster' => $poster];
 
 		$data['is_report'] = ZhuiGe_Xcx_Addon::is_active('zhuige-report') ? 1 : 0;
+
+		//添加积分
+		if (function_exists('zhuige_xcx_add_user_score_by_task')) {
+			zhuige_xcx_add_user_score_by_task('view', 'topic,' . $topic_id);
+		}
+
+		// 文章查看钩子-含知识库
+		do_action('zhuige_xcx_post_view', [
+			'post_id' => $topic_id,
+			'user_id' => $post->post_author,
+			'post_type' => $post->post_type,
+			'view_count' => $post_views + 1,
+			'like_count' => count($topic['like_list']),
+			'fav_count' => $topic['favorites'],
+			'comment_count' => $post->comment_count
+		]);
 
 		return $this->success($data);
 	}

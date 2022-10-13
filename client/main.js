@@ -19,3 +19,12 @@ export function createApp() {
   }
 }
 // #endif
+
+/**
+ * 使用商城（微信小商店）时放开
+ */
+// const miniShopPlugin = requirePlugin('mini-shop-plugin');
+// miniShopPlugin.initApp(getApp(), wx)
+// if (miniShopPlugin) {
+// 	miniShopPlugin.initHomePath('/pages/wxmall/index/index');
+// }

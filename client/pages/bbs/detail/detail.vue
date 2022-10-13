@@ -27,9 +27,11 @@
 						<view class="zhuige-social-poster-info">
 							<view>
 								<text>{{topic.author.nickname}}</text>
-								<image v-if="topic.author.vip" mode="aspectFill" src="/static/vv-1.png">
+								<image v-if="topic.author.certify && topic.author.certify.status==1" mode="aspectFill"
+									:src="topic.author.certify.icon">
 								</image>
-								<image v-if="topic.author.certify && topic.author.certify.status==1" mode="aspectFill" :src="topic.author.certify.icon">
+								<image class="zhuige-social-vip" v-if="topic.author.vip && topic.author.vip.status==1"
+									mode="aspectFill" :src="topic.author.vip.icon">
 								</image>
 							</view>
 							<view>
@@ -47,9 +49,10 @@
 				</view>
 
 				<!-- <video v-if="topic.video" :src="topic.video.url"></video> -->
-				<video v-if="topic.video" :src="topic.video.url" :poster="topic.video_cover.url" object-fit="cover" :style="{
-					width: parseInt(topic.video.width)>parseInt(topic.video.height)?'674rpx':parseInt(topic.video.width)/parseInt(topic.video.height)*674 + 'rpx',
-					height: parseInt(topic.video.width)<parseInt(topic.video.height)?'674rpx':parseInt(topic.video.height)/parseInt(topic.video.width)*674 + 'rpx'
+				<video v-if="topic.video" :src="topic.video.url" :poster="topic.video_cover.url" object-fit="cover"
+					:style="{
+					width: parseInt(topic.video.width)>parseInt(topic.video.height)?'654rpx':parseInt(topic.video.width)/parseInt(topic.video.height)*674 + 'rpx',
+					height: parseInt(topic.video.width)<parseInt(topic.video.height)?'654rpx':parseInt(topic.video.height)/parseInt(topic.video.width)*674 + 'rpx'
 				}"></video>
 
 				<!-- 贴内图片广告 -->
@@ -161,7 +164,7 @@
 					</zhuige-reply>
 
 					<!-- 通用无信息 -->
-					<view class="zhuige-nomore">没有更多数据了</view>
+					<!-- <view class="zhuige-nomore">没有更多数据了</view> -->
 				</template>
 				<template v-else>
 					<!-- 无内容提示 -->
@@ -192,24 +195,27 @@
 			</view>
 			<view class="zhuige-detail-opt">
 				<view @click="clickComment(0)">
-					<uni-badge :offset="[0, 12]" :text="topic.comment_count.toString()" :inverted="!topic.is_comment"
-						type="error" absolute="rightTop">
+					<uni-badge :offset="[0, 12]" :text="topic.comment_count.toString()" :inverted="false" type="error"
+						absolute="rightTop">
+						<!-- :inverted="!topic.is_comment" -->
 						<uni-icons :type="topic.is_comment==1?'chat-filled':'chat'"
-							:color="topic.is_comment==1?'#fd6531':'#444444'" size="28"></uni-icons>
+							:color="topic.is_comment==1?'#ff6146':'#444444'" size="24"></uni-icons>
 					</uni-badge>
 				</view>
 				<view @click="clickLike">
-					<uni-badge :offset="[0, 12]" :text="topic.like_list.length.toString()" :inverted="!topic.is_like"
+					<uni-badge :offset="[0, 12]" :text="topic.like_list.length.toString()" :inverted="false"
 						type="error" absolute="rightTop">
+						<!-- :inverted="!topic.is_like" -->
 						<uni-icons :type="topic.is_like==1?'hand-up-filled':'hand-up'"
-							:color="topic.is_like==1?'#fd6531':'#444444'" size="28"></uni-icons>
+							:color="topic.is_like==1?'#ff6146':'#444444'" size="24"></uni-icons>
 					</uni-badge>
 				</view>
 				<view @click="clickFavorite">
-					<uni-badge :offset="[0, 12]" :text="topic.fav_count.toString()" :inverted="!topic.is_favorite"
-						type="error" absolute="rightTop">
+					<uni-badge :offset="[0, 12]" :text="topic.favorites.toString()" :inverted="false" type="error"
+						absolute="rightTop">
+						<!-- :inverted="!topic.is_favorite" -->
 						<uni-icons :type="topic.is_favorite==1?'star-filled':'star'"
-							:color="topic.is_favorite==1?'#fd6531':'#444444'" size="28"></uni-icons>
+							:color="topic.is_favorite==1?'#ff6146':'#444444'" size="24"></uni-icons>
 					</uni-badge>
 				</view>
 			</view>
@@ -282,7 +288,7 @@
 				comment_content: '',
 				// 评论框 底部举例
 				comment_bottom: 0,
-				
+
 				// 举报功能
 				is_report: false,
 			}
@@ -395,12 +401,12 @@
 					Util.openLink(data['data-link']);
 				}
 			},
-			
+
 			/**
 			 * 点赞事件
 			 */
 			onUserLike(data) {
-				if (this.topic && this.topic.recs && this.topic.recs.length>0) {
+				if (this.topic && this.topic.recs && this.topic.recs.length > 0) {
 					this.topic.recs.forEach((topic) => {
 						if (topic.id == data.post_id) {
 							topic.like_count = data.like_count;
@@ -470,7 +476,7 @@
 					latitude: parseFloat(this.topic.location.latitude),
 					longitude: parseFloat(this.topic.location.longitude),
 					success: () => {
-						console.log('success');
+						// console.log('success');
 					}
 				});
 			},
@@ -593,7 +599,7 @@
 						});
 						this.topic.like_list = like_list;
 					}
-					
+
 					uni.$emit('zhuige_event_user_like', {
 						post_id: this.topic_id,
 						like_count: res.data.like_count
@@ -611,7 +617,7 @@
 					post_id: this.topic_id
 				}).then(res => {
 					this.topic.is_favorite = res.data.is_favorite;
-					this.topic.fav_count = res.data.fav_count;
+					this.topic.favorites = res.data.favorites;
 				}, err => {
 					console.log(err)
 				});
@@ -888,7 +894,6 @@
 				Rest.post(Api.URL('posts', 'wxacode'), {
 					post_id: this.topic_id,
 				}).then(res => {
-					console.log(res);
 					this.acode = res.data.acode;
 				}, err => {
 					console.log(err);
@@ -946,6 +951,10 @@
 		padding: 0 20rpx;
 	}
 
+	.zhuige-detail-block .zhuige-block {
+		padding: 20rpx 30rpx;
+	}
+
 	.zhuige-detail-ad {
 		margin-bottom: 20rpx;
 	}
@@ -962,7 +971,7 @@
 	}
 
 	.zhuige-detail-block video {
-		width: 100%;
+		border-radius: 12rpx;
 	}
 
 	.zhuige-detail-cont {
@@ -982,7 +991,7 @@
 	}
 
 	.zhuige-detail-classify .zhuige-classify-block {
-		width: 78%;
+		width: 76%;
 		border: none;
 		padding: 0;
 	}
@@ -1097,8 +1106,15 @@
 	/* .zhuige-article-swiper * {
 		transition: all .4s cubic-bezier(0.6, 2, 0.3, 0.8);
 	} */
-	
-	.zhuige-article-swiper, .zhuige-article-swiper swiper, .zhuige-article-swiper swiper image {
+
+	.zhuige-article-swiper,
+	.zhuige-article-swiper swiper,
+	.zhuige-article-swiper swiper image {
 		transition: all 0.3s linear;
+	}
+
+	.zhuige-wide-image-ad view {
+		/* height: 280rpx; */
+		height: 120rpx;
 	}
 </style>

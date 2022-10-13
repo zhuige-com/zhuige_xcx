@@ -166,7 +166,7 @@
 	$uni-warning: #f0ad4e !default;
 	//此处调整是为了与系统色匹配
 	// $uni-error: #dd524d !default;	
-	$uni-error: #fd6531 !default;
+	$uni-error: #ff6146 !default;
 	$uni-info: #909399 !default;
 
 

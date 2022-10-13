@@ -135,6 +135,13 @@
 					"navigationBarTitleText": "评论",
 					"enablePullDownRefresh": false
 				}
+			}, {
+				"path": "channel_video/channel_video",
+				"style": {
+					"navigationBarTitleText": "视频播放",
+					"enablePullDownRefresh": false
+				}
+
 			}]
 		},
 		{

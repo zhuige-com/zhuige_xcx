@@ -14,7 +14,7 @@
 				</view>
 				<template v-else-if="item.type && item.type=='contact'">
 					<!-- #ifdef MP-WEIXIN -->
-					<button :key="index" open-type="contact" class="view">
+					<button :key="index" open-type="contact" class="button-view">
 						<image class="image" mode="aspectFill" :src="item.image"></image>
 						<text class="text">{{item.title}}</text>
 					</button>
@@ -109,16 +109,13 @@
 
 <style>
 	/* =========== 自定义图标模块 =========== */
-
-	/* .zhuige-icon {} */
-
 	.zhuige-icon .view {
 		width: 20%;
 		text-align: center;
 		padding-bottom: 10rpx;
 	}
 
-	.zhuige-icon button.view {
+	.zhuige-icon .button-view {
 		background: none;
 		border: none;
 		margin: 0;
@@ -126,11 +123,11 @@
 		line-height: normal;
 	}
 
-	.zhuige-icon button.view .image {
+	.zhuige-icon .button-view .image {
 		padding-bottom: 10rpx;
 	}
 
-	.zhuige-icon button.view::after {
+	.zhuige-icon .button-view::after {
 		border: none;
 	}
 
@@ -141,8 +138,9 @@
 
 	.zhuige-icon .text {
 		display: block;
-		line-height: 1.2em;
-		font-size: 28rpx;
+		line-height: 0.8em;
+		font-size: 26rpx;
+		color: #666666;
 	}
 
 	/* --- 滚动模式 --- */

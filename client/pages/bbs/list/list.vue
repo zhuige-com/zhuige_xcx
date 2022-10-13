@@ -79,10 +79,10 @@
 			}
 
 			this.loadTopics(true);
-			
+
 			uni.$on('zhuige_event_user_like', this.onUserLike);
 		},
-		
+
 		onUnload() {
 			uni.$off('zhuige_event_user_like', this.onUserLike);
 		},
@@ -127,7 +127,7 @@
 			 * 点赞事件
 			 */
 			onUserLike(data) {
-				if (this.topics && this.topics.length>0) {
+				if (this.topics && this.topics.length > 0) {
 					this.topics.forEach((topic) => {
 						if (topic.id == data.post_id) {
 							topic.like_count = data.like_count;
@@ -136,7 +136,7 @@
 				}
 			},
 			// ------- event end ---------
-			
+
 			/**
 			 * 点击打开链接
 			 */

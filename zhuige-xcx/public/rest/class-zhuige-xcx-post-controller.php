@@ -119,6 +119,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				if (function_exists('zhuige_xcx_certify_is_certify')) {
 					$item['certify'] = zhuige_xcx_certify_is_certify($user_id->follow_user_id);
 				}
+				
+				if (function_exists('zhuige_xcx_vip_is_vip')) {
+					$item['vip'] = zhuige_xcx_vip_is_vip($user_id->follow_user_id);
+				}
 
 				$users[] = $item;
 			}

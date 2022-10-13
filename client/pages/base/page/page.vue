@@ -102,10 +102,12 @@
 	page {
 		background-color: #F5F5F5;
 	}
+
 	.zhuige-page-box {
-		padding: 20rpx;
+		padding: 0 20rpx 20rpx;
 	}
-		.zhuige-block {
-			padding: 30rpx;
-		}
+
+	.zhuige-block {
+		padding: 30rpx;
+	}
 </style>

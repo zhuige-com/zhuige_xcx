@@ -66,6 +66,26 @@ CSF::createSection($prefix, array(
         ),
 
         array(
+            'id'     => 'basic_wxpay',
+            'type'   => 'fieldset',
+            'title'  => '微信支付',
+            'fields' => array(
+                array(
+                    'id'          => 'mchid',
+                    'type'        => 'text',
+                    'title'       => '商户号',
+                    'placeholder' => '商户号'
+                ),
+                array(
+                    'id'          => 'key',
+                    'type'        => 'text',
+                    'title'       => '支付密钥',
+                    'placeholder' => '支付密钥'
+                ),
+            ),
+        ),
+
+        array(
             'id'    => 'user_email_suffix',
             'type'  => 'text',
             'title' => '用户邮箱',
@@ -484,7 +504,7 @@ CSF::createSection($prefix, array(
             'chosen'      => true,
             // 'multiple'    => true,
             // 'sortable'    => true,
-            // 'ajax'        => true,
+            'ajax'        => true,
             'options'     => 'pages',
             'placeholder' => '选择一个页面',
         ),
@@ -496,7 +516,7 @@ CSF::createSection($prefix, array(
             'chosen'      => true,
             // 'multiple'    => true,
             // 'sortable'    => true,
-            // 'ajax'        => true,
+            'ajax'        => true,
             'options'     => 'pages',
             'placeholder' => '选择一个页面',
         ),

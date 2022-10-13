@@ -218,7 +218,7 @@
 </script>
 
 <style lang="scss" >
-	$uni-shadow-base:0 1px 5px 2px rgba($color: #000000, $alpha: 0.3) !default;
+	$uni-shadow-base:0 1px 5px 2px rgba($color: #000000, $alpha: 0.1) !default;
 
 	.uni-fab {
 		position: fixed;
@@ -244,10 +244,10 @@
 
 	.uni-fab--leftBottom {
 		left: 15px;
-		bottom: 30px;
+		bottom: 80px;
 		/* #ifdef H5 */
 		left: calc(15px + var(--window-left));
-		bottom: calc(30px + var(--window-bottom));
+		bottom: calc(80px + var(--window-bottom));
 		/* #endif */
 		// padding: 10px;
 	}
@@ -264,10 +264,10 @@
 
 	.uni-fab--rightBottom {
 		right: 15px;
-		bottom: 30px;
+		bottom: 80px;
 		/* #ifdef H5 */
 		right: calc(15px + var(--window-right));
-		bottom: calc(30px + var(--window-bottom));
+		bottom: calc(80px + var(--window-bottom));
 		/* #endif */
 		// padding: 10px;
 	}
@@ -299,10 +299,10 @@
 
 	.uni-fab__circle--leftBottom {
 		left: 15px;
-		bottom: 30px;
+		bottom: 80px;
 		/* #ifdef H5 */
 		left: calc(15px + var(--window-left));
-		bottom: calc(30px + var(--window-bottom));
+		bottom: calc(80px + var(--window-bottom));
 		/* #endif */
 	}
 
@@ -317,10 +317,10 @@
 
 	.uni-fab__circle--rightBottom {
 		right: 15px;
-		bottom: 30px;
+		bottom: 80px;
 		/* #ifdef H5 */
 		right: calc(15px + var(--window-right));
-		bottom: calc(30px + var(--window-bottom));
+		bottom: calc(80px + var(--window-bottom));
 		/* #endif */
 	}
 
@@ -413,7 +413,7 @@
 
 	.uni-fab__content--other-platform {
 		border-width: 0px;
-		box-shadow: $uni-shadow-base;
+		// box-shadow: $uni-shadow-base;
 	}
 
 	.uni-fab__content--left {

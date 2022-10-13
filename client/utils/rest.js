@@ -10,24 +10,24 @@ function request(url, data = {}, method = "GET") {
 		});
 
 		data.token = Auth.getToken();
-		
+
 		if (method == "GET") {
 			data.t = new Date().getTime();
 			data.r = Math.floor(Math.random() * 10000);
 		}
-		
+
 		// #ifdef MP-WEIXIN
 		data.os = 'wx';
 		// #endif
-		
+
 		// #ifdef MP-BAIDU
 		data.os = 'bd';
 		// #endif
-		
+
 		// #ifdef MP-QQ
 		data.os = 'qq';
 		// #endif
-		
+
 		uni.request({
 			url: url,
 			data: data,
@@ -36,11 +36,11 @@ function request(url, data = {}, method = "GET") {
 				if (res.statusCode == 500 && res.data.code == 'user_not_login') {
 					uni.clearStorageSync();
 					uni.navigateTo({
-					    url: '/pages/user/login/login',
+						url: '/pages/user/login/login',
 					});
 					return;
 				}
-				
+
 				if (res.statusCode != 200) {
 					reject(res.errMsg);
 					return;
@@ -49,16 +49,16 @@ function request(url, data = {}, method = "GET") {
 				if (res.data.code == 'user_not_login') {
 					uni.clearStorageSync();
 					uni.navigateTo({
-					    url: '/pages/user/login/login',
+						url: '/pages/user/login/login',
 					});
 					return;
 				} else if (res.data.code == 'require_mobile') {
 					uni.navigateTo({
-					    url: '/pages/user/login/login?type=mobile',
+						url: '/pages/user/login/login?type=mobile',
 					});
 					return;
 				}
-				
+
 				resolve(res.data);
 			},
 			fail(err) {
@@ -75,35 +75,35 @@ function request(url, data = {}, method = "GET") {
  * 上传图片
  */
 function upload(url, path, data = {}) {
-    return new Promise(function (resolve, reject) {
-        uni.showLoading({
-            title: '上传中……',
-        })
+	return new Promise(function(resolve, reject) {
+		uni.showLoading({
+			title: '上传中……',
+		})
 
-        data.token = Auth.getToken();
-		
+		data.token = Auth.getToken();
+
 		// #ifdef MP-WEIXIN
 		data.os = 'wx';
 		// #endif
-		
+
 		// #ifdef MP-BAIDU
 		data.os = 'bd';
 		// #endif
-		
+
 		// #ifdef MP-QQ
 		data.os = 'qq';
 		// #endif
-        
-        uni.uploadFile({
-            url: url,
-            filePath: path,
-            name: 'image',
-            formData: data,
-            success(res) {
-                if (res.statusCode != 200) {
-                    reject(res.errMsg);
-                    return;
-                }
+
+		uni.uploadFile({
+			url: url,
+			filePath: path,
+			name: 'image',
+			formData: data,
+			success(res) {
+				if (res.statusCode != 200) {
+					reject(res.errMsg);
+					return;
+				}
 
 				let data = undefined;
 				if (res.data instanceof String || (typeof res.data).toLowerCase() == 'string') {
@@ -111,24 +111,24 @@ function upload(url, path, data = {}) {
 				} else {
 					data = res.data;
 				}
-                
-                if (data.code == -1) { //尚未登录
-                    uni.navigateTo({
-                        url: '/pages/user/login/login',
-                    });
-                    return;
-                }
 
-                resolve(data);
-            }, 
+				if (data.code == -1) { //尚未登录
+					uni.navigateTo({
+						url: '/pages/user/login/login',
+					});
+					return;
+				}
+
+				resolve(data);
+			},
 			fail(err) {
 				console.log(err)
 			},
 			complete() {
 				uni.hideLoading();
 			}
-        })
-    });
+		})
+	});
 }
 
 /**

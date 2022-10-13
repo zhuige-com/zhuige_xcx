@@ -47,7 +47,7 @@ function zhuige_xcx_manage_user_custom_columnns($value, $column_name, $user_id)
 	} else if ('jqnickname' == $column_name) {
 		$value = get_user_meta($user_id, 'nickname', true);
 	} else if ('jqchannel' == $column_name) {
-		$channel = get_user_meta($user_id, 'jq_channel', true);
+		$channel = get_user_meta($user_id, 'zhuige_channel', true);
 		if ('weixin' == $channel) {
 			$value = '微信';
 		} else if ('qq' == $channel) {
@@ -121,9 +121,9 @@ function zhuige_xcx_manage_user_custom_columnns($value, $column_name, $user_id)
 add_filter('get_avatar', 'zhuige_xcx_get_avatar', 10, 2);
 function zhuige_xcx_get_avatar($avatar, $id_or_email, $size = 96, $default = '', $alt = '', $args = null)
 {
-	$jq_avatar = get_user_meta($id_or_email, 'zhuige_xcx_user_avatar', true);
-	if ($jq_avatar) {
-		return "<img src='$jq_avatar' class='avatar avatar-32 photo' height='32' width='32'>";
+	$zg_avatar = get_user_meta($id_or_email, 'zhuige_xcx_user_avatar', true);
+	if ($zg_avatar) {
+		return "<img src='$zg_avatar' class='avatar avatar-32 photo' height='32' width='32'>";
 	} else {
 		return $avatar;
 	}

@@ -261,12 +261,12 @@
 			onSetReloadDetail(data) {
 				this.reloadDetail = true;
 			},
-			
+
 			/**
 			 * 点赞事件
 			 */
 			onUserLike(data) {
-				if (this.topics && this.topics.length>0) {
+				if (this.topics && this.topics.length > 0) {
 					this.topics.forEach((topic) => {
 						if (topic.id == data.post_id) {
 							topic.like_count = data.like_count;
@@ -468,6 +468,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
+
 	.single-line {
 		white-space: nowrap;
 	}
@@ -509,5 +510,10 @@
 		font-size: 28rpx;
 		font-weight: 400;
 		border-right: 1rpx solid #EEEEEE;
+	}
+
+	.zhuige-user-name {
+		font-size: 26rpx;
+		font-weight: 400;
 	}
 </style>

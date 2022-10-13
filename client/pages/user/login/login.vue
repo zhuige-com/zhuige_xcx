@@ -10,7 +10,8 @@
 			<view class="zhuige-login-btn">
 				<template v-if="type=='login'">
 					<!-- #ifdef H5 -->
-					<view style="color: white;">H5 平台可修改public/rest/class-zhuige-xcx-user-controller.php 函数 test_login 用作测试</view>
+					<view style="color: white;">H5 平台可修改public/rest/class-zhuige-xcx-user-controller.php 函数 test_login
+						用作测试</view>
 					<view style="color: white;">H5 平台仅可用作测试，部分功能尚未适配</view>
 					<!-- #endif -->
 					<button class="zhuige-button" @click="clickLogin">登录</button>
@@ -202,7 +203,7 @@
 					iv: e.detail.iv,
 					code: this.code,
 				}).then(res => {
-					Alert.toast(res.msg)
+					Alert.toast(res.message)
 					uni.$emit('zhuige_event_user_mobile', {
 						mobile: res.data.mobile
 					});

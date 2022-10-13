@@ -17,6 +17,14 @@ class ZhuiGe_Xcx_Admin
     public function enqueue_scripts()
     {
         wp_enqueue_script(ZHUIGE_XCX, ZHUIGE_XCX_BASE_URL . 'admin/js/zhuige-xcx-admin.js', array('jquery'), ZHUIGE_XCX_VERSION, false);
+
+        if (function_exists('zhuige_xcx_widget_shortcode')) {
+            wp_enqueue_script(ZHUIGE_XCX . '_edit_extend', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-block/zhuige-block-edit-extend.js', array('quicktags'), $this->version, false);
+        }
+
+        if (ZhuiGe_Xcx_Addon::is_active('zhuige-wxmall')) {
+            wp_enqueue_script(ZHUIGE_XCX . '_wxmall', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-wxmall/mall-admin.js', array('jquery'), $this->version, false);
+        }
     }
 
     public function create_menu()

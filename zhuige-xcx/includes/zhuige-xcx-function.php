@@ -709,6 +709,10 @@ if (!function_exists('zhuige_xcx_get_comment_tree')) {
                 $user['certify'] = zhuige_xcx_certify_is_certify($comment->user_id);
             }
 
+			if (function_exists('zhuige_xcx_vip_is_vip')) {
+				$user['vip'] = zhuige_xcx_vip_is_vip($comment->user_id);
+			}
+			
             $item['user'] = $user;
 
             $reply_user_id = (int)(get_comment_meta($comment->comment_ID, 'zhuige_xcx_reply_user_id', true));

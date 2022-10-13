@@ -145,4 +145,9 @@
 		padding: 30rpx;
 		line-height: 2.2em;
 	}
+	.zhuige-single-view channel-video {
+		width: 100%;
+		height: 480rpx;
+		border-radius: 12rpx;
+	}
 </style>

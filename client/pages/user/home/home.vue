@@ -13,11 +13,11 @@
 					<view class="zhuige-user-info-block">
 						<view>
 							<image mode="aspectFill" :src="user.avatar"></image>
-							<image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image>
+
 						</view>
 						<view>
 							<text>{{user.nickname}}</text>
-							
+							<image v-if="user.vip && user.vip.status==1" mode="aspectFit" :src="user.vip.icon"></image>
 							<!-- 
 							<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
 						 -->
@@ -89,7 +89,7 @@
 				<zhuige-topic v-for="(topic, index) in posts" :key="index" :topic="topic"></zhuige-topic>
 			</template>
 			<template v-else-if="loaded">
-				<zhuige-nodata :buttons="false" :tip="noDataTip"></zhuige-nodata>
+				<zhuige-nodata :tip="noDataTip"></zhuige-nodata>
 			</template>
 		</view>
 
@@ -142,7 +142,7 @@
 				posts: [],
 				loadMore: 'more',
 				loaded: false,
-				
+
 				noDataTip: '哇哦，什么也没有',
 			}
 		},
@@ -215,6 +215,9 @@
 
 		methods: {
 			//----- event start -----
+			/**
+			 * 关注用户事件
+			 */
 			onFlollowUser(data) {
 				if (data.from && data.from == 'user_home') {
 					this.loadData();
@@ -222,12 +225,12 @@
 					this.loginReload = true;
 				}
 			},
-			
+
 			/**
 			 * 点赞事件
 			 */
 			onUserLike(data) {
-				if (this.posts && this.posts.length>0) {
+				if (this.posts && this.posts.length > 0) {
 					this.posts.forEach((topic) => {
 						if (topic.id == data.post_id) {
 							topic.like_count = data.like_count;
@@ -395,16 +398,24 @@
 		align-items: center;
 		justify-content: center;
 		line-height: 1.4em;
+		max-width: 380rpx;
+		flex-wrap: nowrap;
 	}
 
 	.zhuige-user-info-block view:nth-child(2) text {
 		font-size: 36rpx;
 		font-weight: 600;
+		height: 1.4em;
+		line-height: 1.4em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.zhuige-user-info-block view:nth-child(2) image {
-		height: 36rpx;
-		width: 36rpx;
+		height: 28rpx;
+		width: 56rpx;
+		min-width: 56rpx;
 		margin-left: 12rpx;
 	}
 

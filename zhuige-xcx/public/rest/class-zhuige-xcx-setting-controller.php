@@ -108,6 +108,10 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 				if (function_exists('zhuige_xcx_certify_is_certify')) {
 					$user['certify'] = zhuige_xcx_certify_is_certify($user_id);
 				}
+				
+				if (function_exists('zhuige_xcx_vip_is_vip')) {
+					$user['vip'] = zhuige_xcx_vip_is_vip($user_id);
+				}
 
 				$follow_user_id_exist = 0;
 				if ($my_user_id) {

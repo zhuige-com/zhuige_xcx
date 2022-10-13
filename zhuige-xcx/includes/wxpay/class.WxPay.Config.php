@@ -67,11 +67,17 @@ class ZhuiGe_WxPayConfig
 	}
 	
 	public static function get_mchid() {
-		return ZhuiGe_Xcx::option_value('wx_pay_mchid');
+		$basic_wxpay = ZhuiGe_Xcx::option_value('basic_wxpay');
+		$wx_pay_mchid = ($basic_wxpay && isset($basic_wxpay['mchid'])) ? $basic_wxpay['mchid'] : '';
+
+		return $wx_pay_mchid;
 	}
 	
 	public static function get_key() {
-		return ZhuiGe_Xcx::option_value('wx_pay_key');
+		$basic_wxpay = ZhuiGe_Xcx::option_value('basic_wxpay');
+		$wx_pay_key = ($basic_wxpay && isset($basic_wxpay['key'])) ? $basic_wxpay['key'] : '';
+
+		return $wx_pay_key;
 	}
 	
 	public static function get_sslcert_path() {

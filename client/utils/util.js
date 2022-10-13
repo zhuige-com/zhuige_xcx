@@ -12,7 +12,7 @@ function navigateBack() {
 		delta: 1,
 		fail(res) {
 			uni.switchTab({
-				url: '/pages/index/index'
+				url: '/pages/tabs/index/index'
 			});
 		}
 	});
@@ -89,6 +89,7 @@ function openLink(link) {
 				'/pages/user/info/info',
 				'/pages/bbs/post/post',
 				'/pages/bbs/forum-create/forum-create',
+				'/pages/contribution/manage/manage',
 			];
 			for (let i = 0; i < links.length; i++) {
 				if (link.indexOf(links[i]) > -1) {
@@ -213,6 +214,7 @@ function openLink(link) {
 				finder = link.substring('finder:'.length, index);
 				feedId = link.substring(index + ';feedId:'.length);
 			}
+
 			let params = {
 				finderUserName: finder,
 				fail: res => {
@@ -221,14 +223,23 @@ function openLink(link) {
 					});
 				}
 			};
-			
+
 			if (feedId != '') {
-				params.feedId = feedId;
-				wx.openChannelsActivity(params);
+				// params.feedId = feedId;
+				// wx.openChannelsActivity(params);
+				uni.navigateTo({
+					url: '/pages/base/channel_video/channel_video?id=' + feedId + '&name=' + finder,
+					fail(res) {
+						uni.redirectTo({
+							url: '/pages/base/channel_video/channel_video?id=' + feedId + '&name=' +
+								finder
+						});
+					}
+				});
 			} else {
 				wx.openChannelsUserProfile(params);
 			}
-			
+
 			return;
 		}
 		// #endif
@@ -275,7 +286,7 @@ function addShareSource(path) {
 	if (!user || !user.user_id) {
 		return;
 	}
-	
+
 	return path + '&source=' + user.user_id;
 }
 
@@ -283,28 +294,28 @@ function addShareSource(path) {
  * 分享加分
  */
 function addShareScore(source) {
-    if (!source) {
-        return;
-    }
-	
+	if (!source) {
+		return;
+	}
+
 	wx.setStorageSync(Constant.ZHUIGE_SOURCE_USER_ID, source);
 
-    // Rest.post(Api.URL('', ''), {
-    //     source: source,
-    // }).then(res => {
-    //     console.log(res);
-    // })
+	Rest.post(Api.URL('user', 'share_score'), {
+		source: source,
+	}).then(res => {
+		console.log(res);
+	})
 }
 
 module.exports = {
 	navigateBack,
-	
+
 	htmlEncode,
-	
+
 	openLink,
 
 	isMobile,
-	
+
 	addShareSource,
 	addShareScore,
 

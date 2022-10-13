@@ -98,7 +98,7 @@ CSF::createSection($prefix, array(
             'chosen'      => true,
             // 'multiple'    => true,
             // 'sortable'    => true,
-            // 'ajax'        => true,
+            'ajax'        => true,
             'options'     => 'pages',
             'placeholder' => '选择一个页面',
         ),

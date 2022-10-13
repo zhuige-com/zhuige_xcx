@@ -233,21 +233,21 @@
 					this.followLoaded = false;
 				}
 			},
-			
+
 			/**
 			 * 点赞事件
 			 */
 			onUserLike(data) {
 				console.log(data);
-				if (this.lastTopics && this.lastTopics.length>0) {
+				if (this.lastTopics && this.lastTopics.length > 0) {
 					this.lastTopics.forEach((topic) => {
 						if (topic.id == data.post_id) {
 							topic.like_count = data.like_count;
 						}
 					})
 				}
-				
-				if (this.followTopics && this.followTopics.length>0) {
+
+				if (this.followTopics && this.followTopics.length > 0) {
 					this.followTopics.forEach((topic) => {
 						if (topic.id == data.post_id) {
 							topic.like_count = data.like_count;
@@ -401,7 +401,16 @@
 	.zhuige-tab-block {
 		padding-bottom: 60rpx;
 	}
+
 	.zhuige-tab {
-		padding: 10rpx 0 20rpx!important;
+		padding: 10rpx 0 20rpx !important;
+	}
+
+	.zhuige-scroll-icon .text {
+		color: #666666 !important;
+	}
+
+	.zhuige-icon .view {
+		width: 18.6% !important;
 	}
 </style>

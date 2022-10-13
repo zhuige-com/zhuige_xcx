@@ -422,7 +422,7 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		// 圈子成员
 		$users = [];
-		$auser = [
+		$owner = [
 			'user_id' => $post->post_author,
 			'nickname' => get_user_meta($post->post_author, 'nickname', true),
 			'avatar' => ZhuiGe_Xcx::user_avatar($post->post_author),
@@ -430,9 +430,14 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		];
 
 		if (function_exists('zhuige_xcx_certify_is_certify')) {
-			$auser['certify'] = zhuige_xcx_certify_is_certify($post->post_author);
+			$owner['certify'] = zhuige_xcx_certify_is_certify($post->post_author);
 		}
-		$users[] = $auser;
+
+		if (function_exists('zhuige_xcx_vip_is_vip')) {
+			$owner['vip'] = zhuige_xcx_vip_is_vip($post->post_author);
+		}
+
+		$users[] = $owner;
 
 		$user_ids = $wpdb->get_results(
 			$wpdb->prepare(
@@ -451,6 +456,10 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 
 			if (function_exists('zhuige_xcx_certify_is_certify')) {
 				$item['certify'] = zhuige_xcx_certify_is_certify($user_id);
+			}
+
+			if (function_exists('zhuige_xcx_vip_is_vip')) {
+				$item['vip'] = zhuige_xcx_vip_is_vip($user_id);
 			}
 
 			$users[] = $item;

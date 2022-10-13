@@ -3,7 +3,7 @@
 		<!-- 项目分类tab(居中) -->
 		<view v-if="type=='simple'" class="zhuige-tab zhuige-center-tab">
 			<view class="zhuige-tab-nav">
-				<view class="view" v-for="(tab, index) in tabs" :key="index" :class="curTab==tab.id?'active':''"
+				<view class="zhuige-tab-box" v-for="(tab, index) in tabs" :key="index" :class="curTab==tab.id?'active':''"
 					@click="clickTab(tab)">
 					{{tab.title}}
 				</view>
@@ -12,15 +12,15 @@
 
 		<view v-else class="zhuige-tab">
 			<view class="zhuige-tab-nav">
-				<scroll-view class="scroll-view" scroll-x scroll-with-animation scroll-left="scrollLeft"
+				<scroll-view class="zhuige-tab-scroll" scroll-x scroll-with-animation scroll-left="scrollLeft"
 					show-scrollbar="false">
-					<view class="view" v-for="(tab, index) in tabs" :key="index" :class="curTab==tab.id?'active':''"
+					<view class="zhuige-tab-box" v-for="(tab, index) in tabs" :key="index" :class="curTab==tab.id?'active':''"
 						@click="clickTab(tab)">
 						{{tab.title}}
 					</view>
 				</scroll-view>
 			</view>
-			<view v-if="opt" class="zhuige-tab-opt">
+			<view v-if="opt" class="zhuige-tab-opt" @click="clickTabOpt">
 				<uni-icons type="bars" size="22"></uni-icons>
 			</view>
 		</view>
@@ -61,6 +61,10 @@
 		methods: {
 			clickTab(tab) {
 				this.$emit("clickTab", tab);
+			},
+
+			clickTabOpt() {
+				this.$emit("clickTabOpt", {});
 			}
 		}
 	}
@@ -79,11 +83,11 @@
 		white-space: nowrap;
 	}
 
-	.zhuige-tab-nav .scroll-view *::-webkit-scrollbar {
+	.zhuige-tab-scroll *::-webkit-scrollbar {
 		display: none;
 	}
 
-	.zhuige-tab-nav .view {
+	.zhuige-tab-box {
 		height: 100rpx;
 		line-height: 100rpx;
 		display: inline-flex;
@@ -94,17 +98,17 @@
 		position: relative;
 	}
 
-	.zhuige-tab-nav .view:last-of-type {
+	.zhuige-tab-box:last-of-type {
 		margin-right: 70rpx;
 	}
 
-	.zhuige-tab-nav .view.active {
+	.active {
 		font-weight: 600;
 		font-size: 32rpx;
 		transition: all 0.1s ease-in;
 	}
 
-	.zhuige-tab-nav .view.active::after {
+	.active::after {
 		position: absolute;
 		content: "";
 		width: 30rpx;
@@ -118,7 +122,7 @@
 		position: absolute;
 		z-index: 5;
 		top: 0;
-		right: 0;
+		right: 10rpx;
 		height: 100rpx;
 		padding-left: 60rpx;
 		width: 60rpx;
@@ -136,7 +140,7 @@
 		justify-content: center;
 	}
 
-	.zhuige-center-tab .zhuige-tab-nav .view:last-of-type {
+	.zhuige-center-tab .zhuige-tab-nav .zhuige-tab-box:last-of-type {
 		margin: 0;
 	}
 </style>

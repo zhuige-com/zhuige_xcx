@@ -50,6 +50,9 @@ if (!function_exists('zhuige_bbs_topic_format')) {
 		if (function_exists('zhuige_xcx_certify_is_certify')) {
 			$author['certify'] = zhuige_xcx_certify_is_certify($user_id);
 		}
+		if (function_exists('zhuige_xcx_vip_is_vip')) {
+			$author['vip'] = zhuige_xcx_vip_is_vip($user_id);
+		}
 		$item['author'] = $author;
 
 		// 所属圈子

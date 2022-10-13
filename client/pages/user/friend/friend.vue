@@ -1,7 +1,7 @@
 <template>
 	<view class="content">
 		<view class="zhuige-friends">
-			<view class="zhuige-block">
+			<view class="zhuige-friends-box">
 				<zhuige-tab :tabs="tabs" :cur-tab="cur_tab" @clickTab="clickTab"></zhuige-tab>
 			</view>
 
@@ -18,10 +18,12 @@
 							<view class="zhuige-social-poster-info">
 								<view>
 									<text>{{user.nickname}}</text>
-									<!-- 图1 vip-->
-									<image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image>
 									<!-- 图2 认证-->
-									<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
+									<image v-if="user.certify && user.certify.status==1" mode="aspectFill"
+										:src="user.certify.icon"></image>
+									<!-- 图1 vip-->
+									<image class="zhuige-social-vip" v-if="user.vip && user.vip.status==1"
+										mode="aspectFit" :src="user.vip.icon"></image>
 								</view>
 								<view>
 									<text>作品 {{user.post_count}}</text>
@@ -57,9 +59,10 @@
 								<view>
 									<text>{{user.nickname}}</text>
 									<!-- 图1 vip-->
-									<image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image>
+									<!-- <image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image> -->
 									<!-- 图2 认证-->
-									<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
+									<image v-if="user.certify && user.certify.status==1" mode="aspectFill"
+										:src="user.certify.icon"></image>
 								</view>
 								<view>
 									<text>作品 {{user.post_count}}</text>
@@ -115,7 +118,7 @@
 				loadMoreFan: 'more',
 				fans: [],
 				loadedFan: false,
-				
+
 				noDataTip: '哇哦，什么也没有',
 			}
 		},
@@ -197,10 +200,16 @@
 
 		methods: {
 			//----- event start -----
+			/**
+			 * 关注用户事件
+			 */
 			onFlollowUser(data) {
 				this.refresh();
 			},
 
+			/**
+			 * 重新加载事件
+			 */
 			onSetReload(data) {
 				this.loginReload = true;
 			},
@@ -368,6 +377,7 @@
 	.zhuige-social-opt {
 		display: flex;
 		flex-direction: row-reverse;
+		width: 22% !important;
 	}
 
 	.zhuige-friends-block .zhuige-social-opt view {
@@ -385,5 +395,11 @@
 	.zhuige-friends-block .zhuige-social-opt view.active {
 		background: #010101;
 		color: #FFFFFF;
+	}
+
+	.zhuige-friends-box {
+		background: #FFFFFF;
+		border-radius: 12rpx;
+		margin-bottom: 20rpx;
 	}
 </style>

@@ -7,7 +7,11 @@
 	-->
 
 	<!-- 带间距播图 发现、资讯轮播, 后增加 zhuige-space-swiper
-	需要调整轮播点位置，swiper增加 zhuige-dots-left 即可-->
+	需要调整轮播点位置，swiper增加 zhuige-dots-left 即可
+	
+	previous-margin 和 next-margin 为轮播图间距默认0，修改为30rpx
+	
+	-->
 
 	<!-- 市集圆角轮播图 ,
 	基础 zhuige-swiper 后增加 zhuige-cover-swiper 
@@ -19,17 +23,17 @@
 	<!-- 我的轮播图 基础 zhuige-swiper 后增加 zhuige-mini-swiper 即可 -->
 
 	<view class="zhuige-swiper" :class="type">
-		<swiper indicator-dots="true" autoplay="autoplay" circular="ture" class="zhuige-dots-left"
-			previous-margin="0rpx" next-margin="0rpx" indicator-color="rgba(255,255,255, 0.3)"
+		<swiper indicator-dots="true" autoplay="autoplay" circular="ture" class="zhuige-swiper-group zhuige-dots-left"
+			:previous-margin="previousMargin" :next-margin="nextMargin" indicator-color="rgba(255,255,255, 0.3)"
 			indicator-active-color="rgba(255,255,255, 0.8)" interval="5000" duration="150" easing-function="linear">
 			<!-- 
 				indicator-color 和 indicator-active-color 为轮播点颜色，如果需要调整，只能在页面修改参数，或者通过后台传参
 				previous-margin 和 next-margin 为轮播图间距默认0，如果需要调整，只能在页面修改参数，或者通过后台传参
 			-->
-			<swiper-item v-for="(item, index) in items" :key="index">
-				<view @click="openLink(item.link)">
-					<view v-if="item.title">{{item.title}}</view>
-					<image mode="aspectFill" :src="item.image"></image>
+			<swiper-item class="zhuige-swiper-item" v-for="(item, index) in items" :key="index">
+				<view class="zhuige-swiper-block" @click="openLink(item.link)">
+					<view class="zhuige-swiper-title" v-if="item.title">{{item.title}}</view>
+					<image class="zhuige-swiper-cover" mode="aspectFill" :src="item.image"></image>
 				</view>
 			</swiper-item>
 		</swiper>
@@ -50,7 +54,15 @@
 			items: {
 				type: Array,
 				default: []
-			}
+			},
+			previousMargin: {
+				type: String,
+				default: '0rpx'
+			},
+			nextMargin: {
+				type: String,
+				default: '0rpx'
+			},
 		},
 
 		data() {
@@ -71,15 +83,15 @@
 	/* =========== 轮播图 =========== */
 
 	/* --- 自定义轮播图指示点 可以修改形状，尺寸 --- */
-	swiper .wx-swiper-dot,
-	uni-swiper .uni-swiper-dot {
+	.zhuige-swiper-group .wx-swiper-dot,
+	.uni-swiper-dot {
 		height: 4px;
 		width: 4px;
 		border-radius: 4px;
 	}
 
-	swiper .wx-swiper-dot.wx-swiper-dot-active,
-	uni-swiper .uni-swiper-dot-active {
+	.zhuige-swiper-group .wx-swiper-dot.wx-swiper-dot-active,
+	.uni-swiper-dot-active {
 		width: 12px;
 		border-radius: 4px;
 	}
@@ -100,19 +112,19 @@
 		width: 100%;
 	}
 
-	.zhuige-swiper swiper,
-	.zhuige-swiper swiper-item,
-	.zhuige-swiper view,
-	.zhuige-swiper image {
+	.zhuige-swiper .zhuige-swiper-group,
+	.zhuige-swiper .zhuige-swiper-item,
+	.zhuige-swiper-block,
+	.zhuige-swiper-cover {
 		height: 100%;
 		width: 100%;
 	}
 
-	.zhuige-swiper view {
+	.zhuige-swiper .zhuige-swiper-block {
 		position: relative;
 	}
 
-	.zhuige-swiper view view {
+	.zhuige-swiper .zhuige-swiper-block .zhuige-swiper-title {
 		position: absolute;
 		height: 1em;
 		line-height: 1em;
@@ -123,7 +135,7 @@
 		color: #FFFFFF;
 	}
 
-	.zhuige-swiper image {
+	.zhuige-swiper-cover {
 		border-radius: 12rpx;
 	}
 
@@ -133,9 +145,9 @@
 		width: 100%;
 	}
 
-	.zhuige-space-swiper swiper-item image {
-		width: 98%;
-		margin: 0 1%;
+	.zhuige-space-swiper .zhuige-swiper-item .zhuige-swiper-cover {
+		width: 99%;
+		margin: 0 0.5%;
 		transition: all 0.1s linear;
 	}
 
@@ -151,11 +163,11 @@
 		width: 100%;
 	}
 
-	.zhuige-height-swiper image {
+	.zhuige-height-swiper .zhuige-swiper-cover {
 		border-radius: 0rpx;
 	}
 
-	.zhuige-height-swiper view view {
+	.zhuige-height-swiper .zhuige-swiper-block .zhuige-swiper-title {
 		display: none;
 	}
 
@@ -165,12 +177,12 @@
 		width: 100%;
 	}
 
-	.zhuige-cover-swiper swiper {
+	.zhuige-cover-swiper .zhuige-swiper-group {
 		border-radius: 0 0 120rpx 120rpx;
 		overflow: hidden;
 	}
 
-	.zhuige-cover-swiper image {
+	.zhuige-cover-swiper .zhuige-swiper-cover {
 		border-radius: 0rpx;
 	}
 
@@ -178,7 +190,7 @@
 		bottom: 130rpx;
 	}
 
-	.zhuige-cover-swiper view view {
+	.zhuige-cover-swiper .zhuige-swiper-block .zhuige-swiper-title {
 		bottom: 160rpx;
 		font-size: 32rpx;
 	}
@@ -190,7 +202,7 @@
 		width: 100%;
 	}
 
-	.zhuige-mini-swiper view view {
+	.zhuige-mini-swiper .zhuige-swiper-block .zhuige-swiper-title {
 		display: none;
 	}
 </style>

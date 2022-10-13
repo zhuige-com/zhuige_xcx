@@ -10,15 +10,18 @@
 				<view class="zhuige-social-poster-info">
 					<view>
 						<text>{{topic.author.nickname}}</text>
-						<image v-if="topic.author.vip" mode="aspectFill" src="/static/vv-1.png">
+						<image v-if="topic.author.certify && topic.author.certify.status==1" mode="aspectFill"
+							:src="topic.author.certify.icon">
 						</image>
-						<image v-if="topic.author.certify && topic.author.certify.status==1" mode="aspectFill" :src="topic.author.certify.icon">
+						<image v-if="topic.author.vip && topic.author.vip.status==1" class="zhuige-social-vip"
+							mode="aspectFill" :src="topic.author.vip.icon">
 						</image>
 					</view>
 					<view>
 						<text>{{topic.time}}</text>
 						<text v-if="topic.author.certify && topic.author.certify.status==1">/</text>
-						<text v-if="topic.author.certify && topic.author.certify.status==1">{{topic.author.certify.name}}</text>
+						<text
+							v-if="topic.author.certify && topic.author.certify.status==1">{{topic.author.certify.name}}</text>
 					</view>
 				</view>
 			</view>
@@ -46,17 +49,21 @@
 		<template v-if="topic">
 			<view v-if="topic.type=='image'" class="zhuige-social-img">
 				<view v-if="topic.images.length==1" class="zhugie-img one-img">
-					<view v-for="(image, imageIndex) in topic.images" :key="imageIndex">
-						<image mode="aspectFill" :src="image.image.url" @click="clickImages(imageIndex)" :style="{
-								width: parseInt(image.image.width)>parseInt(image.image.height)?'674rpx':parseInt(image.image.width)/parseInt(image.image.height)*674 + 'rpx', 
-								height: parseInt(image.image.width)<parseInt(image.image.height)?'674rpx':parseInt(image.image.height)/parseInt(image.image.width)*674 + 'rpx'
+					<view class="img-box" v-for="(image, imageIndex) in topic.images" :key="imageIndex">
+						<image class="one-img-cover" mode="aspectFill" :src="image.image.url" @click="clickImages(imageIndex)" :style="{
+								width: parseInt(image.image.width)>parseInt(image.image.height)?'480rpx':parseInt(image.image.width)/parseInt(image.image.height)*480 + 'rpx', 
+								height: parseInt(image.image.width)<parseInt(image.image.height)?'480rpx':parseInt(image.image.height)/parseInt(image.image.width)*480 + 'rpx'
 							}">
 						</image>
 					</view>
 				</view>
 				<view v-else class="zhugie-img" :class="imageClass[topic.images.length]">
-					<view v-for="(image, imageIndex) in topic.images" :key="imageIndex">
-						<image mode="aspectFill" :src="image.image.url" @click="clickImages(imageIndex)"></image>
+					<view :class="'img-box ' + 'img-box-' + (imageIndex + 1)" v-for="(image, imageIndex) in topic.images" :key="imageIndex">
+						<!-- 
+							class="img-cover-length" length为变量，对应多图时各数量的图片序号
+							如：3图的时候对应输出img-cover-1，img-cover-2，img-cover-3
+						  -->
+						<image class="img-cover" mode="aspectFill" :src="image.image.url" @click="clickImages(imageIndex)"></image>
 					</view>
 				</view>
 			</view>
@@ -164,12 +171,7 @@
 		/* width: 620rpx; */
 	}
 
-	.zhugie-img view {
-		/* background: #EEEEEE; */
-		/* 调试用，上线去掉 */
-	}
-
-	.zhugie-img view image {
+	.zhugie-img .img-box .img-cover {
 		width: 100%;
 		height: 100%;
 	}
@@ -182,10 +184,9 @@
 	.one-img view {
 		height: 674rpx;
 		width: 674rpx;
-	}
-
- */
-	.one-img image {
+	}*/
+	
+	.one-img .one-img-cover {
 		border-radius: 12rpx;
 	}
 
@@ -194,16 +195,17 @@
 		align-items: center;
 	}
 
-	.two-img view {
+	.two-img .img-box-1, 
+	.two-img .img-box-2 {
 		height: 332rpx;
 		width: 332rpx;
 	}
 
-	.two-img view:nth-child(1) image {
+	.two-img .img-box-1 .img-cover {
 		border-radius: 12rpx 0 0 12rpx;
 	}
 
-	.two-img view:nth-child(2) image {
+	.two-img .img-box-2 .img-cover {
 		border-radius: 0 12rpx 12rpx 0;
 	}
 
@@ -212,26 +214,28 @@
 		flex-wrap: wrap;
 	}
 
-	.three-img view {
+	.three-img .img-box-1,
+	.three-img .img-box-2, 
+	.three-img .img-box-3 {
 		height: 332rpx;
 		width: 332rpx;
 	}
 
-	.three-img view:nth-child(1) {
+	.three-img .img-box-1 {
 		height: 446rpx;
 		width: 674rpx;
 		margin-bottom: 10rpx;
 	}
 
-	.three-img view:nth-child(1) image {
+	.three-img .img-box-1 .img-cover {
 		border-radius: 12rpx 12rpx 0 0;
 	}
 
-	.three-img view:nth-child(2) image {
+	.three-img .img-box-2 .img-cover {
 		border-radius: 0 0 0 12rpx;
 	}
 
-	.three-img view:nth-child(3) image {
+	.three-img .img-box-3 .img-cover {
 		border-radius: 0 0 12rpx 0;
 	}
 
@@ -240,26 +244,29 @@
 		flex-wrap: wrap;
 	}
 
-	.four-img view {
+	.four-img .img-box-1, 
+	.four-img .img-box-2, 
+	.four-img .img-box-3, 
+	.four-img .img-box-4 {
 		height: 218rpx;
 		width: 218rpx;
 	}
 
-	.four-img view:nth-child(1) {
+	.four-img .img-box-1 {
 		height: 446rpx;
 		width: 674rpx;
 		margin-bottom: 10rpx;
 	}
 
-	.four-img view:nth-child(1) image {
+	.four-img .img-box-1 .img-cover {
 		border-radius: 12rpx 12rpx 0 0;
 	}
 
-	.four-img view:nth-child(2) image {
+	.four-img .img-box-2 .img-cover {
 		border-radius: 0 0 0 12rpx;
 	}
 
-	.four-img view:nth-child(4) image {
+	.four-img .img-box-3 .img-cover {
 		border-radius: 0 0 12rpx 0;
 	}
 
@@ -268,24 +275,28 @@
 		flex-wrap: wrap;
 	}
 
-	.five-img view {
+	.five-img .img-box-1, 
+	.five-img .img-box-2, 
+	.five-img .img-box-3, 
+	.five-img .img-box-4, 
+	.five-img .img-box-5 {
 		height: 332rpx;
 		width: 332rpx;
 	}
 
-	.five-img view:nth-child(1) {
+	.five-img .img-box-1 {
 		height: 446rpx;
 		width: 446rpx;
 		margin-bottom: 10rpx;
 	}
 
-	.five-img view:nth-child(2) {
+	.five-img .img-box-2 {
 		height: 218rpx;
 		width: 218rpx;
 		margin-top: -238rpx;
 	}
 
-	.five-img view:nth-child(3) {
+	.five-img .img-box-3 {
 		height: 218rpx;
 		width: 218rpx;
 		position: absolute;
@@ -293,19 +304,19 @@
 		top: 228rpx;
 	}
 
-	.five-img view:nth-child(1) image {
+	.five-img .img-box-1 .img-cover {
 		border-radius: 12rpx 0 0 0;
 	}
 
-	.five-img view:nth-child(2) image {
+	.five-img .img-box-2 .img-cover {
 		border-radius: 0 12rpx 0 0;
 	}
 
-	.five-img view:nth-child(4) image {
+	.five-img .img-box-4 .img-cover {
 		border-radius: 0 0 0 12rpx;
 	}
 
-	.five-img view:nth-child(5) image {
+	.five-img .img-box-5 .img-cover {
 		border-radius: 0 0 12rpx 0;
 	}
 
@@ -314,40 +325,45 @@
 		flex-wrap: wrap;
 	}
 
-	.six-img view {
+	.six-img .img-box-1, 
+	.six-img .img-box-2, 
+	.six-img .img-box-3, 
+	.six-img .img-box-4, 
+	.six-img .img-box-5,
+	.six-img .img-box-6 {
 		height: 218rpx;
 		width: 218rpx;
 	}
 
-	.six-img view:nth-child(1) {
+	.six-img .img-box-1 {
 		height: 446rpx;
 		width: 446rpx;
 		margin-bottom: 10rpx;
 	}
 
-	.six-img view:nth-child(2) {
+	.six-img .img-box-2 {
 		margin-top: -238rpx;
 	}
 
-	.six-img view:nth-child(3) {
+	.six-img .img-box-3 {
 		position: absolute;
 		right: 0;
 		top: 228rpx;
 	}
 
-	.six-img view:nth-child(1) image {
+	.six-img .img-box-1 .img-cover {
 		border-radius: 12rpx 0 0 0;
 	}
 
-	.six-img view:nth-child(2) image {
+	.six-img .img-box-2 .img-cover {
 		border-radius: 0 12rpx 0 0;
 	}
 
-	.six-img view:nth-child(4) image {
+	.six-img .img-box-4 .img-cover {
 		border-radius: 0 0 0 12rpx;
 	}
 
-	.six-img view:nth-child(6) image {
+	.six-img .img-box-6 .img-cover {
 		border-radius: 0 0 12rpx 0;
 	}
 
@@ -356,32 +372,38 @@
 		flex-wrap: wrap;
 	}
 
-	.seven-img view {
+	.seven-img .img-box-1,
+	.seven-img .img-box-2,
+	.seven-img .img-box-3,
+	.seven-img .img-box-4,
+	.seven-img .img-box-5,
+	.seven-img .img-box-6,
+	.seven-img .img-box-7 {
 		height: 218rpx;
 		width: 218rpx;
 		margin-bottom: 10rpx;
 	}
 
-	.seven-img view:nth-child(1) {
+	.seven-img .img-box-1 {
 		height: 446rpx;
 		width: 674rpx;
 	}
 
-	.seven-img view:nth-child(5),
-	.seven-img view:nth-child(6),
-	.seven-img view:nth-child(7) {
+	.seven-img .img-box-5,
+	.seven-img .img-box-6,
+	.seven-img .img-box-7 {
 		margin: 0;
 	}
 
-	.seven-img view:nth-child(1) image {
+	.seven-img .img-box-1 .img-cover {
 		border-radius: 12rpx 12rpx 0 0;
 	}
 
-	.seven-img view:nth-child(5) image {
+	.seven-img .img-box-5 .img-cover {
 		border-radius: 0 0 0 12rpx;
 	}
 
-	.seven-img view:nth-child(7) image {
+	.seven-img .img-box-7 .img-cover {
 		border-radius: 0 0 12rpx 0;
 	}
 
@@ -390,37 +412,44 @@
 		flex-wrap: wrap;
 	}
 
-	.eight-img view {
+	.eight-img .img-box-1,
+	.eight-img .img-box-2,
+	.eight-img .img-box-3,
+	.eight-img .img-box-4,
+	.eight-img .img-box-5,
+	.eight-img .img-box-6,
+	.eight-img .img-box-7,
+	.eight-img .img-box-8 {
 		height: 218rpx;
 		width: 218rpx;
 		margin-bottom: 10rpx;
 	}
 
-	.eight-img view:nth-child(6),
-	.eight-img view:nth-child(7),
-	.eight-img view:nth-child(8) {
+	.eight-img .img-box-6,
+	.eight-img .img-box-7,
+	.eight-img .img-box-8 {
 		margin: 0;
 	}
 
-	.eight-img view:nth-child(1),
-	.eight-img view:nth-child(2) {
+	.eight-img .img-box-1,
+	.eight-img .img-box-2 {
 		height: 332rpx;
 		width: 332rpx;
 	}
 
-	.eight-img view:nth-child(1) image {
+	.eight-img .img-box-1 .img-cover {
 		border-radius: 12rpx 0 0 0;
 	}
 
-	.eight-img view:nth-child(2) image {
+	.eight-img .img-box-2 .img-cover {
 		border-radius: 0 12rpx 0 0;
 	}
 
-	.eight-img view:nth-child(6) image {
+	.eight-img .img-box-6 .img-cover {
 		border-radius: 0 0 0 12rpx;
 	}
 
-	.eight-img view:nth-child(8) image {
+	.eight-img .img-box-8 .img-cover {
 		border-radius: 0 0 12rpx 0;
 	}
 
@@ -429,31 +458,39 @@
 		flex-wrap: wrap;
 	}
 
-	.nine-img view {
+	.nine-img .img-box-1,
+	.nine-img .img-box-2,
+	.nine-img .img-box-3,
+	.nine-img .img-box-4,
+	.nine-img .img-box-5,
+	.nine-img .img-box-6,
+	.nine-img .img-box-7,
+	.nine-img .img-box-8,
+	.nine-img .img-box-9 {
 		height: 218rpx;
 		width: 218rpx;
 		margin-bottom: 10rpx;
 	}
 
-	.nine-img view:nth-child(7),
-	.nine-img view:nth-child(8),
-	.nine-img view:nth-child(9) {
+	.nine-img .img-box-7,
+	.nine-img .img-box-8,
+	.nine-img .img-box-9 {
 		margin: 0;
 	}
 
-	.nine-img view:nth-child(1) image {
+	.nine-img .img-box-1 .img-cover {
 		border-radius: 12rpx 0 0 0;
 	}
 
-	.nine-img view:nth-child(3) image {
+	.nine-img .img-box-3 .img-cover {
 		border-radius: 0 12rpx 0 0;
 	}
 
-	.nine-img view:nth-child(7) image {
+	.nine-img .img-box-7 .img-cover {
 		border-radius: 0 0 0 12rpx;
 	}
 
-	.nine-img view:nth-child(9) image {
+	.nine-img .img-box-9 .img-cover {
 		border-radius: 0 0 12rpx 0;
 	}
 </style>

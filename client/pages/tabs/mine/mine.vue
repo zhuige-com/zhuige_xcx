@@ -18,7 +18,10 @@
 							<image mode="aspectFill" :src="avatar"></image>
 						</view>
 						<view class="zhuige-mine-login-user-info">
-							<view>{{nickname}}</view>
+							<view>
+								<text>{{nickname}}</text>
+								<image v-if="vip && vip.status==1" mode="aspectFill" :src="vip.icon"></image>
+							</view>
 							<view v-if="certify">
 								<template v-if="certify.status == 1">
 									<image mode="aspectFill" :src="certify.icon"></image>
@@ -29,6 +32,7 @@
 									<text>未认证</text>
 								</template>
 							</view>
+							<!-- <view v-if="vip && vip.status==1"><image mode="aspectFill" :src="vip.icon"></image></view> -->
 						</view>
 					</view>
 					<view @click="openLink('/pages/user/home/home')" class="my-site-link">我的主页</view>
@@ -101,6 +105,7 @@
 				avatar: '/static/avatar.jpg',
 				nickname: '立即登录',
 				certify: undefined,
+				vip: undefined,
 
 				post_count: 0,
 				fans_count: 0,
@@ -144,16 +149,20 @@
 
 					if (res.data.nickname) {
 						this.nickname = res.data.nickname;
-					} else {//用户token未验证通过，则清空
+					} else { //用户token未验证通过，则清空
 						uni.clearStorageSync();
 					}
-					
+
 					if (res.data.avatar) {
 						this.avatar = res.data.avatar;
 					}
-					
+
 					if (res.data.certify) {
 						this.certify = res.data.certify;
+					}
+
+					if (res.data.vip) {
+						this.vip = res.data.vip;
 					}
 				}, err => {
 					console.log(err)
@@ -291,6 +300,14 @@
 		font-size: 36rpx;
 		font-weight: 600;
 		line-height: 1.6em;
+		display: flex;
+		align-items: center;
+	}
+
+	.zhuige-mine-login-user-info view:nth-child(1) image {
+		height: 12px;
+		width: 26px;
+		margin-left: 8rpx;
 	}
 
 	.zhuige-mine-login-user-info view:nth-child(2) {
@@ -307,6 +324,7 @@
 		height: 12px;
 		width: 12px;
 	}
+
 	.zhuige-mine-login-user-info view:nth-child(2) image.no-certify {
 		filter: grayscale(100%);
 		opacity: .7;
@@ -427,5 +445,13 @@
 		margin-bottom: -8rpx;
 		border-bottom: 10rpx solid #FFFFFF;
 		z-index: 2;
+	}
+
+	.zhuige-mini-swiper {
+		height: 160rpx !important;
+	}
+
+	.zhuige-dots-left .wx-swiper-dots.wx-swiper-dots-horizontal {
+		bottom: 20rpx !important;
 	}
 </style>

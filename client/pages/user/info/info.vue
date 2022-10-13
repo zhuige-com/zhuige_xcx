@@ -26,9 +26,9 @@
 						</view>
 					</template>
 
-					<view v-if="vip">
-						<image mode="aspectFill" src="/static/lvv.png"></image>
-						<text>有效期至：2022-09-08</text>
+					<view v-if="vip && vip.status==1">
+						<image mode="aspectFill" :src="vip.icon"></image>
+						<text>有效期至：{{vip.expire}}</text>
 					</view>
 				</view>
 				<view class="zhuige-info-line">
@@ -137,6 +137,9 @@
 
 		methods: {
 			// ------ event --------
+			/**
+			 * 设置手机号事件
+			 */
 			onSetMobile(data) {
 				this.mobile = data.mobile;
 			},
@@ -163,12 +166,12 @@
 				}
 				Rest.post(Api.URL('user', 'set_info'), params).then(res => {
 					if (res.code == 0) {
-						Alert.success(res.msg);
+						Alert.success(res.message);
 						setTimeout(() => {
 							Util.navigateBack();
 						}, 1500)
 					} else {
-						Alert.error(res.msg);
+						Alert.error(res.message);
 					}
 				}, err => {
 					console.log(err)
@@ -368,7 +371,7 @@
 	}
 
 	.zhuige-info-line>view:nth-child(1) {
-		font-size: 32rpx;
+		font-size: 30rpx;
 		font-weight: 600;
 		margin-bottom: 20rpx;
 	}

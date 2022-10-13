@@ -25,7 +25,7 @@
 		onShareAppMessage() {
 			return {
 				title: getApp().globalData.appName,
-				path: 'pages/base/webview/webview?src=' + encodeURIComponent(this.src)
+				path: Util.addShareSource('pages/base/webview/webview?src=' + encodeURIComponent(this.src))
 			};
 		},
 

@@ -16,12 +16,12 @@
 				</view>
 			</view>
 			<view class="zhuige-creat-highline">
-				<view>圈子公告/简介</view>
+				<view>圈子公告</view>
 				<view>
 					<textarea maxlength="72" v-model="brief" placeholder="简单介绍一下圈子吧…"></textarea>
 				</view>
 			</view>
-			<picker @change="changeCategory" :value="index" :range="catnames">
+			<picker v-if="catnames && catnames.length>0" @change="changeCategory" :value="index" :range="catnames">
 				<view class="zhuige-creat-highline">
 					<view>圈子分类</view>
 					<view class="zhuige-creat-line">
@@ -103,6 +103,9 @@
 		},
 
 		methods: {
+			/**
+			 * 点击上传LOGO
+			 */
 			clickLogo() {
 				uni.chooseImage({
 					count: 1,
@@ -118,7 +121,9 @@
 				});
 			},
 
-			// 选择地址
+			/**
+			 * 点击 选择地址
+			 */
 			clickAddress() {
 				let param = {
 					success: (res) => {
@@ -169,7 +174,7 @@
 					address: this.address,
 				}).then(res => {
 					if (res.code != 0) {
-						Alert.error(res.msg);
+						Alert.error(res.message);
 						return;
 					}
 
@@ -243,8 +248,9 @@
 		border-top: 1rpx solid #dddddd;
 		font-size: 28rpx;
 	}
-	.zhuige-creat-highline > view:nth-child(1) {
-		font-size: 32rpx;
+
+	.zhuige-creat-highline>view:nth-child(1) {
+		font-size: 30rpx;
 		font-weight: 600;
 	}
 
@@ -255,6 +261,7 @@
 	.zhuige-creat-highline view textarea {
 		height: 90rpx;
 		line-height: 45rpx;
+		padding: 10rpx 0;
 	}
 
 	.zhuige-creat-line {

@@ -3,7 +3,8 @@
 	<!-- 自定义滚动广告 发现,话题聚合 class 增加 zhuige-scroll-nobox -->
 	<!-- 自定义滚动广告 商城 class 增加 zhuige-scroll-mall -->
 	<!-- 自定义滚动广告 集市 class 增加 zhuige-scroll-market -->
-	<view class="zhuige-scroll-ad-box">
+	<view class="zhuige-scroll-ad-box" :class="boxClass"
+		:style="background ? 'background: url(' + background + ') no-repeat center; background-size: cover;' : ''">
 		<view class="zhuige-block-head">
 			<view>{{title}}</view>
 			<view>滑动查看</view>
@@ -13,19 +14,19 @@
 		<!-- 自定义滚动广告 小商品 圈子列表,帖子详情,个人主页
 			 基础不变，在 zhuige-scroll-ad 后增加 zhuige-scroll-goods -->
 		<view class="zhuige-scroll-ad" :class="extAdClass">
-			<scroll-view class="scroll-view" scroll-x="true">
+			<scroll-view class="zhuige-scroll-group" scroll-x="true">
 				<view v-for="(item, index) in items" :key="index" @click="openLink(item.link)"
 					class="zhuige-scroll-ad-block">
-					<view class="view">
-						<image class="image" mode="aspectFill" :src="item.image"></image>
-						<text v-if="item.badge" class="text">{{item.badge}}</text>
+					<view class="zhuige-scroll-ad-cover">
+						<image class="cover-image" mode="aspectFill" :src="item.image"></image>
+						<text v-if="item.badge" class="cover-text">{{item.badge}}</text>
 					</view>
-					<view>
-						<view v-if="item.title" class="view">{{item.title}}</view>
-						<view v-if="item.subtitle" class="view">{{item.subtitle}}</view>
-						<view v-if="item.price" class="view">
-							<text class="text">￥</text>
-							<text class="text">{{item.price}}</text>
+					<view class="zhuige-scroll-ad-info">
+						<view v-if="item.title" class="title-info">{{item.title}}</view>
+						<view v-if="item.subtitle" class="subtitle-info">{{item.subtitle}}</view>
+						<view v-if="item.price" class="price-info">
+							<text class="price-unit">￥</text>
+							<text class="item-price">{{item.price}}</text>
 						</view>
 					</view>
 				</view>
@@ -41,6 +42,10 @@
 		name: "zhuige-scroll-ad",
 
 		props: {
+			boxClass: {
+				type: String,
+				default: ""
+			},
 			extAdClass: {
 				type: String,
 				default: ""
@@ -53,6 +58,10 @@
 				type: Array,
 				default: []
 			},
+			background: {
+				type: String,
+				default: ''
+			}
 		},
 
 		data() {
@@ -97,33 +106,33 @@
 		margin-left: 20rpx;
 	}
 
-	.zhuige-scroll-ad-block>.view:nth-child(1) {
+	.zhuige-scroll-ad-cover {
 		position: relative;
 		height: 240rpx;
 		width: 100%;
 	}
 
-	.zhuige-scroll-ad-block>.view:nth-child(1) .image {
+	.cover-image {
 		height: 100%;
 		width: 100%;
 		border-radius: 8rpx;
 	}
 
-	.zhuige-scroll-ad-block>.view:nth-child(1) .text {
+	.cover-text {
 		position: absolute;
 		top: 0;
 		left: 30rpx;
-		height: 60rp;
-		line-height: 60rpx;
+		height: 48rp;
+		line-height: 48rpx;
 		padding: 0 24rpx;
 		border-radius: 0 0 8rpx 8rpx;
 		background: #010101;
 		color: #FFFFFF;
 		font-size: 22rpx;
-		font-weight: 300;
+		font-weight: 400;
 	}
 
-	.zhuige-scroll-ad-block>view:nth-child(2) {
+	.zhuige-scroll-ad-info {
 		position: absolute;
 		z-index: 3;
 		bottom: 0;
@@ -134,7 +143,7 @@
 		border-radius: 0 0 12rpx 12rpx;
 	}
 
-	.zhuige-scroll-ad-block>view:nth-child(2) .view {
+	.title-info, .subtitle-info, .price-info  {
 		color: #FFFFFF;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -142,14 +151,14 @@
 		padding: 0 30rpx;
 	}
 
-	.zhuige-scroll-ad-block>view:nth-child(2) .view:nth-child(1) {
-		font-size: 28rpx;
-		font-weight: 600;
+	.title-info {
+		font-size: 26rpx;
+		font-weight: 500;
 		height: 1.4em;
 		line-height: 1.4em;
 	}
 
-	.zhuige-scroll-ad-block>view:nth-child(2) .view:nth-child(2) {
+	.subtitle-info {
 		font-size: 24rpx;
 		font-weight: 300;
 		height: 1.4em;
@@ -164,26 +173,26 @@
 		width: 36%;
 	}
 
-	.zhuige-scroll-goods-mini .zhuige-scroll-ad-block>.view:nth-child(1) {
+	.zhuige-scroll-goods-mini .zhuige-scroll-ad-cover {
 		height: 240rpx;
 	}
 
-	.zhuige-scroll-goods-mini .zhuige-scroll-ad-block>.view:nth-child(2) {
+	.zhuige-scroll-goods-mini .zhuige-scroll-ad-info {
 		position: relative;
 		background: none;
 		padding-top: 20rpx;
 	}
 
-	.zhuige-scroll-goods-mini .zhuige-scroll-ad-block>.view:nth-child(2) .view {
+	.zhuige-scroll-goods-mini .title-info, .zhuige-scroll-goods-mini .subtitle-info {
 		color: #010101;
 		padding: 0;
 	}
 
-	.zhuige-scroll-goods-mini .zhuige-scroll-ad-block>.view:nth-child(2) .view:nth-child(2) {
+	.zhuige-scroll-goods-mini .price-info {
 		color: #ff4400;
 	}
 
-	.zhuige-scroll-goods-mini .zhuige-scroll-ad-block>.view:nth-child(2) .view .text:nth-child(2) {
+	.zhuige-scroll-goods-mini .price-info .item-price {
 		font-size: 36rpx;
 		font-weight: 600;
 	}
@@ -197,8 +206,8 @@
 		width: 31%;
 	}
 
-	.zhuige-scroll-coterie scroll-view,
-	.zhuige-scroll-coterie .zhuige-scroll-ad-block>view:nth-child(1) {
+	.zhuige-scroll-coterie .zhuige-scroll-group,
+	.zhuige-scroll-coterie .zhuige-scroll-ad-cover {
 		height: 220rpx;
 	}
 </style>

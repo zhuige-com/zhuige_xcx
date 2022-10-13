@@ -129,14 +129,14 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			]);
 		}
 
-		update_user_meta($user_id, 'jq_channel', $channel);
+		update_user_meta($user_id, 'zhuige_channel', $channel);
 
 		if ('weixin' == $channel) {
-			update_user_meta($user_id, 'jq_wx_session_key', $session['session_key']);
+			update_user_meta($user_id, 'zhuige_wx_session_key', $session['session_key']);
 		}
 
 		if (isset($session['unionid']) && !empty($session['unionid'])) {
-			update_user_meta($user_id, 'jq_unionid', $session['unionid']);
+			update_user_meta($user_id, 'zhuige_unionid', $session['unionid']);
 		}
 
 		//如果每次都同步微信头像 会导致小程序设置的头像失效；所以没有头像时，才同步头像
@@ -308,6 +308,10 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			$data['certify'] = zhuige_xcx_certify_is_certify($user_id);
 		}
 
+		if (function_exists('zhuige_xcx_vip_is_vip')) {
+			$data['vip'] = zhuige_xcx_vip_is_vip($user_id);
+		}
+		
 		return $this->success($data);
 	}
 
@@ -422,6 +426,11 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		update_post_meta($post_id, 'like_count', $like_count);
 
+		//添加积分
+		if ($is_like == 1 && function_exists('zhuige_xcx_add_user_score_by_task')) {
+			zhuige_xcx_add_user_score_by_task('like', $post->post_type . ',' . $post_id);
+		}
+
 		return $this->success([
 			'is_like' => $is_like,
 			'user' => $user,
@@ -496,15 +505,20 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			]);
 		}
 
-		$fav_count = $wpdb->get_var(
+		$favorites = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT count(id) FROM `$table_post_favorite` WHERE `post_id`=%d",
 				$post_id
 			)
 		);
-		update_post_meta($post_id, 'fav_count', $fav_count);
+		update_post_meta($post_id, 'zhuige_favorites', $favorites);
 
-		return $this->success(['is_favorite' => $is_favorite, 'fav_count' => $fav_count]);
+		//添加积分
+		if ($is_favorite == 1 && function_exists('zhuige_xcx_add_user_score_by_task')) {
+			zhuige_xcx_add_user_score_by_task('favorite', $post->post_type . ',' . $post_id);
+		}
+
+		return $this->success(['is_favorite' => $is_favorite, 'favorites' => $favorites]);
 	}
 
 	/**
@@ -618,12 +632,22 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		$users = [];
 		$user = $this->param_int($request, 'user', 0);
 		if ($user) {
-			$users[] = [
+			$owner = [
 				'user_id' => $forum->post_author,
 				'nickname' => get_user_meta($forum->post_author, 'nickname', true),
 				'avatar' => ZhuiGe_Xcx::user_avatar($forum->post_author),
 				'owner' => 1,
 			];
+
+			if (function_exists('zhuige_xcx_certify_is_certify')) {
+				$owner['certify'] = zhuige_xcx_certify_is_certify($forum->post_author);
+			}
+	
+			if (function_exists('zhuige_xcx_vip_is_vip')) {
+				$owner['vip'] = zhuige_xcx_vip_is_vip($forum->post_author);
+			}
+
+			$users[] = $owner;
 
 			$user_ids = $wpdb->get_results(
 				$wpdb->prepare(
@@ -638,14 +662,26 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 					'nickname' => get_user_meta($user_id, 'nickname', true),
 					'avatar' => ZhuiGe_Xcx::user_avatar($user_id),
 					'owner' => 0
-					// 'certify' => $this->is_certify($user_id['user_id']),
 				];
+
+				if (function_exists('zhuige_xcx_certify_is_certify')) {
+					$user['certify'] = zhuige_xcx_certify_is_certify($user_id);
+				}
+		
+				if (function_exists('zhuige_xcx_vip_is_vip')) {
+					$user['vip'] = zhuige_xcx_vip_is_vip($user_id);
+				}
 
 				$users[] = $user;
 			}
 		}
 
 		$user_count = zhuige_bbs_forum_user_count($forum_id);
+
+		//添加积分
+		if ($is_follow == 1 && function_exists('zhuige_xcx_add_user_score_by_task')) {
+			zhuige_xcx_add_user_score_by_task('forum_join', $forum_id);
+		}
 
 		return $this->success(['is_follow' => $is_follow, 'users' => $users, 'user_count' => (int)$user_count]);
 	}
@@ -677,6 +713,10 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 			if (function_exists('zhuige_xcx_certify_is_certify')) {
 				$item['certify'] = zhuige_xcx_certify_is_certify($user->follow_user_id);
+			}
+			
+			if (function_exists('zhuige_xcx_vip_is_vip')) {
+				$item['vip'] = zhuige_xcx_vip_is_vip($user->follow_user_id);
 			}
 
 			$data[] = $item;
@@ -737,6 +777,10 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 			if (function_exists('zhuige_xcx_certify_is_certify')) {
 				$item['certify'] = zhuige_xcx_certify_is_certify($user->follow_user_id);
+			}
+			
+			if (function_exists('zhuige_xcx_vip_is_vip')) {
+				$item['vip'] = zhuige_xcx_vip_is_vip($user->follow_user_id);
 			}
 
 			if ($my_user_id) {
@@ -811,12 +855,16 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 				'user_id' => $user->user_id,
 				'nickname' => get_user_meta($user->user_id, 'nickname', true),
 				'avatar' => ZhuiGe_Xcx::user_avatar($user->user_id),
-				'post_count' => zhuige_xcx_user_post_count($user->follow_user_id),
-				'fans_count' => zhuige_xcx_user_fans_count($user->follow_user_id),
+				'post_count' => zhuige_xcx_user_post_count($user->user_id),
+				'fans_count' => zhuige_xcx_user_fans_count($user->user_id),
 			];
 
 			if (function_exists('zhuige_xcx_certify_is_certify')) {
 				$item['certify'] = zhuige_xcx_certify_is_certify($user->user_id);
+			}
+			
+			if (function_exists('zhuige_xcx_vip_is_vip')) {
+				$item['vip'] = zhuige_xcx_vip_is_vip($user->user_id);
 			}
 
 			if ($my_user_id) {
@@ -854,6 +902,11 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			$user_id = $my_user_id;
 		}
 
+		//用户小站
+		do_action('zhuige_xcx_user_site', [
+			'user_id' => $user_id
+		]);
+
 		$user = [
 			'user_id' => $user_id,
 			'avatar' => ZhuiGe_Xcx::user_avatar($user_id),
@@ -862,6 +915,10 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		if (function_exists('zhuige_xcx_certify_is_certify')) {
 			$user['certify'] = zhuige_xcx_certify_is_certify($user_id);
+		}
+		
+		if (function_exists('zhuige_xcx_vip_is_vip')) {
+			$user['vip'] = zhuige_xcx_vip_is_vip($user_id);
 		}
 
 		$sign = get_user_meta($user_id, 'zhuige_xcx_user_sign', true);
@@ -976,12 +1033,6 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			$data['rec_ad'] = $rec_ad;
 		}
 
-
-		//用户小站
-		do_action('zhuige_xcx_user_site', [
-			'user_id' => $user_id
-		]);
-
 		return $this->success($data);
 	}
 
@@ -1023,6 +1074,10 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			$stat['certify'] = zhuige_xcx_certify_is_certify($my_user_id);
 		}
 
+		if (function_exists('zhuige_xcx_vip_is_vip')) {
+			$stat['vip'] = zhuige_xcx_vip_is_vip($my_user_id);
+		}
+		
 		return $this->success($stat);
 	}
 
@@ -1254,6 +1309,24 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 
 		return $this->success(['mobile' => $mobile]);
+	}
+
+	/**
+	 * 增加分享积分
+	 */
+	public function share_score($request)
+	{
+		$user_id = $this->param_int($request, 'source', '');
+		if (empty($user_id)) {
+			return $this->make_error('缺少参数');
+		}
+
+		//添加积分
+		if (function_exists('zhuige_xcx_add_user_score_by_task')) {
+			zhuige_xcx_add_user_score_by_task('share', '', $user_id);
+		}
+
+		return $this->make_success('请求成功');
 	}
 
 	/**
