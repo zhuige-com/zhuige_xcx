@@ -4,7 +4,7 @@
  * Plugin Name:       追格小程序
  * Plugin URI:        https://www.zhuige.com/
  * Description:       追格小程序是一个积木式小程序搭建框架。
- * Version:           1.2.0
+ * Version:           1.3.0
  * Author:            追格
  * Author URI:        https://www.zhuige.com/
  * Text Domain:       zhuige-xcx

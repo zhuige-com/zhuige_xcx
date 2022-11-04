@@ -1,3 +1,0 @@
-QTags.addButton( 'zhuige-widget', '追格块', '\n[zhuige-widget cover="封面图" title="标题" desc="描述" button="按钮" link="https://www.zhuige.com/kx/5137.html" price="商品价格"][/zhuige-widget]\n', '');
-QTags.addButton( 'video', '追格视频', '\n<video id="myVideo" src="mp4视频地址" controls></video>\n', '' );
-QTags.addButton( 'audio', '追格音频', '\n<audio id="myAudio" poster="封面" name="歌名" author="歌手" src="mp3地址" controls loop></audio>\n', '' );

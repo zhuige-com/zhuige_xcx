@@ -132,49 +132,162 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 			$data['rec_user'] = $rec_user;
 		}
 
-		//推荐圈子
-		$rec_forum = ZhuiGe_Xcx::option_value('home_rec_forum');
-		if ($rec_forum && $rec_forum['switch']) {
-			$forums = [];
-			foreach ($rec_forum['forums'] as $forum_id) {
-				$post = get_post($forum_id);
-				$options = get_post_meta($forum_id, 'zhuige-bbs-forum-option', true);
-				$logo = ZhuiGe_Xcx::option_image_url($options['logo'], 'placeholder.jpg');
-				$user_count = zhuige_bbs_forum_user_count($forum_id);
-				$forum = [
-					'title' => $post->post_title,
-					'image' => $logo,
-					'subtitle' => "成员 $user_count",
-					'link' => '/pages/bbs/forum/forum?forum_id=' . $forum_id,
+		// 是否显示tab
+		$data['tab_switch'] = (int)(ZhuiGe_Xcx::option_value('rec_list_tab_switch'));
+
+		// tab设置
+		$tab_limit = ZhuiGe_Xcx::option_value('rec_list_tab_limit');
+		if (!empty($tab_limit)) {
+			$tabs = [['id' => 'any', 'title' => '全部']];
+			$cur_tab = 'any';
+			foreach ($tab_limit as $tab) {
+				$type_info = $this->get_post_type_info($tab);
+				$tabs[] = [
+					'id' => $tab,
+					'title' => $type_info['name']
 				];
-
-				$forums[] = $forum;
 			}
-			$rec_forum['forums'] = $forums;
 
-			$data['rec_forum'] = $rec_forum;
+			$data['tabs'] = $tabs;
+			$data['cur_tab'] = $cur_tab;
+
+			$data['tab_type'] = 1;
+		} else {
+			$data['tab_type'] = 2;
 		}
 
-		// 贴间广告
-		$home_rec_ad = ZhuiGe_Xcx::option_value('home_rec_ad');
-		if ($home_rec_ad && $home_rec_ad['switch']) {
-			$rec_ad = [];
-			$rec_ad['title'] = $home_rec_ad['title'];
-			$items = [];
-			foreach ($home_rec_ad['items'] as $item_ad) {
-				if ($item_ad['switch'] && $item_ad['image'] && $item_ad['image']['url']) {
-					$items[] = [
-						'title' => $item_ad['title'],
-						'image' => $item_ad['image']['url'],
-						'link' => $item_ad['link'],
-						'badge' => $item_ad['badge'],
-					];
+		$data['list_switch'] = (int)(ZhuiGe_Xcx::option_value('rec_list_switch'));
+
+		// 推荐文章
+		$tab_limit = ZhuiGe_Xcx::option_value('rec_list_tab_limit');
+
+		$home_rec_post = ZhuiGe_Xcx::option_value('home_rec_post');
+		$rec_posts = [];
+		if (is_array($home_rec_post)) {
+			foreach ($home_rec_post as &$rec_post) {
+				if ($rec_post['switch'] != '1') {
+					continue;
 				}
-			}
-			$rec_ad['items'] = $items;
 
-			$data['rec_ad'] = $rec_ad;
+				$post_type = $rec_post['post_type'];
+
+				$post_ids = [];
+				if ($post_type == 'zhuige_column') {
+					$post_ids = $rec_post['column_ids'];
+				} else if ($post_type == 'zhuige_activity') {
+					$post_ids = $rec_post['activity_ids'];
+				} else if ($post_type == 'zhuige_bbs_topic') {
+					$post_ids = $rec_post['bbs_topic_ids'];
+				} else if ($post_type == 'zhuige_res') {
+					$post_ids = $rec_post['resource_ids'];
+				} else if ($post_type == 'zhuige_goods') {
+					$post_ids = $rec_post['goods_ids'];
+				} else if ($post_type == 'post') {
+					$post_ids = $rec_post['post_ids'];
+				} else if ($post_type == 'page') {
+					$post_ids = $rec_post['page_ids'];
+				} else if ($post_type == 'zhuige_bbs_forum') {
+					$post_ids = $rec_post['forum_ids'];
+				}
+
+				$args = [
+					'post__in' => $post_ids,
+					'orderby' => 'post__in',
+					'post_type' => $post_type,
+					'ignore_sticky_posts' => 1,
+				];
+		
+				$query = new WP_Query();
+				$result = $query->query($args);
+				$items = [];
+				foreach ($result as $post) {
+					if ($post->post_type == 'zhuige_column' && function_exists('zhuige_column_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_column_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['more_link'] = $post->more_link;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$items[] = $item;
+					} else if ($post->post_type == 'post' && function_exists('zhuige_cms_post_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_cms_post_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['more_link'] = $post->more_link;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$items[] = $item;
+					} else if ($post->post_type == 'zhuige_res' && function_exists('zhuige_res_post_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_res_post_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['more_link'] = $post->more_link;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$items[] = $item;
+					} else if ($post->post_type == 'zhuige_activity' && function_exists('zhuige_activity_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_activity_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['more_link'] = $post->more_link;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$items[] = $item;
+					} else if ($post->post_type == 'zhuige_goods' && function_exists('zhuige_goods_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_goods_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['more_link'] = $post->more_link;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$items[] = $item;
+					} else if ($post->post_type == 'zhuige_bbs_forum') {
+						$options = get_post_meta($post->ID, 'zhuige-bbs-forum-option', true);
+						$logo = ZhuiGe_Xcx::option_image_url($options['logo'], 'placeholder.jpg');
+						$user_count = zhuige_bbs_forum_user_count($post->ID);
+						$items[] = [
+							'title' => $post->post_title,
+							'image' => $logo,
+							'subtitle' => "成员 $user_count",
+							'link' => '/pages/bbs/forum/forum?forum_id=' . $post->ID,
+						];
+					} else if ($post->post_type == 'zhuige_bbs_topic' && function_exists('zhuige_bbs_topic_thumb')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$items[] = [
+							'post_type' => $post->post_type,
+							'more_link' => $post->more_link,
+							'badge' => $post_type_info['name'],
+							'link' => $post_type_info['link'] . '?id=' . $post->ID,
+							'title' => wp_trim_words(zhuige_xcx_get_post_excerpt($post), 11, '...'),
+							'image' => zhuige_bbs_topic_thumb($post->ID, true),
+						];
+					} else {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$items[] = [
+							'post_type' => $post->post_type,
+							'more_link' => $post->more_link,
+							'badge' => $post_type_info['name'],
+							'link' => $post_type_info['link'] . '?id=' . $post->ID,
+							'title' => $post->post_title,
+							'image' => zhuige_xcx_get_one_post_thumbnail($post, true),
+						];
+					}
+				}
+				$rec_post['items'] = $items;
+
+				if ($post->post_type == 'zhuige_activity') {
+					$rec_post['banner'] = $rec_post['banner']['url'];
+				} else {
+					unset($rec_post['banner']);
+					unset($rec_post['subtitle']);
+				}
+				unset($rec_post['switch']);
+
+				$rec_posts[] = $rec_post;
+			}
 		}
+
+		$data['rec_posts'] = $rec_posts;
 
 		//首页分享头图
 		$rec_home_thumb = ZhuiGe_Xcx::option_value('rec_home_thumb');
@@ -380,6 +493,20 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		return $menus;
+	}
+
+	/**
+	 * 获取文章类型信息
+	 */
+	private function get_post_type_info($post_type)
+	{
+		foreach(ZhuiGe_Xcx::$post_types as $item) {
+			if ($item['id'] == $post_type) {
+				return $item;
+			}
+		}
+
+		return ['name' => '未知', 'link' => '/pages/base/page/page'];
 	}
 }
 

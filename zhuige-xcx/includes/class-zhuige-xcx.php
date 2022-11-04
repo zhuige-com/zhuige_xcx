@@ -18,6 +18,10 @@ class ZhuiGe_Xcx
 
 	public static $rest_controllers = [];
 
+	public static $post_types = [
+		['id' => 'page', 'name' => '页面', 'link' => '/pages/base/page/page']
+	];
+
 	public static $require_login_uris = [];
 
 	/**

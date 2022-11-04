@@ -1,8 +1,227 @@
 <template>
 	<view class="content">
-		<view class="zhuige-social-list">
+		<view class="zhuige-social-list zhuige-mini-custom">
 			<template v-if="topics && topics.length>0">
-				<zhuige-topic v-for="(topic, index) in topics" :key="index" :topic="topic"></zhuige-topic>
+				<template v-for="(topic, index) in topics">
+					<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :key="index" :topic="topic">
+					</zhuige-topic>
+					<view v-else :key="index" class="zhuige-block" :class="topic.post_type" @click="clickPost(topic)">
+
+						<!-- 活动报名 -->
+						<template v-if="topic.post_type=='zhuige_activity'">
+							<view class="zhugie-info-block">
+								<view class="zhugie-info-title">{{topic.title}}</view>
+								<view class="zhuige-act-timeline-text">
+									<text>{{topic.time.from}}</text>
+									<text>-</text>
+									<text>{{topic.time.to}}</text>
+								</view>
+								<view class="zhugie-info-image">
+									<image mode="aspectFill" :src="topic.thumbnail" />
+								</view>
+								<view class="zhuige-act-timeline-sub">
+									<view class="zhuige-act-tags">
+										<text v-for="(badge, badgeIndex) in topic.badges"
+											:key="badgeIndex">{{badge}}</text>
+									</view>
+									<!-- 活动报名状态-->
+									<view class="zhuige-act-btn"
+										:class="topic.is_end?'act-end':(topic.my_enroll?'act-enroll':'')">
+										{{topic.is_end?'已结束':(topic.my_enroll?'已报名':'立即报名')}}
+									</view>
+								</view>
+							</view>
+						</template>
+						<!-- 文章 -->
+						<template v-else-if="topic.post_type=='post'">
+							<!-- 无图 -->
+							<template v-if="topic.thumbnails.length==0">
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{topic.title}}</view>
+									<view class="zhuige-info-post">
+										<view class="zhuige-info-data">
+											<text
+												v-if="topic.read_limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
+												class="pay">￥{{topic.cost_price}}</text>
+											<text v-if="topic.read_limit=='score'"
+												class="pay">{{topic.cost_score}}积分</text>
+											<text>浏览 {{topic.views}}</text>
+											<text>点赞 {{topic.likes}}</text>
+										</view>
+									</view>
+								</view>
+							</template>
+							<template v-if="topic.thumbnails.length<3">
+								<!-- 大图 -->
+								<view v-if="index%5==4" class="zhugie-info-block">
+									<view class="zhugie-info-text">
+										<view class="zhugie-info-title">{{topic.title}}</view>
+									</view>
+
+									<view class="zhugie-info-image">
+										<text v-if="topic.badge">{{topic.badge}}</text>
+										<image mode="aspectFill" :src="topic.thumbnails[0]" />
+									</view>
+									<view class="zhugie-info-text">
+										<view class="zhuige-info-post">
+											<view class="zhuige-info-data">
+												<text
+													v-if="topic.read_limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
+													class="pay">￥{{topic.cost_price}}</text>
+												<text v-if="topic.read_limit=='score'"
+													class="pay">{{topic.cost_score}}积分</text>
+												<text>浏览 {{topic.views}}</text>
+												<text>点赞 {{topic.likes}}</text>
+											</view>
+										</view>
+									</view>
+								</view>
+								<!-- 右图 -->
+								<view v-else class="zhugie-info-block right-side">
+									<view class="zhugie-info-image">
+										<text v-if="topic.badge">{{topic.badge}}</text>
+										<image mode="aspectFill" :src="topic.thumbnails[0]" />
+									</view>
+									<view class="zhugie-info-text">
+										<view class="zhugie-info-title">{{topic.title}}</view>
+										<view class="zhuige-info-post">
+											<view class="zhuige-info-data">
+												<text
+													v-if="topic.read_limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
+													class="pay">￥{{topic.cost_price}}</text>
+												<text v-if="topic.read_limit=='score'"
+													class="pay">{{topic.cost_score}}积分</text>
+												<text>浏览 {{topic.views}}</text>
+												<text>点赞 {{topic.likes}}</text>
+											</view>
+										</view>
+									</view>
+								</view>
+							</template>
+							<!-- 左图 -->
+							<!-- <view class="zhugie-info-block left-side">
+								<view class="zhugie-info-image">
+									<text>vip免费</text>
+									<image mode="aspectFill" :src="topic.thumbnails[0]" />
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{topic.title}}</view>
+									<view class="zhuige-info-post">
+										<view class="zhuige-info-data">
+											<text class="pay">1 积分</text>
+											<text>浏览 {{topic.views}}</text>
+											<text>点赞 {{topic.likes}}</text>
+										</view>
+									</view>
+								</view>
+							</view> -->
+							<!-- 3图 -->
+							<view v-if="topic.thumbnails.length>=3" class="zhugie-info-block">
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{topic.title}}</view>
+								</view>
+								<view class="zhugie-info-image image-treble">
+									<text v-if="topic.badge">{{topic.badge}}</text>
+									<image mode="aspectFill" :src="topic.thumbnails[0]" />
+									<image mode="aspectFill" :src="topic.thumbnails[1]" />
+									<image mode="aspectFill" :src="topic.thumbnails[2]" />
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhuige-info-post">
+										<view class="zhuige-info-data">
+											<text
+												v-if="topic.read_limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
+												class="pay">￥{{topic.cost_price}}</text>
+											<text v-if="topic.read_limit=='score'"
+												class="pay">{{topic.cost_score}}积分</text>
+											<text>浏览 {{topic.views}}</text>
+											<text>点赞 {{topic.likes}}</text>
+										</view>
+									</view>
+								</view>
+							</view>
+						</template>
+						<!-- 课程 -->
+						<template v-else-if="topic.post_type=='zhuige_column'">
+								<view class="zhugie-info-block left-side">
+								<view class="zhugie-info-image">
+									<image mode="aspectFill" :src="topic.thumbnail" />
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{topic.title}}</view>
+									<view class="zhuige-info-data">
+										<text v-for="(badge, badgeIndex) in topic.badges" :key="badgeIndex">{{badge}}</text>
+									</view>
+									<view class="zhuige-info-post">
+										<view class="zhuige-info-rate">
+											<uni-rate :value="topic.score" size="12" :activeColor="'#FF6146'" />
+											<view>{{topic.score}}</view>
+										</view>
+										
+										<template v-if="!is_ios || (is_ios && topic.ios_price_switch==1)">
+											<view v-if="topic.limit=='cost'" class="info-money">
+												<text>￥</text>
+												<text>{{topic.cost_price}}</text>
+											</view>
+										</template>
+										
+										<view v-if="topic.limit=='score'" class="info-point">
+											<text>{{topic.cost_score}}</text>
+											<text>积分</text>
+										</view>
+									</view>
+								</view>
+							</view>
+						</template>
+						<!-- 知识库 -->
+						<template v-else-if="topic.post_type=='zhuige_res'">								
+							<view class="zhugie-info-block left-side">
+								<view class="zhugie-info-image">
+									<image mode="aspectFill" :src="topic.thumbnail" />
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{topic.title}}</view>
+									<view class="zhuige-info-data">
+										<text>浏览 {{topic.views}}</text>
+										<text>点赞 {{topic.likes}}</text>
+										<text
+											v-if="topic.limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
+											class="pay">￥ {{topic.cost_price}}</text>
+										<text v-if="topic.limit=='score'" class="pay">{{topic.cost_score}}积分</text>
+									</view>
+								</view>
+							</view>
+						</template>
+						<!-- 积分商品 -->
+						<template v-else-if="topic.post_type=='zhuige_goods'">
+							<view class="zhugie-info-block left-side">
+								<view class="zhugie-info-image">
+									<image mode="aspectFill" :src="topic.thumbnail" />
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{topic.title}}</view>
+									<view class="zhuige-info-post zhuige-info-opt">
+										<view class="info-point">
+											<text>{{topic.price}}</text>
+											<text>积分</text>
+										</view>
+										<uni-icons type="plus-filled" color="#ff6146" size="26"></uni-icons>
+									</view>
+								</view>
+							</view>
+						</template>
+						<template v-else>
+							<view class="zhugie-info-block left-side">
+								<view class="zhugie-info-image">
+									<image mode="aspectFill" :src="topic.thumbnail" />
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{topic.title}}</view>
+								</view>
+							</view>
+						</template>
+					</view>
+				</template>
 			</template>
 			<template v-else-if="loaded">
 				<zhuige-nodata></zhuige-nodata>
@@ -120,8 +339,19 @@
 			/**
 			 * 点击打开链接
 			 */
-			openLink(link) {
+			clickLink(link) {
 				Util.openLink(link);
+			},
+			
+			/**
+			 * 点击文章
+			 */
+			clickPost(post) {
+				if (post.driect_link_switch == '1') {
+					Util.openLink(post.driect_link);
+				} else {
+					Util.openLink(post.link + '?id=' + post.id);
+				}
 			},
 
 			/**
@@ -142,7 +372,7 @@
 					url = Api.URL('posts', 'list_tag');
 					params.tag_id = this.tag_id;
 				} else if (this.keyword) {
-					url = Api.URL('posts', 'list_search');
+					url = Api.URL('posts', 'list_search2');
 					params.keyword = this.keyword;
 				}
 

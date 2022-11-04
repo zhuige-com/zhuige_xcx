@@ -9,12 +9,10 @@
 				<view class="zhuige-post-plug">
 					<view @click="clickType('image')" :class="{active:type=='image'}">
 						<uni-icons type="image-filled" color="#333333" size="20"></uni-icons>
-						<!-- <image mode="aspectFill" src="/static/logo.png"></image> -->
 						<text>图文</text>
 					</view>
 					<view @click="clickType('video')" :class="{active:type=='video'}">
 						<uni-icons type="videocam-filled" color="#333333" size="20"></uni-icons>
-						<!-- <image mode="aspectFill" src="/static/logo.png"></image> -->
 						<text>视频</text>
 					</view>
 				</view>
@@ -35,6 +33,7 @@
 				</view>
 			</view>
 		</view>
+		
 		<!-- 视频 -->
 		<view v-else-if="type=='video'" class="zhuige-post-video-box">
 			<video v-if="video" :src="video.url"></video>
@@ -44,7 +43,6 @@
 					<view>视频</view>
 				</view>
 			</view>
-
 			<view class="zhuige-upload-set">
 				<view class="loaded" v-if="video_cover">
 					<uni-icons type="clear" color="#FD6531" size="24" @click="clickDelVideoPoster"></uni-icons>
@@ -380,7 +378,6 @@
 				}
 
 				params.subjects = this.subjects.join('-0-');
-				// params.at_list = this.at_list.join(',');
 
 				Rest.post(Api.URL('bbs', 'topic_create'), params).then(res => {
 					if (res.code != 0) {

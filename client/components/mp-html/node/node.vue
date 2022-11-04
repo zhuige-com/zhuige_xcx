@@ -28,8 +28,8 @@
       <video v-else-if="n.name==='video'" :id="n.attrs.id" :class="n.attrs.class" :style="n.attrs.style" :autoplay="n.attrs.autoplay" :controls="n.attrs.controls" :loop="n.attrs.loop" :muted="n.attrs.muted" :poster="n.attrs.poster" :src="n.src[ctrl[i]||0]" :data-i="i" @play="play" @error="mediaError" />
       <!-- #endif -->
 	  <!-- #ifndef APP-PLUS -->
+	  <!-- :id="n.attrs.id" -->
 	  <channel-video v-else-if="n.name==='channel-video'" 
-		:id="n.attrs.id" 
 		:class="n.attrs.class" 
 		:style="n.attrs.style" 
 		:feed-id="n.attrs['feed-id']" 

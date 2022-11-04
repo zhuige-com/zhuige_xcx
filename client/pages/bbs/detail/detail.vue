@@ -48,7 +48,6 @@
 					</view>
 				</view>
 
-				<!-- <video v-if="topic.video" :src="topic.video.url"></video> -->
 				<video v-if="topic.video" :src="topic.video.url" :poster="topic.video_cover.url" object-fit="cover"
 					:style="{
 					width: parseInt(topic.video.width)>parseInt(topic.video.height)?'654rpx':parseInt(topic.video.width)/parseInt(topic.video.height)*674 + 'rpx',
@@ -162,9 +161,6 @@
 					<zhuige-reply v-for="(comment, index) in topic.comments" :key="index" :item="comment"
 						@clickReply="clickReply">
 					</zhuige-reply>
-
-					<!-- 通用无信息 -->
-					<!-- <view class="zhuige-nomore">没有更多数据了</view> -->
 				</template>
 				<template v-else>
 					<!-- 无内容提示 -->
@@ -197,7 +193,6 @@
 				<view @click="clickComment(0)">
 					<uni-badge :offset="[0, 12]" :text="topic.comment_count.toString()" :inverted="false" type="error"
 						absolute="rightTop">
-						<!-- :inverted="!topic.is_comment" -->
 						<uni-icons :type="topic.is_comment==1?'chat-filled':'chat'"
 							:color="topic.is_comment==1?'#ff6146':'#444444'" size="24"></uni-icons>
 					</uni-badge>
@@ -205,7 +200,6 @@
 				<view @click="clickLike">
 					<uni-badge :offset="[0, 12]" :text="topic.like_list.length.toString()" :inverted="false"
 						type="error" absolute="rightTop">
-						<!-- :inverted="!topic.is_like" -->
 						<uni-icons :type="topic.is_like==1?'hand-up-filled':'hand-up'"
 							:color="topic.is_like==1?'#ff6146':'#444444'" size="24"></uni-icons>
 					</uni-badge>
@@ -213,7 +207,6 @@
 				<view @click="clickFavorite">
 					<uni-badge :offset="[0, 12]" :text="topic.favorites.toString()" :inverted="false" type="error"
 						absolute="rightTop">
-						<!-- :inverted="!topic.is_favorite" -->
 						<uni-icons :type="topic.is_favorite==1?'star-filled':'star'"
 							:color="topic.is_favorite==1?'#ff6146':'#444444'" size="24"></uni-icons>
 					</uni-badge>
@@ -291,6 +284,9 @@
 
 				// 举报功能
 				is_report: false,
+
+				//登录后 重新加载
+				loginReload: false,
 			}
 		},
 
@@ -316,7 +312,9 @@
 		},
 
 		onLoad(options) {
-			Util.addShareScore(options.source);
+			if (options.id) {
+				options.topic_id = options.id;
+			}
 
 			if (options.topic_id) {
 				this.topic_id = options.topic_id;
@@ -334,11 +332,15 @@
 				return;
 			}
 
+			Util.addShareScore(options.source);
+
 			uni.$on('linktap', this.onMPHtmlLink);
 			uni.$on('zhuige_event_user_like', this.onUserLike);
+			uni.$on('zhuige_event_user_login', this.onSetReload);
 		},
 
 		onUnload() {
+			uni.$off('zhuige_event_user_login', this.onSetReload);
 			uni.$off('zhuige_event_user_like', this.onUserLike);
 			uni.$off('linktap', this.onMPHtmlLink);
 		},
@@ -413,6 +415,13 @@
 						}
 					})
 				}
+			},
+
+			/**
+			 * 需要重新加载事件
+			 */
+			onSetReload(data) {
+				this.loginReload = true;
 			},
 			// ------- event end ---------
 
@@ -1103,10 +1112,6 @@
 		margin-bottom: 20rpx;
 	}
 
-	/* .zhuige-article-swiper * {
-		transition: all .4s cubic-bezier(0.6, 2, 0.3, 0.8);
-	} */
-
 	.zhuige-article-swiper,
 	.zhuige-article-swiper swiper,
 	.zhuige-article-swiper swiper image {
@@ -1114,7 +1119,6 @@
 	}
 
 	.zhuige-wide-image-ad view {
-		/* height: 280rpx; */
 		height: 120rpx;
 	}
 </style>

@@ -163,7 +163,7 @@
 						this.subject = res.data.subject;
 					}
 					this.topics = refresh ? res.data.topics : this.topics.concat(res.data.topics);
-					this.loadMore = 'nomore';
+					this.loadMore = res.data.more;
 					this.loaded = true;
 
 					uni.stopPullDownRefresh();

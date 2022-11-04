@@ -208,6 +208,6 @@
 
 	.zhuige-scroll-coterie .zhuige-scroll-group,
 	.zhuige-scroll-coterie .zhuige-scroll-ad-cover {
-		height: 220rpx;
+		height: 240rpx;
 	}
 </style>

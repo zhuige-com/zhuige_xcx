@@ -71,6 +71,7 @@ CSF::createSection($prefix, array(
             'chosen'      => true,
             'multiple'    => true,
             'sortable'    => true,
+            'ajax'        => true,
             'options'     => 'categories',
             'query_args'  => array(
                 'taxonomy'  => 'zhuige_bbs_forum_cat',
@@ -85,6 +86,7 @@ CSF::createSection($prefix, array(
             'chosen'      => true,
             'multiple'    => true,
             'sortable'    => true,
+            'ajax'        => true,
             'options'     => 'posts',
             'query_args'  => array(
                 'post_type'  => 'zhuige_bbs_forum',

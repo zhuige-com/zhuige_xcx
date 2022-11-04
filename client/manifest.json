@@ -2,7 +2,7 @@
     "name" : "zhuige-xcx",
     "appid" : "",
     "description" : "",
-    "versionName" : "1.2.0",
+    "versionName" : "1.3.0",
     "versionCode" : "100",
     "transformPx" : false,
     /* 5+App特有相关 */
@@ -50,7 +50,7 @@
     "quickapp" : {},
     /* 小程序特有相关 */
     "mp-weixin" : {
-        "appid" : "",
+        "appid" : "wxe501b4f59afa1e19",
         "setting" : {
             "urlCheck" : false
         },

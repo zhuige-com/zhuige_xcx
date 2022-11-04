@@ -1,6 +1,6 @@
 <script>
 	/*
-	 * 追格小程序 v1.2.0
+	 * 追格小程序 v1.3.0
 	 * Author: 追格
 	 * Help document: https://www.zhuige.com
 	 * Copyright © 2021-2022 www.zhuige.com All rights reserved.
@@ -37,7 +37,6 @@
 		}
 	}
 </script>
-
 
 <style lang="scss">
 	/*每个页面公共css */

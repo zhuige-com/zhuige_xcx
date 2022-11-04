@@ -45,7 +45,6 @@ class ZhuiGe_Xcx_Admin
         $base_dir = plugin_dir_path(__FILE__);
         $base_url = plugin_dir_url(__FILE__);
         require_once $base_dir . 'partials/overview.php';
-        // require_once $base_dir . 'partials/addon.php';
         require_once $base_dir . 'partials/global.php';
 
         foreach (ZhuiGe_Xcx_Addon::$admins as $admin) {

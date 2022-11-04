@@ -3,8 +3,8 @@
 		<!-- 项目分类tab(居中) -->
 		<view v-if="type=='simple'" class="zhuige-tab zhuige-center-tab">
 			<view class="zhuige-tab-nav">
-				<view class="zhuige-tab-box" v-for="(tab, index) in tabs" :key="index" :class="curTab==tab.id?'active':''"
-					@click="clickTab(tab)">
+				<view class="zhuige-tab-box" v-for="(tab, index) in tabs" :key="index"
+					:class="curTab==tab.id?'active':''" @click="clickTab(tab)">
 					{{tab.title}}
 				</view>
 			</view>
@@ -14,8 +14,8 @@
 			<view class="zhuige-tab-nav">
 				<scroll-view class="zhuige-tab-scroll" scroll-x scroll-with-animation scroll-left="scrollLeft"
 					show-scrollbar="false">
-					<view class="zhuige-tab-box" v-for="(tab, index) in tabs" :key="index" :class="curTab==tab.id?'active':''"
-						@click="clickTab(tab)">
+					<view class="zhuige-tab-box" v-for="(tab, index) in tabs" :key="index"
+						:class="curTab==tab.id?'active':''" @click="clickTab(tab)">
 						{{tab.title}}
 					</view>
 				</scroll-view>
@@ -93,13 +93,17 @@
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
-		padding: 0 40rpx;
+		padding: 0 32rpx;
 		text-align: center;
 		position: relative;
 	}
 
 	.zhuige-tab-box:last-of-type {
 		margin-right: 70rpx;
+	}
+
+	.zhuige-tab-box:first-of-type {
+		margin-left: -14rpx;
 	}
 
 	.active {
@@ -111,11 +115,13 @@
 	.active::after {
 		position: absolute;
 		content: "";
-		width: 30rpx;
+		width: 32rpx;
 		height: 8rpx;
 		border-radius: 8rpx;
 		background: #333333;
 		top: 80rpx;
+		left: 50%;
+		margin-left: -16rpx;
 	}
 
 	.zhuige-tab-opt {

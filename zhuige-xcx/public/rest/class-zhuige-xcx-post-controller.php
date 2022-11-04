@@ -17,11 +17,13 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			'page' => 'get_post_page',
 
 			'list_last' => 'get_list_last',
+			'list_last2' => 'get_list_last2',
 			'list_follow' => 'get_list_follow',
 
 			'list_tag' => 'get_list_tag',
 
 			'list_search' => 'get_list_search',
+			'list_search2' => 'get_list_search2',
 
 			'list_user' => 'get_list_user',
 
@@ -55,6 +57,96 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$topics[] = $item;
 			} else {
 				$topics[] = $post;
+			}
+		}
+
+		return $this->success([
+			'topics' => $topics,
+			'more' => (count($result) >= ZhuiGe_Xcx::POSTS_PER_PAGE ? 'more' : 'nomore')
+		]);
+	}
+
+	/**
+	 * 最新的文章
+	 */
+	public function get_list_last2($request)
+	{
+		$offset = $this->param_int($request, 'offset', 0);
+
+		$args = [
+			'posts_per_page' => ZhuiGe_Xcx::POSTS_PER_PAGE,
+			'offset' => $offset,
+			'orderby' => 'date',
+			'ignore_sticky_posts' => 1,
+		];
+
+		$post_type = $this->param($request, 'post_type', '');
+		if ($post_type == 'any' || $post_type == 'last' || $post_type == '') {
+			$rec_list_limit = ZhuiGe_Xcx::option_value('rec_list_limit');
+			if (empty($rec_list_limit)) {
+				$rec_list_limit = 'zhuige_bbs_topic';
+			}
+			$args['post_type'] = $rec_list_limit;
+		} else {
+			$args['post_type'] = $post_type;
+		}
+
+		$query = new WP_Query();
+		$result = $query->query($args);
+		$topics = [];
+		foreach ($result as $post) {
+			if ($post->post_type == 'zhuige_bbs_topic' && function_exists('zhuige_bbs_topic_format')) {
+				$item = zhuige_bbs_topic_format($post);
+				$item['post_type'] = 'zhuige_bbs_topic';
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_column' && function_exists('zhuige_column_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_column_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else if ($post->post_type == 'post' && function_exists('zhuige_cms_post_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_cms_post_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_res' && function_exists('zhuige_res_post_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_res_post_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_activity' && function_exists('zhuige_activity_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_activity_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_goods' && function_exists('zhuige_goods_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_goods_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+
+				$item = [
+					'id' => $post->ID,
+					'post_type' => $post->post_type,
+					'post_type_name' => $post_type_info['name'],
+					'link' => $post_type_info['link'],
+					'title' => $post->post_title,
+					'thumbnail' => zhuige_xcx_get_one_post_thumbnail($post, true),
+				];
+
+				$topics[] = $item;
 			}
 		}
 
@@ -226,9 +318,112 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		foreach ($result as $post) {
 			if ($post->post_type == 'zhuige_bbs_topic') {
 				$item = zhuige_bbs_topic_format($post);
+				$item['post_type'] = 'zhuige_bbs_topic';
 				$topics[] = $item;
 			} else {
-				$topics[] = $post;
+				$post_type_info = $this->get_post_type_info($post->post_type);
+
+				$topics[] = [
+					'id' => $post->ID,
+					'post_type' => $post->post_type,
+					'post_type_name' => $post_type_info['name'],
+					'link' => $post_type_info['link'],
+					'title' => $post->post_title,
+					'excerpt' => zhuige_xcx_get_post_excerpt($post),
+					'comment_count' => $post->comment_count,
+					'thumbnail' => zhuige_xcx_get_one_post_thumbnail($post, true),
+					'like_count' => (int) get_post_meta($post->ID, 'like_count', true)
+				];
+			}
+		}
+
+		return $this->success([
+			'topics' => $topics,
+			'more' => (count($result) >= ZhuiGe_Xcx::POSTS_PER_PAGE ? 'more' : 'nomore')
+		]);
+	}
+
+	/**
+	 * 搜索文章
+	 */
+	public function get_list_search2($request)
+	{
+		$keyword = $this->param($request, 'keyword', '');
+		$offset = $this->param_int($request, 'offset', 0);
+
+		$args = [
+			'posts_per_page' => ZhuiGe_Xcx::POSTS_PER_PAGE,
+			'offset' => $offset,
+			'orderby' => 'date',
+			'ignore_sticky_posts' => 1,
+		];
+
+		$search_list_limit = ZhuiGe_Xcx::option_value('search_list_limit');
+		if (empty($search_list_limit)) {
+			$search_list_limit = 'zhuige_bbs_topic';
+		}
+		$args['post_type'] = $search_list_limit;
+
+		if (!empty($keyword)) {
+			$args['s'] = $keyword;
+		}
+
+		$query = new WP_Query();
+		$result = $query->query($args);
+		$topics = [];
+		foreach ($result as $post) {
+			if ($post->post_type == 'zhuige_bbs_topic' && function_exists('zhuige_bbs_topic_format')) {
+				$item = zhuige_bbs_topic_format($post);
+				$item['post_type'] = 'zhuige_bbs_topic';
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_column' && function_exists('zhuige_column_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_column_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else if ($post->post_type == 'post' && function_exists('zhuige_cms_post_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_cms_post_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_res' && function_exists('zhuige_res_post_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_res_post_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_activity' && function_exists('zhuige_activity_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_activity_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_goods' && function_exists('zhuige_goods_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_goods_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$topics[] = $item;
+			} else {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+
+				$item = [
+					'id' => $post->ID,
+					'post_type' => $post->post_type,
+					'post_type_name' => $post_type_info['name'],
+					'link' => $post_type_info['link'],
+					'title' => $post->post_title,
+					'thumbnail' => zhuige_xcx_get_one_post_thumbnail($post, true),
+				];
+
+				$topics[] = $item;
 			}
 		}
 
@@ -425,6 +620,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		$post = get_post($post_id);
 		if ($post->post_type == 'zhuige_bbs_topic') {
 			$page = 'pages/bbs/detail/detail';
+		} else if ($post->post_type == 'post') {
+			$page = 'pages/cms/detail/detail';
+		} else if ($post->post_type == 'zhuige_res') {
+			$page = 'pages/resource/detail/detail';
 		} else {
 			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg']);
 		}
@@ -502,6 +701,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		$post = get_post($post_id);
 		if ($post->post_type == 'zhuige_bbs_topic') {
 			$path = "pages/bbs/detail/detail?topic_id=$post_id";
+		} else if ($post->post_type == 'post') {
+			$path = "pages/cms/detail/detail?topic_id=$post_id";
+		} else if ($post->post_type == 'zhuige_res') {
+			$path = "pages/resource/detail/detail?topic_id=$post_id";
 		} else {
 			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg']);
 		}
@@ -576,6 +779,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		$post = get_post($post_id);
 		if ($post->post_type == 'zhuige_bbs_topic') {
 			$path = "pages/bbs/detail/detail?topic_id=$post_id";
+		} else if ($post->post_type == 'post') {
+			$path = "pages/cms/detail/detail?topic_id=$post_id";
+		} else if ($post->post_type == 'zhuige_res') {
+			$path = "pages/resource/detail/detail?topic_id=$post_id";
 		} else {
 			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg']);
 		}
@@ -614,6 +821,21 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		return $this->success(['acode' => $qrcode_link]);
 	}
+
+	/**
+	 * 获取文章类型信息
+	 */
+	private function get_post_type_info($post_type)
+	{
+		foreach(ZhuiGe_Xcx::$post_types as $item) {
+			if ($item['id'] == $post_type) {
+				return $item;
+			}
+		}
+
+		return ['name' => '未知', 'link' => '/pages/base/page/page'];
+	}
+
 }
 
 ZhuiGe_Xcx::$rest_controllers[] = new ZhuiGe_Xcx_Post_Controller();

@@ -1,6 +1,5 @@
 import Constant from '@/utils/constants';
 
-
 function getToken() {
 	let user = uni.getStorageSync(Constant.ZHUIGE_USER_KEY);
 

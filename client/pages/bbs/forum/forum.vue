@@ -92,8 +92,6 @@
 			<zhuige-scroll-ad ext-ad-class="zhuige-scroll-goods-mini" :items="forum.ad_custom"></zhuige-scroll-ad>
 		</view>
 
-		<!-- <zhuige-tab :tabs="tabs" cur-tab="1"></zhuige-tab> -->
-
 		<view class="zhuige-tab-block">
 			<!-- 圈子列表 近期tab -->
 			<view class="zhuige-social-list">
@@ -143,16 +141,6 @@
 				nav_opacity: 0,
 				statusBarHeight: 0,
 
-				// tabs: [{
-				// 		id: 1,
-				// 		title: '近期'
-				// 	},
-				// 	{
-				// 		id: 2,
-				// 		title: '关注'
-				// 	},
-				// ],
-
 				show_notice: false,
 
 				forum: undefined,
@@ -182,7 +170,9 @@
 		},
 
 		onLoad(options) {
-			Util.addShareScore(options.source);
+			if (options.id) {
+				options.forum_id = options.id;
+			}
 
 			if (!options.forum_id) {
 				uni.reLaunch({
@@ -190,6 +180,8 @@
 				})
 				return;
 			}
+
+			Util.addShareScore(options.source);
 
 			this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
 
@@ -380,7 +372,7 @@
 				params.forum_id = this.forum_id;
 				Rest.post(url, params).then(res => {
 					this.topics = refresh ? res.data.topics : this.topics.concat(res.data.topics);
-					this.loadMore = 'nomore';
+					this.loadMore = res.data.more;
 					this.loaded = true;
 				}, err => {
 					console.log(err)

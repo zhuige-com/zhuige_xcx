@@ -234,7 +234,6 @@ class ZhuiGe_Xcx_AJAX
 
             // WP_Filesystem();
             // $unzipfile = unzip_file($file_path . '.zip',  "../wp-content/plugins/zhuige-xcx/addons/$alias");
-
             // @unlink($file_path . '.zip');
 
             $zip = new ZipArchive;
@@ -293,10 +292,8 @@ class ZhuiGe_Xcx_AJAX
             }
             // zhuige_xcx_delete_dir("../wp-content/plugins/zhuige-xcx/addons/$alias");
 
-
             // WP_Filesystem();
             // $unzipfile = unzip_file($file_path . '.zip',  "../wp-content/plugins/zhuige-xcx/addons/$alias");
-
             // @unlink($file_path . '.zip');
 
             $zip = new ZipArchive;

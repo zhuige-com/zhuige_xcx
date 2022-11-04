@@ -179,11 +179,7 @@ class ZhuiGe_Xcx_Addon
 		if (isset($config['func'])) {
 			foreach ($config['func'] as $func) {
 				if (!in_array($func, ZhuiGe_Xcx_Addon::$funcs)) {
-					// if (in_array($addon, ['zhuige-certify'])) {
-					// 	array_unshift(ZhuiGe_Xcx_Addon::$funcs, $func);
-					// } else {
-						array_push(ZhuiGe_Xcx_Addon::$funcs, $func);
-					// }
+					array_push(ZhuiGe_Xcx_Addon::$funcs, $func);
 				}
 			}
 		}
@@ -253,7 +249,6 @@ class ZhuiGe_Xcx_Addon
 
 		$config = json_decode($content, true);
 
-		// array_push(ZhuiGe_Xcx_Addon::$addons, $addon);
 		ZhuiGe_Xcx_Addon::$addons = ZhuiGe_Xcx_Addon::minus(ZhuiGe_Xcx_Addon::$addons, [$addon]);
 
 		if (isset($config['sql'])) {

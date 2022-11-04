@@ -27,8 +27,10 @@
 					</template>
 
 					<view v-if="vip && vip.status==1">
-						<image mode="aspectFill" :src="vip.icon"></image>
-						<text>有效期至：{{vip.expire}}</text>
+						<view class="zhugie-vip-style">
+							<image mode="aspectFill" :src="vip.icon"></image>
+							<text>有效期至：{{vip.expire}}</text>
+						</view>
 					</view>
 				</view>
 				<view class="zhuige-info-line">
@@ -425,5 +427,21 @@
 		height: 100%;
 		width: 100%;
 		border-radius: 12rpx;
+	}
+
+	.zhugie-vip-style {
+		display: flex;
+		align-items: center;
+	}
+
+	.zhugie-vip-style image {
+		height: 12px;
+		width: 26px;
+		margin-rihgt: 12rpx;
+	}
+
+	.zhugie-vip-style text {
+		font-size: 28rpx;
+		font-weight: 400;
 	}
 </style>

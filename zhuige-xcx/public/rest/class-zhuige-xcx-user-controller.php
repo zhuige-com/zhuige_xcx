@@ -1061,7 +1061,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		$table_post_like = $wpdb->prefix . 'zhuige_xcx_post_like';
 		$likeme_count = $wpdb->get_var(
 			$wpdb->prepare(
-				"SELECT COUNT(id) FROM `$table_post_like` WHERE  post_id IN (SELECT count(id) FROM `$table_posts` WHERE `post_author`=%d AND `post_status`='publish')",
+				"SELECT COUNT(id) FROM `$table_post_like` WHERE  post_id IN (SELECT `id` FROM `$table_posts` WHERE `post_author`=%d AND `post_status`='publish')",
 				$my_user_id
 			)
 		);

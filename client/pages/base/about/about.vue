@@ -139,7 +139,6 @@
 	.zhuige-single-view {
 		padding: 0 30rpx 30rpx;
 	}
-
 	.zhuige-single-view .zhuige-block {
 		min-height: 560rpx;
 		padding: 30rpx;

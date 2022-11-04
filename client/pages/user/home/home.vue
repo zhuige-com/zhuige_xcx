@@ -58,7 +58,7 @@
 					</view>
 				</view>
 				<view v-if="user" class="zhuige-user-line">
-					<image mode="aspectFill" src="../../../static/pen.png"></image>
+					<image mode="aspectFill" src="/static/pen.png"></image>
 					<text>签名：</text>
 					<text>{{user.sign}}</text>
 				</view>

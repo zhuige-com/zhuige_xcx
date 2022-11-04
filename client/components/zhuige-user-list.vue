@@ -29,7 +29,6 @@
 					</view>
 				</scroll-view>
 			</view>
-
 		</view>
 
 		<!-- 用户列表好友 自动换行 关注列表-->
@@ -55,7 +54,6 @@
 				</view>
 			</view>
 		</view>
-
 
 	</view>
 </template>

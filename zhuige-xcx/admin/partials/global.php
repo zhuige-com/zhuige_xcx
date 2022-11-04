@@ -16,6 +16,15 @@ CSF::createSection($prefix, array(
     'icon'  => 'fas fa-plus-circle',
 ));
 
+
+/**
+ * 已注册的文章种类
+ */
+$zhuige_xcx_post_types = [];
+foreach(ZhuiGe_Xcx::$post_types as $post_type) {
+    $zhuige_xcx_post_types[$post_type['id']] = $post_type['name'];
+}
+
 //
 // 基础设置
 //
@@ -221,10 +230,47 @@ CSF::createSection($prefix, array(
             )
         ),
 
+        // array(
+        //     'id'     => 'home_rec_forum',
+        //     'type'   => 'fieldset',
+        //     'title'  => '热门圈子',
+        //     'fields' => array(
+
+        //         array(
+        //             'id'          => 'title',
+        //             'type'        => 'text',
+        //             'title'       => '标题',
+        //             'placeholder' => '标题'
+        //         ),
+
+        //         array(
+        //             'id'          => 'forums',
+        //             'type'        => 'select',
+        //             'title'       => '推荐圈子',
+        //             'placeholder' => '选择圈子',
+        //             'chosen'      => true,
+        //             'multiple'    => true,
+        //             'sortable'    => true,
+        //             'options'     => 'posts',
+        //             'query_args'  => array(
+        //                 'post_type'  => 'zhuige_bbs_forum',
+        //             ),
+        //         ),
+
+        //         array(
+        //             'id'    => 'switch',
+        //             'type'  => 'switcher',
+        //             'title' => '开启/停用',
+        //             'default' => '1'
+        //         ),
+        //     )
+        // ),
+
+        // 热门推荐
         array(
-            'id'     => 'home_rec_forum',
-            'type'   => 'fieldset',
-            'title'  => '热门圈子',
+            'id'     => 'home_rec_post',
+            'type'   => 'group',
+            'title'  => '推荐文章',
             'fields' => array(
 
                 array(
@@ -235,17 +281,158 @@ CSF::createSection($prefix, array(
                 ),
 
                 array(
-                    'id'          => 'forums',
+                    'id'          => 'more_link',
+                    'type'        => 'text',
+                    'title'       => '更多链接',
+                    'placeholder' => '链接'
+                ),
+
+                array(
+                    'id'          => 'post_type',
+                    'type'        => 'select',
+                    'title'       => '文章类型',
+                    'options'     => array_merge(['zhuige_bbs_forum' => '圈子'], $zhuige_xcx_post_types),
+                    'default' => 'post'
+                ),
+
+                array(
+                    'id'          => 'subtitle',
+                    'type'        => 'text',
+                    'title'       => '副标题',
+                    'placeholder' => '副标题',
+                    'dependency' => array('post_type', '==', 'zhuige_activity'),
+                ),
+
+                array(
+                    'id'      => 'banner',
+                    'type'    => 'media',
+                    'title'   => 'Banner',
+                    'library' => 'image',
+                    'dependency' => array('post_type', '==', 'zhuige_activity'),
+                ),
+
+                array(
+                    'id'          => 'column_ids',
+                    'type'        => 'select',
+                    'title'       => '推荐课程',
+                    'placeholder' => '选择课程',
+                    'chosen'      => true,
+                    'multiple'    => true,
+                    'sortable'    => true,
+                    'ajax'        => true,
+                    'options'     => 'posts',
+                    'query_args'  => array(
+                        'post_type'  => 'zhuige_column',
+                    ),
+                    'dependency' => array('post_type', '==', 'zhuige_column'),
+                ),
+
+                array(
+                    'id'          => 'activity_ids',
+                    'type'        => 'select',
+                    'title'       => '推荐活动',
+                    'placeholder' => '选择活动',
+                    'chosen'      => true,
+                    'multiple'    => true,
+                    'sortable'    => true,
+                    'ajax'        => true,
+                    'options'     => 'posts',
+                    'query_args'  => array(
+                        'post_type'  => 'zhuige_activity',
+                    ),
+                    'dependency' => array('post_type', '==', 'zhuige_activity'),
+                ),
+
+                array(
+                    'id'          => 'bbs_topic_ids',
+                    'type'        => 'select',
+                    'title'       => '推荐帖子',
+                    'placeholder' => '选择帖子',
+                    'chosen'      => true,
+                    'multiple'    => true,
+                    'sortable'    => true,
+                    'ajax'        => true,
+                    'options'     => 'posts',
+                    'query_args'  => array(
+                        'post_type'  => 'zhuige_bbs_topic',
+                    ),
+                    'dependency' => array('post_type', '==', 'zhuige_bbs_topic'),
+                ),
+
+                array(
+                    'id'          => 'forum_ids',
                     'type'        => 'select',
                     'title'       => '推荐圈子',
                     'placeholder' => '选择圈子',
                     'chosen'      => true,
                     'multiple'    => true,
                     'sortable'    => true,
+                    'ajax'        => true,
+                    'ajax'        => true,
                     'options'     => 'posts',
                     'query_args'  => array(
                         'post_type'  => 'zhuige_bbs_forum',
                     ),
+                    'dependency' => array('post_type', '==', 'zhuige_bbs_forum'),
+                ),
+
+                array(
+                    'id'          => 'resource_ids',
+                    'type'        => 'select',
+                    'title'       => '推荐知识库',
+                    'placeholder' => '选择知识库',
+                    'chosen'      => true,
+                    'multiple'    => true,
+                    'sortable'    => true,
+                    'ajax'        => true,
+                    'options'     => 'posts',
+                    'query_args'  => array(
+                        'post_type'  => 'zhuige_res',
+                    ),
+                    'dependency' => array('post_type', '==', 'zhuige_res'),
+                ),
+
+                array(
+                    'id'          => 'goods_ids',
+                    'type'        => 'select',
+                    'title'       => '推荐积分商品',
+                    'placeholder' => '选择积分商品',
+                    'chosen'      => true,
+                    'multiple'    => true,
+                    'sortable'    => true,
+                    'ajax'        => true,
+                    'options'     => 'posts',
+                    'query_args'  => array(
+                        'post_type'  => 'zhuige_goods',
+                    ),
+                    'dependency' => array('post_type', '==', 'zhuige_goods'),
+                ),
+
+                array(
+                    'id'          => 'post_ids',
+                    'type'        => 'select',
+                    'title'       => '推荐文章',
+                    'placeholder' => '选择文章',
+                    'chosen'      => true,
+                    'multiple'    => true,
+                    'sortable'    => true,
+                    'ajax'        => true,
+                    'options'     => 'posts',
+                    'dependency' => array('post_type', '==', 'post'),
+                ),
+
+                array(
+                    'id'          => 'page_ids',
+                    'type'        => 'select',
+                    'title'       => '推荐页面',
+                    'placeholder' => '选择页面',
+                    'chosen'      => true,
+                    'multiple'    => true,
+                    'sortable'    => true,
+                    'ajax'        => true,
+                    'ajax'        => true,
+                    'options'     => 'pages',
+                    'dependency' => array('post_type', '==', 'page'),
                 ),
 
                 array(
@@ -254,7 +441,44 @@ CSF::createSection($prefix, array(
                     'title' => '开启/停用',
                     'default' => '1'
                 ),
-            )
+                
+            ),
+        ),
+
+        array(
+            'id'    => 'rec_list_tab_switch',
+            'type'  => 'switcher',
+            'title' => '是否显示列表上tab',
+            'default' => '1'
+        ),
+
+        array(
+            'id'          => 'rec_list_tab_limit',
+            'type'        => 'select',
+            'title'       => '列表上tab项目',
+            'placeholder' => '列表上tab项目',
+            'chosen'      => true,
+            'multiple'    => true,
+            'sortable'    => true,
+            'options'     => $zhuige_xcx_post_types,
+        ),
+
+        array(
+            'id'    => 'rec_list_switch',
+            'type'  => 'switcher',
+            'title' => '是否显示列表',
+            'default' => '1'
+        ),
+
+        array(
+            'id'          => 'rec_list_limit',
+            'type'        => 'select',
+            'title'       => '列表中文章种类',
+            'placeholder' => '列表中文章种类',
+            'chosen'      => true,
+            'multiple'    => true,
+            // 'sortable'    => true,
+            'options'     => $zhuige_xcx_post_types,
         ),
 
         array(
@@ -519,6 +743,29 @@ CSF::createSection($prefix, array(
             'ajax'        => true,
             'options'     => 'pages',
             'placeholder' => '选择一个页面',
+        ),
+
+    )
+));
+
+//
+// 搜索页
+//
+CSF::createSection($prefix, array(
+    'parent' => 'global',
+    'title' => '搜索页面',
+    'icon'  => 'fas fa-map-marker',
+    'fields' => array(
+
+        array(
+            'id'          => 'search_list_limit',
+            'type'        => 'select',
+            'title'       => '列表中文章种类',
+            // 'placeholder' => '选择阅读限制种类',
+            'chosen'      => true,
+            'multiple'    => true,
+            // 'sortable'    => true,
+            'options'     => $zhuige_xcx_post_types,
         ),
 
     )

@@ -202,7 +202,7 @@
 	}
 </script>
 
-<style lang="css">
+<style>
 	page {
 		background-color: #F5F5F5;
 	}

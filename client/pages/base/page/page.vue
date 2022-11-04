@@ -26,6 +26,10 @@
 		onLoad(options) {
 			Util.addShareScore(options.source);
 
+			if (options.id) {
+				options.page_id = options.id;
+			}
+
 			if (!options.page_id) {
 				uni.reLaunch({
 					url: '/pages/tabs/index/index'

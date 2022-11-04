@@ -44,6 +44,8 @@
 					<zhuige-nodata v-if="loadedFollow" :tip="noDataTip"></zhuige-nodata>
 				</template>
 			</view>
+			
+			<uni-load-more v-if="cur_tab=='follow' && follows.length>0" :status="loadMoreFollow"></uni-load-more>
 
 			<view v-if="cur_tab=='fans'" class="zhuige-block">
 				<!-- 用户卡 基于发帖用户信息，增加用户列表专用 zhuige-friends-block -->
@@ -82,6 +84,8 @@
 				</template>
 			</view>
 
+			<uni-load-more v-if="cur_tab=='fans' && fans.length>0" :status="loadMoreFan"></uni-load-more>
+			
 		</view>
 	</view>
 </template>
@@ -350,15 +354,8 @@
 </script>
 
 <style>
-	page .content {
+	page {
 		background: #f5f5f5;
-	}
-
-	.content {
-		position: fixed;
-		height: 100%;
-		width: 100%;
-		overflow-y: scroll;
 	}
 
 	.zhuige-friends {

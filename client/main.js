@@ -21,7 +21,7 @@ export function createApp() {
 // #endif
 
 /**
- * 浣跨敤鍟嗗煄锛堝井淇″皬鍟嗗簵锛夋椂鏀惧紑
+ * 使用商城（微信小商店）时放开
  */
 // const miniShopPlugin = requirePlugin('mini-shop-plugin');
 // miniShopPlugin.initApp(getApp(), wx)

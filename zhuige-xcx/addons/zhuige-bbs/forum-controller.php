@@ -303,19 +303,18 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 			),
 			ARRAY_A
 		);
-		if (empty($forum_ids) && empty($forums)) {
-			return $this->success(['forums' => []]);
-		}
 
-		$forum_ids = array_column($forum_ids, 'forum_id');
-		$result = $query->query([
-			'posts_per_page' => -1,
-			'post_type' => ['zhuige_bbs_forum'],
-			'post__in' => $forum_ids
-		]);
-
-		foreach ($result as $item) {
-			$forums[] = $this->_format_forum($item, $stat);
+		if (!empty($forum_ids)) {
+			$forum_ids = array_column($forum_ids, 'forum_id');
+			$result = $query->query([
+				'posts_per_page' => -1,
+				'post_type' => ['zhuige_bbs_forum'],
+				'post__in' => $forum_ids
+			]);
+	
+			foreach ($result as $item) {
+				$forums[] = $this->_format_forum($item, $stat);
+			}
 		}
 
 		return $this->success(['forums' => $forums]);

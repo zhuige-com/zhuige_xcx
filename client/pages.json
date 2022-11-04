@@ -37,7 +37,7 @@
 	],
 	"globalStyle": {
 		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
+		"navigationBarTitleText": "追格小程序",
 		"navigationBarBackgroundColor": "#F5F5F5",
 		"backgroundColor": "#F5F5F5"
 	},
@@ -141,7 +141,6 @@
 					"navigationBarTitleText": "视频播放",
 					"enablePullDownRefresh": false
 				}
-
 			}]
 		},
 		{
@@ -191,6 +190,7 @@
 			}, {
 				"path": "forum/forum",
 				"style": {
+					"navigationBarTitleText": "圈子",
 					"navigationStyle": "custom",
 					"navigationBarTextStyle": "white",
 					"enablePullDownRefresh": true
@@ -219,14 +219,12 @@
 					"navigationBarTitleText": "圈子成员",
 					"enablePullDownRefresh": false
 				}
-
 			}, {
 				"path": "forum-create/forum-create",
 				"style": {
 					"navigationBarTitleText": "创建圈子",
 					"enablePullDownRefresh": false
 				}
-
 			}]
 		}
 	]
