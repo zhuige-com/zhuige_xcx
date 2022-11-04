@@ -16,6 +16,9 @@
 
 帮助文档：https://www.zhuige.com/docs/cat/39.html
 
+#### 产品体验
+<img src="https://www.zhuige.com/uploads/20210912/e829d0f3ab1f5b18cf3509c9d7e83434.jpg" alt="微信扫码体验" width="300" height="300" />
+
 
 #### 联系我们
 
