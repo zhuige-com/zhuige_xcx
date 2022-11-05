@@ -21,10 +21,14 @@ export function createApp() {
 // #endif
 
 /**
- * 使用商城（微信小商店）时放开
+ * 浣跨敤鍟嗗煄锛堝井淇″皬鍟嗗簵锛夋椂鏀惧紑
  */
-// const miniShopPlugin = requirePlugin('mini-shop-plugin');
-// miniShopPlugin.initApp(getApp(), wx)
-// if (miniShopPlugin) {
-// 	miniShopPlugin.initHomePath('/pages/wxmall/index/index');
+// // #ifdef MP-MP-WEIXIN
+// {
+// 	const miniShopPlugin = requirePlugin('mini-shop-plugin');
+// 	miniShopPlugin.initApp(getApp(), wx)
+// 	if (miniShopPlugin) {
+// 		miniShopPlugin.initHomePath('/pages/wxmall/index/index');
+// 	}
 // }
+// // #endif
