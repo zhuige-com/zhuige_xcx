@@ -73,7 +73,7 @@ class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		$data = [
 			'id' => $res['id'],
-			'title' => $res['title'],
+			'title' => isset($res['title'])?$res['title']:'',
 			'description' => '',
 			'alt' => '',
 			'url' => $url,
