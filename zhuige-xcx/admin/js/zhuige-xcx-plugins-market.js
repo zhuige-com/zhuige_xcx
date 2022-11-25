@@ -99,7 +99,7 @@
                     free: (zhuige_xcx_plugins_market_free == '100' ? '' : zhuige_xcx_plugins_market_free),
                 },
                 function (res, status) {
-                    console.log(res);
+                    // console.log(res);
                     if (status != 'success' || !res.success) {
                         return;
                     }

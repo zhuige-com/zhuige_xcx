@@ -15,7 +15,7 @@
                     return;
                 }
 
-                console.log(res);
+                // console.log(res);
 
                 if (res.data.code == 1) {
                     window.location.reload();
@@ -98,6 +98,14 @@
             })
         });
 
+        /**
+         * 广告滚动
+         */
+         $('.zhuige-plugins-market-ads').scrollQ({
+            line: 1,
+            scrollNum: 1,
+            scrollTime: 2000
+        });
     });
 
 })(jQuery);

@@ -92,15 +92,6 @@
         });
 
         /**
-         * 广告滚动
-         */
-        $('.zhuige-plugins-market-ads').scrollQ({
-            line: 1,
-            scrollNum: 1,
-            scrollTime: 2000
-        });
-
-        /**
          * 更新插件
          */
         $(document).on('click', '.btn-zhuige-xcx-plugins-market-update', function () {
