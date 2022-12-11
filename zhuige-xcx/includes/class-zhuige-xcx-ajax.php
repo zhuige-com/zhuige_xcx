@@ -40,6 +40,9 @@ class ZhuiGe_Xcx_AJAX
 
             // 消除新版本通知
             add_action('wp_ajax_admin_zhuige_xcx_plugins_market_clear_version', array($this, 'ajax_zhuige_xcx_plugins_market_clear_version'));
+
+            // 更新框架
+            add_action('wp_ajax_admin_zhuige_xcx_update', array($this, 'ajax_zhuige_xcx_update'));
         }
     }
 
@@ -332,6 +335,48 @@ class ZhuiGe_Xcx_AJAX
         zhuige_xcx_delete_dir(ZHUIGE_XCX_ADDONS_DIR . $alias . '/');
 
         wp_send_json_success([]);
+    }
+
+    /**
+     * 更新框架
+     */
+    public function ajax_zhuige_xcx_update()
+    {
+        $code = get_user_meta(get_current_user_id(), 'zhuige-xcx-plugins-market-code', true);
+        if (empty($code)) {
+            wp_send_json_error();
+        }
+
+        $plugin = 'zhuige-xcx';
+        $response = wp_remote_post("https://www.zhuige.com/api/plugins/update_check", array(
+            'method'      => 'POST',
+            'body'        => array(
+                'plugin' => $plugin,
+                'code' => $code,
+                'domain' => $_SERVER['HTTP_HOST'],
+            )
+        ));
+
+        if (is_wp_error($response) || $response['response']['code'] != 200) {
+            wp_send_json_error();
+        }
+
+        $data = json_decode($response['body'], TRUE);
+
+        if ($data['code'] == 1) {
+            $file_path = WP_PLUGIN_DIR . '/' . $plugin . '.zip';
+            zhuige_xcx_download_file($data['data']['url'], $file_path);
+
+            $zip = new ZipArchive;
+            if($zip->open($file_path) === TRUE) { 
+                $zip->extractTo(WP_PLUGIN_DIR . '/' . $plugin);
+                $zip->close();
+            }
+            
+            @unlink($file_path);
+        }
+
+        wp_send_json_success($data);
     }
 
     /**

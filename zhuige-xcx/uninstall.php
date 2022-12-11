@@ -7,6 +7,6 @@
  * Copyright © 2022 www.zhuige.com All rights reserved.
  */
 
-if ( ! defined( 'WP_UNINSTALL_PLUGIN' ) ) {
+if (!defined('WP_UNINSTALL_PLUGIN')) {
 	exit;
 }

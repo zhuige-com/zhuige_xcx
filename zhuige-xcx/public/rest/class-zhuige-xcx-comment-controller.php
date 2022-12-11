@@ -51,6 +51,46 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (!ZhuiGe_Xcx::option_value('comment_switch')) {
 			return $this->error('评论已关闭');
 		}
+		
+		if (function_exists('zhuige_auth_is_black') && zhuige_auth_is_black($user_id)) {
+			return $this->error('评论太频繁了~');
+		}
+
+		$post_id = $this->param_int($request, 'post_id', 0);
+		if (empty($post_id)) {
+			return $this->error('缺少参数');
+		}
+
+
+		$post = get_post($post_id);
+
+
+		$is_user_vip = false;
+		if (function_exists('zhuige_xcx_vip_is_vip')) {
+			$cerify = zhuige_xcx_vip_is_vip($user_id);
+			$is_user_vip = ($cerify['status'] == 1);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-auth')) {
+			$auth_comment = false;
+			if ($post->post_type == 'zhuige_bbs_topic') {
+				$auth_comment_topic = ZhuiGe_Xcx::option_value('auth_comment_topic');
+				$auth_comment = ($auth_comment_topic == 'all' || ($auth_comment_topic == 'vip' && $is_user_vip));
+			} else if ($post->post_type == 'post') {
+				$auth_comment_cms = ZhuiGe_Xcx::option_value('auth_comment_cms');
+				$auth_comment = ($auth_comment_cms == 'all' || ($auth_comment_cms == 'vip' && $is_user_vip));
+			} else if ($post->post_type == 'zhuige_res') {
+				$auth_comment_resource = ZhuiGe_Xcx::option_value('auth_comment_resource');
+				$auth_comment = ($auth_comment_resource == 'all' || ($auth_comment_resource == 'vip' && $is_user_vip));
+			} else if ($post->post_type == 'zhuige_vote') {
+				$auth_comment_vote = ZhuiGe_Xcx::option_value('auth_comment_vote');
+				$auth_comment = ($auth_comment_vote == 'all' || ($auth_comment_vote == 'vip' && $is_user_vip));
+			}
+
+			if (!$auth_comment) {
+				return $this->error('无评论权限');
+			}
+		}
 
 		if (ZhuiGe_Xcx::option_value('comment_mobile_switch')) {
 			$mobile = get_user_meta($user_id, 'zhuige_xcx_user_mobile', true);
@@ -59,11 +99,11 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 			}
 		}
 
-		$post_id = $this->param_int($request, 'post_id', 0);
+		
 		$parent_id = $this->param_int($request, 'parent_id', 0);
 		$reply_id = $this->param_int($request, 'reply_id', 0);
 		$content = $this->param($request, 'content', '');
-		if (empty($post_id) || empty($content)) {
+		if (empty($content)) {
 			return $this->error('缺少参数');
 		}
 
@@ -88,7 +128,6 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		//通知
 		// --------------------------------------------------
-		$post = get_post($post_id);
 		$to_id = $post->post_author;
 
 		global $wpdb;

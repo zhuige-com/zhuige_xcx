@@ -432,6 +432,15 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	display: flex;
 	justify-content: end;
 }
+	.social-dell {
+		width: 52rpx;
+		height: 52rpx;
+		line-height: 52rpx;
+		justify-content: center;
+		border-radius: 52rpx;
+		border-radius: 52rpx;
+		border: 2rpx solid #FF6146;
+	}
 	.zhuige-social-opt view {
 		white-space: nowrap;
 		margin-left: 20rpx;
@@ -470,6 +479,7 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	display: flex;
 	align-items: center;
 	padding: 12rpx 0;
+	flex-wrap: wrap;
 }
 
 .zhuige-social-address>view,
@@ -483,6 +493,10 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	background: #F1F3F5;
 	padding: 0 24rpx 0 12rpx;
 	margin-right: 16rpx;
+	white-space: nowrap;
+}
+.zhuige-detail-tags>view {
+	margin-bottom: 12rpx;
 }
 
 .zhuige-social-address>view view,
@@ -827,7 +841,7 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 		position: -webkit-sticky;
 		position: sticky;
 		top: 90px;
-		z-index: 999;
+		z-index: 990;
 		
 		padding: 20rpx 20rpx 0;
 	}
@@ -844,14 +858,7 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	.zhuige-tab-block .zhuige-social-list .zhugie-info-text {
 		padding-top: 20rpx;
 	}
-	
-	.zhuige-mini-custom .zhuige-topic-scroll .zhuige-scroll-ad-block {
-		width: 42%!important;
-	}
-	.zhuige-mini-custom .zhuige-topic-scroll .zhuige-scroll-ad-block .cover-text {
-		display: none;
-	}
-	.zhuige-info-rate {
+		.zhuige-info-rate {
 		display: flex;
 		align-items: center;
 	}

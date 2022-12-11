@@ -181,6 +181,10 @@
                         scrollNum: 1,
                         scrollTime: 2000
                     });
+
+                    if (res.data.notice) {
+                        $('.zhuige-plugins-market-notice').html(res.data.notice);
+                    }
                 });
         }
         load_plugins_market_list();

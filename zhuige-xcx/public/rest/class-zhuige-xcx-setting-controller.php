@@ -89,6 +89,95 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 		$data['icons'] = $icon_navs;
 
+
+		// 热门话题
+		$home_subject_hot = ZhuiGe_Xcx::option_value('home_subject_hot');
+		if (!empty($home_subject_hot)) {
+			$terms = get_terms(['taxonomy' => 'zhuige_bbs_topic_tag', 'hide_empty' => false, 'include' => $home_subject_hot, 'orderby' => 'include']);
+
+			$subject_hots = [];
+			foreach ($terms as $term) {
+				$options = get_term_meta($term->term_id, 'zhuige_bbs_topic_tag_options', true);
+				$subject_hots[] = [
+					'id' => $term->term_id,
+					'name' => $term->name,
+					'badge' => $options['badge']
+				];
+			}
+
+			$data['subject_hots'] = $subject_hots;
+			$data['subject_hot_width'] = ZhuiGe_Xcx::option_value('home_subject_hot_width');
+		}
+
+		
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-ads')) {
+			// 文字链接
+			$home_ad_hot_link = ZhuiGe_Xcx::option_value('home_ad_hot_link');
+			if ($home_ad_hot_link && $home_ad_hot_link['switch']) {
+				if ($home_ad_hot_link['icon'] && $home_ad_hot_link['icon']['url']) {
+					$hot_link['icon'] = $home_ad_hot_link['icon']['url'];
+				}
+				if (is_array($home_ad_hot_link['items'])) {
+					$hot_link['items'] = $home_ad_hot_link['items'];
+				}
+
+				$data['hot_link'] = $hot_link;
+			}
+
+			// 图片链接
+			$home_ad_imgs_top = ZhuiGe_Xcx::option_value('home_ad_imgs_top');
+			if ($home_ad_imgs_top && $home_ad_imgs_top['switch']) {
+				$imgs_top['title'] = $home_ad_imgs_top['title'];
+				$items = [];
+				foreach ($home_ad_imgs_top['items'] as $item) {
+					if ($item['switch']) {
+						$items[] = [
+							'title' => $item['title'],
+							'badge' => $item['badge'],
+							'image' => $item['image']['url'],
+							'link' => $item['link'],
+						];
+					}
+				}
+				$imgs_top['items'] = $items;
+
+				$data['imgs_top'] = $imgs_top;
+			}
+
+			// 图片链接 - 帖子中
+			$home_ad_imgs_embed = ZhuiGe_Xcx::option_value('home_ad_imgs_embed');
+			if ($home_ad_imgs_embed && $home_ad_imgs_embed['switch']) {
+				$imgs_embed['title'] = $home_ad_imgs_embed['title'];
+				$items = [];
+				foreach ($home_ad_imgs_embed['items'] as $item) {
+					if ($item['switch']) {
+						$items[] = [
+							'title' => $item['title'],
+							'badge' => $item['badge'],
+							'image' => $item['image']['url'],
+							'link' => $item['link'],
+							'price' => $item['price'],
+						];
+					}
+				}
+				$imgs_embed['items'] = $items;
+				$imgs_embed['position'] = $home_ad_imgs_embed['position'];
+
+				$data['imgs_embed'] = $imgs_embed;
+			}
+
+			//弹框广告
+			$home_ad_pop = ZhuiGe_Xcx::option_value('home_ad_pop');
+			if ($home_ad_pop && $home_ad_pop['switch'] && $home_ad_pop['image'] && $home_ad_pop['image']['url']) {
+				$data['pop_ad'] = [
+					'image' => $home_ad_pop['image']['url'],
+					'link' => $home_ad_pop['link'],
+					'interval' => $home_ad_pop['interval'],
+				];
+			}
+		}
+
+
 		// 推荐用户
 		$rec_user = ZhuiGe_Xcx::option_value('home_rec_user');
 		if ($rec_user && $rec_user['switch']) {
@@ -295,6 +384,10 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 			$data['thumb'] = $rec_home_thumb['url'];
 		}
 
+		if (ZhuiGe_Xcx::option_value('home_gray_switch')) {
+			$data['style'] = ZhuiGe_Xcx::option_value('home_gray_css');
+		}
+
 		return $this->success($data);
 	}
 
@@ -304,6 +397,15 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 	public function get_create($request)
 	{
 		$data = [];
+
+		// 图片广告
+		$create_ad_image = ZhuiGe_Xcx::option_value('create_ad_image');
+		if ($create_ad_image && $create_ad_image['switch']) {
+			$data['ad'] = [
+				'image' => $create_ad_image['image']['url'],
+				'link' => $create_ad_image['link']
+			];
+		}
 
 		//图标导航
 		$create_items_org = ZhuiGe_Xcx::option_value('create_items');

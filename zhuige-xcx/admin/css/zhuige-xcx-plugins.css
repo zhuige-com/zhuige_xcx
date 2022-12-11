@@ -498,3 +498,9 @@ body {
 .authorization .zhuige-market-pop-form p.zhuige-market-pop-btn a:nth-child(2) {
     background: #FF6146;
 }
+.zhuige-plugins-market-notice {
+    background: #FFFFFF;
+    border-radius: 6px;
+    padding: 2px 20px;
+    margin-bottom: 20px;
+}

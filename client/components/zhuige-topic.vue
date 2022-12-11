@@ -25,9 +25,9 @@
 					</view>
 				</view>
 			</view>
-			<!--<view class="zhuige-social-opt">
-				<uni-icons type="bars" color="#999999" size="22"></uni-icons>
-			</view>-->
+			<view v-if="trash" class="zhuige-social-opt social-dell">
+				<uni-icons type="trash" color="#FF6146" size="16" @click="clickTrashTopic(topic)"></uni-icons>
+			</view>
 		</view>
 
 		<!-- 话题 + 正文 -->
@@ -50,7 +50,8 @@
 			<view v-if="topic.type=='image'" class="zhuige-social-img">
 				<view v-if="topic.images.length==1" class="zhugie-img one-img">
 					<view class="img-box" v-for="(image, imageIndex) in topic.images" :key="imageIndex">
-						<image class="one-img-cover" mode="aspectFill" :src="image.image.url" @click="clickImages(imageIndex)" :style="{
+						<image class="one-img-cover" mode="aspectFill" :src="image.image.url"
+							@click="clickImages(imageIndex)" :style="{
 								width: parseInt(image.image.width)>parseInt(image.image.height)?'480rpx':parseInt(image.image.width)/parseInt(image.image.height)*480 + 'rpx', 
 								height: parseInt(image.image.width)<parseInt(image.image.height)?'480rpx':parseInt(image.image.height)/parseInt(image.image.width)*480 + 'rpx'
 							}">
@@ -58,12 +59,14 @@
 					</view>
 				</view>
 				<view v-else class="zhugie-img" :class="imageClass[topic.images.length]">
-					<view :class="'img-box ' + 'img-box-' + (imageIndex + 1)" v-for="(image, imageIndex) in topic.images" :key="imageIndex">
+					<view :class="'img-box ' + 'img-box-' + (imageIndex + 1)"
+						v-for="(image, imageIndex) in topic.images" :key="imageIndex">
 						<!-- 
 							class="img-cover-length" length为变量，对应多图时各数量的图片序号
 							如：3图的时候对应输出img-cover-1，img-cover-2，img-cover-3
 						  -->
-						<image class="img-cover" mode="aspectFill" :src="image.image.url" @click="clickImages(imageIndex)"></image>
+						<image class="img-cover" mode="aspectFill" :src="image.image.url"
+							@click="clickImages(imageIndex)"></image>
 					</view>
 				</view>
 			</view>
@@ -126,6 +129,10 @@
 				type: Object,
 				default: undefined
 			},
+			trash: {
+				type: Boolean,
+				default: false
+			}
 		},
 
 		data() {
@@ -155,6 +162,10 @@
 
 			clickDetail() {
 				Util.openLink('/pages/bbs/detail/detail?topic_id=' + this.topic.id);
+			},
+			
+			clickTrashTopic(topic) {
+				this.$emit("deleteTopic", topic);
 			}
 		}
 	}
@@ -176,16 +187,6 @@
 		height: 100%;
 	}
 
-	/* 
-	.one-img {
-		justify-content: center;
-	}
-
-	.one-img view {
-		height: 674rpx;
-		width: 674rpx;
-	}*/
-	
 	.one-img .one-img-cover {
 		border-radius: 12rpx;
 	}
@@ -195,7 +196,7 @@
 		align-items: center;
 	}
 
-	.two-img .img-box-1, 
+	.two-img .img-box-1,
 	.two-img .img-box-2 {
 		height: 332rpx;
 		width: 332rpx;
@@ -215,7 +216,7 @@
 	}
 
 	.three-img .img-box-1,
-	.three-img .img-box-2, 
+	.three-img .img-box-2,
 	.three-img .img-box-3 {
 		height: 332rpx;
 		width: 332rpx;
@@ -244,9 +245,9 @@
 		flex-wrap: wrap;
 	}
 
-	.four-img .img-box-1, 
-	.four-img .img-box-2, 
-	.four-img .img-box-3, 
+	.four-img .img-box-1,
+	.four-img .img-box-2,
+	.four-img .img-box-3,
 	.four-img .img-box-4 {
 		height: 218rpx;
 		width: 218rpx;
@@ -275,10 +276,10 @@
 		flex-wrap: wrap;
 	}
 
-	.five-img .img-box-1, 
-	.five-img .img-box-2, 
-	.five-img .img-box-3, 
-	.five-img .img-box-4, 
+	.five-img .img-box-1,
+	.five-img .img-box-2,
+	.five-img .img-box-3,
+	.five-img .img-box-4,
 	.five-img .img-box-5 {
 		height: 332rpx;
 		width: 332rpx;
@@ -325,10 +326,10 @@
 		flex-wrap: wrap;
 	}
 
-	.six-img .img-box-1, 
-	.six-img .img-box-2, 
-	.six-img .img-box-3, 
-	.six-img .img-box-4, 
+	.six-img .img-box-1,
+	.six-img .img-box-2,
+	.six-img .img-box-3,
+	.six-img .img-box-4,
 	.six-img .img-box-5,
 	.six-img .img-box-6 {
 		height: 218rpx;

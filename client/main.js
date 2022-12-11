@@ -20,10 +20,8 @@ export function createApp() {
 }
 // #endif
 
-/**
- * 使用商城（微信小商店）时放开
- */
-// // #ifdef MP-MP-WEIXIN
+// 设置微信小商店【店铺按钮】仅适用于调试库2.25.4以下版本
+// // #ifdef MP-WEIXIN
 // {
 // 	const miniShopPlugin = requirePlugin('mini-shop-plugin');
 // 	miniShopPlugin.initApp(getApp(), wx)

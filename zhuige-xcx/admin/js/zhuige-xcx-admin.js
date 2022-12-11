@@ -30,7 +30,29 @@
 	 */
 
 	$(function () {
-		
+		$('body').on('click', '.button-zhuige-xcx-update', () => {
+			layer.msg('升级中~')
+            $.post("/wp-admin/admin-ajax.php",
+                {
+                    action: 'admin_zhuige_xcx_update'
+                },
+                function (res, status) {
+                    layer.closeAll();
+
+                    if (status != 'success' || !res.success) {
+                        layer.msg('系统异常');
+                        return;
+                    }
+
+                    if (res.data.code == 0) {
+                        layer.msg(res.data.msg);
+                        return;
+                    }
+
+                    window.location.reload();
+                }
+            );
+		})
 	});
 
 })(jQuery);

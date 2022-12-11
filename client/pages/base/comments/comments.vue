@@ -91,7 +91,7 @@
 					offset: this.comments.length
 				}).then(res => {
 					this.comments = refresh ? res.data.comments : this.comments.concat(res.data.comments);
-					this.loadMore = 'nomore';
+					this.loadMore = res.data.more;
 					this.loaded = true;
 				}, err => {
 					console.log(err)

@@ -23,7 +23,7 @@
 		</view>
 
 		<!-- 话题块 -->
-		<view class="zhuige-topic-tag-group">
+		<view v-if="recs.length>0" class="zhuige-topic-tag-group">
 			<view class="zhuige-block">
 				<view class="zhuige-block-head">
 					<view>话题推荐</view>
@@ -38,7 +38,7 @@
 		</view>
 
 		<!-- 话题块 -->
-		<view class="zhuige-topic-tag-group">
+		<view v-if="hots.length>0" class="zhuige-topic-tag-group">
 			<view class="zhuige-block">
 				<view class="zhuige-block-head">
 					<view>热门话题(Top {{hots.length}})</view>

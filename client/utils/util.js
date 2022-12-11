@@ -18,6 +18,9 @@ function navigateBack() {
 	});
 }
 
+/**
+ * 解析出url中的参数
+ */
 function getQueryString(url, name) {
 	let index = url.indexOf("?");
 	if (index != -1) {
@@ -90,6 +93,8 @@ function openLink(link) {
 				'/pages/bbs/post/post',
 				'/pages/bbs/forum-create/forum-create',
 				'/pages/contribution/manage/manage',
+				'/pages/contribution/post-edit/post-edit',
+				'/pages/vote/post/post',
 			];
 			for (let i = 0; i < links.length; i++) {
 				if (link.indexOf(links[i]) > -1) {
@@ -256,6 +261,9 @@ function openLink(link) {
 	}
 }
 
+/**
+ * 是否弹窗
+ */
 function getPopAd(pop_ad, key) {
 	if (!pop_ad) {
 		return false;
@@ -274,8 +282,33 @@ function getPopAd(pop_ad, key) {
 	return false;
 }
 
+/**
+ * 判断是否是手机号
+ */
 function isMobile(mobile) {
 	return (/^1[3456789]\d{9}$/.test(mobile));
+}
+
+/**
+ * 检查是否已绑定了手机
+ */
+function checkMobile() {
+	let user = Auth.getUser();
+	if (!user) {
+		uni.navigateTo({
+			url: '/pages/user/login/login',
+		});
+		return false;
+	}
+	
+	if (!user.mobile) {
+		uni.navigateTo({
+			url: '/pages/user/login/login?type=mobile',
+		});
+		return false;
+	}
+	
+	return true;
 }
 
 /**
@@ -315,6 +348,7 @@ module.exports = {
 	openLink,
 
 	isMobile,
+	checkMobile,
 
 	addShareSource,
 	addShareScore,

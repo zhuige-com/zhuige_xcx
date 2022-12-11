@@ -71,6 +71,8 @@ if (!defined('ZHUIGE_XCX_PLUGINS_MARKET')) {
                 </div>
             </div>
 
+            <div class="zhuige-plugins-market-notice"></div>
+
             <div class="zhuige-market-list">
                 <!-- 内容待填充 -->
             </div>

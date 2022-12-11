@@ -57,7 +57,7 @@ class ZhuiGe_Xcx_Public
 		global $wpdb;
 
 		$data = ['post_status' => get_post_status($post_id)];
-		$where = ['type' => 'post', 'post_id' => $post_id];
+		$where = ['post_id' => $post_id];
 
 		$table_post_view = $wpdb->prefix . 'zhuige_xcx_post_view';
 		$wpdb->update($table_post_view, $data, $where);
@@ -68,7 +68,7 @@ class ZhuiGe_Xcx_Public
 		$table_post_favorite = $wpdb->prefix . 'zhuige_xcx_post_favorite';
 		$wpdb->update($table_post_favorite, $data, $where);
 
-		$where = ['post_type' => 'post', 'post_id' => $post_id];
+		$where = ['post_id' => $post_id];
 		$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
 		$wpdb->update($table_notify, $data, $where);
 	}
@@ -78,7 +78,7 @@ class ZhuiGe_Xcx_Public
 		global $wpdb;
 
 		$data = ['post_status' => get_post_status($post_id)];
-		$where = ['type' => 'post', 'post_id' => $post_id];
+		$where = ['post_id' => $post_id];
 
 		$table_post_view = $wpdb->prefix . 'zhuige_xcx_post_view';
 		$wpdb->update($table_post_view, $data, $where);
@@ -89,7 +89,7 @@ class ZhuiGe_Xcx_Public
 		$table_post_favorite = $wpdb->prefix . 'zhuige_xcx_post_favorite';
 		$wpdb->update($table_post_favorite, $data, $where);
 
-		$where = ['post_type' => 'post', 'post_id' => $post_id];
+		$where = ['post_id' => $post_id];
 		$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
 		$wpdb->update($table_notify, $data, $where);
 	}
@@ -99,16 +99,19 @@ class ZhuiGe_Xcx_Public
 		global $wpdb;
 
 		$table_post_view = $wpdb->prefix . 'zhuige_xcx_post_view';
-		$wpdb->query("DELETE FROM `$table_post_view` WHERE `type`='post' AND post_id=$post_id");
+		$wpdb->query("DELETE FROM `$table_post_view` WHERE post_id=$post_id");
 
 		$table_post_like = $wpdb->prefix . 'zhuige_xcx_post_like';
-		$wpdb->query("DELETE FROM `$table_post_like` WHERE `type`='post' AND post_id=$post_id");
+		$wpdb->query("DELETE FROM `$table_post_like` WHERE post_id=$post_id");
 
 		$table_post_favorite = $wpdb->prefix . 'zhuige_xcx_post_favorite';
-		$wpdb->query("DELETE FROM `$table_post_favorite` WHERE `type`='post' AND post_id=$post_id");
+		$wpdb->query("DELETE FROM `$table_post_favorite` WHERE post_id=$post_id");
 
 		$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
-		$wpdb->query("DELETE FROM `$table_notify` WHERE `post_type`='post' AND post_id=$post_id");
+		$wpdb->query("DELETE FROM `$table_notify` WHERE post_id=$post_id");
+
+		$table_vote_log = $wpdb->prefix . 'zhuige_xcx_vote_log';
+		$wpdb->query("DELETE FROM `$table_vote_log` WHERE vote_id=$post_id");
 	}
 
 	public function transition_comment_status($new_status, $old_status, $comment)
@@ -118,7 +121,7 @@ class ZhuiGe_Xcx_Public
 		$wpdb->update(
 			$table_plus_notify,
 			['post_status' => ($new_status == 'approved' ? 'publish' : 'trash')],
-			['type' => 'comment', 'post_id' => $comment->comment_post_ID, 'post_type' => 'post']
+			['type' => 'comment', 'post_id' => $comment->comment_post_ID]
 		);
 	}
 }

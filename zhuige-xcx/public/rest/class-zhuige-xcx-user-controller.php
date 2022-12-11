@@ -19,6 +19,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 			'get_info' => ['callback' => 'get_info', 'auth' => 'login'],
 			'set_info' => ['callback' => 'set_info', 'auth' => 'login'],
+			'init_info' => ['callback' => 'init_info', 'auth' => 'login'],
 			'set_mobile' => ['callback' => 'set_mobile', 'auth' => 'login'],
 
 			'like' => ['callback' => 'user_like', 'auth' => 'login'],
@@ -37,6 +38,8 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			'notify' => ['callback' => 'get_notify', 'auth' => 'login'],
 			'notify_read' => 'notify_read',
 			'notify_clear' => ['callback' => 'notify_clear', 'auth' => 'login'],
+
+			'share_score' => 'share_score'
 		];
 	}
 
@@ -70,9 +73,12 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 	{
 		$code = $this->param($request, 'code', '');
 		$nickname = $this->param($request, 'nickname', '');
-		$avatar = $this->param($request, 'avatar', '');
+		// $avatar = $this->param($request, 'avatar', '');
 		$channel = $this->param($request, 'channel', '');
-		if (empty($code) || empty($nickname) || empty($avatar) || empty($channel)) {
+		// if (empty($code) || empty($nickname) || empty($avatar) || empty($channel)) {
+		// 	return $this->error('缺少参数');
+		// }
+		if (empty($code) || empty($nickname) || empty($channel)) {
 			return $this->error('缺少参数');
 		}
 
@@ -91,8 +97,14 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 
 		$user = get_user_by('login', $session['openid']);
+		$first = 0;
 		if ($user) {
 			$user_id = $user->ID;
+			if (function_exists('zhuige_auth_is_black') && zhuige_auth_is_black($user_id)) {
+				return $this->error('无登录权限~');
+			}
+
+			$nickname = get_user_meta($user->ID, 'nickname', true);
 		} else {
 			$user_id = wp_insert_user([
 				'user_login' => $session['openid'],
@@ -127,6 +139,8 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			do_action('zhuige_xcx_user_register', [
 				'user_id' => $user_id
 			]);
+
+			$first = 1;
 		}
 
 		update_user_meta($user_id, 'zhuige_channel', $channel);
@@ -140,33 +154,38 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		//如果每次都同步微信头像 会导致小程序设置的头像失效；所以没有头像时，才同步头像
-		$old_avatar = get_user_meta($user_id, 'zhuige_xcx_user_avatar', true);
-		if (!$old_avatar || strstr($old_avatar, 'qlogo.cn')) {
-			$new_avatar = $this->download_wx_avatar($avatar, $user_id);
+		// $old_avatar = get_user_meta($user_id, 'zhuige_xcx_user_avatar', true);
+		// if (!$old_avatar || strstr($old_avatar, 'qlogo.cn')) {
+		// 	$new_avatar = $this->download_wx_avatar($avatar, $user_id);
 
-			if ($new_avatar) {
-				$new_avatar_url = $new_avatar['url'];
-				$dres = zhuige_xcx_import_image2attachment($new_avatar['path']);
-				if (!is_wp_error($dres)) {
-					$upload_dir = wp_upload_dir();
-					$new_avatar_url = $upload_dir['url'] . '/' . $dres;
-				}
-				update_user_meta($user_id, 'zhuige_xcx_user_avatar', $new_avatar_url);
-			} else {
-				update_user_meta($user_id, 'zhuige_xcx_user_avatar', $avatar);
-			}
-		}
+		// 	if ($new_avatar) {
+		// 		$new_avatar_url = $new_avatar['url'];
+		// 		$dres = zhuige_xcx_import_image2attachment($new_avatar['path']);
+		// 		if (!is_wp_error($dres)) {
+		// 			$upload_dir = wp_upload_dir();
+		// 			$new_avatar_url = $upload_dir['url'] . '/' . $dres;
+		// 		}
+		// 		update_user_meta($user_id, 'zhuige_xcx_user_avatar', $new_avatar_url);
+		// 	} else {
+		// 		update_user_meta($user_id, 'zhuige_xcx_user_avatar', $avatar);
+		// 	}
+		// }
 
 
 		$zhuige_xcx_user_token = $this->_generate_token();
 		update_user_meta($user_id, 'zhuige_xcx_user_token', $zhuige_xcx_user_token);
 
-		$user = array(
+		$user = [
 			'user_id' => $user_id,
 			'nickname' => $nickname,
 			'token' => $zhuige_xcx_user_token,
 			'mobile' => get_user_meta($user_id, 'zhuige_xcx_user_mobile', true)
-		);
+		];
+
+		if ($first) {
+			$user['first'] = $first;
+			// $user['avatar'] = ZhuiGe_Xcx::user_avatar($user_id);
+		}
 
 		return $this->success($user);
 	}
@@ -350,6 +369,27 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		$reward = $this->param($request, 'reward', '');
 		update_user_meta($user_id, 'zhuige_xcx_user_reward', $reward);
+
+		return $this->success('设置成功');
+	}
+
+	/**
+	 * 初始化昵称头像
+	 */
+	public function init_info($request)
+	{
+		$user_id = get_current_user_id();
+
+		$nickname = $this->param($request, 'nickname', '');
+		$os = $this->param($request, 'os', 'wx');
+		if (!$this->msg_sec_check($nickname, $os)) {
+			return $this->error('请勿发布敏感信息');
+		}
+
+		$avatar = $this->param($request, 'avatar', '');
+		if (!empty($avatar)) {
+			update_user_meta($user_id, 'zhuige_xcx_user_avatar', $avatar);
+		}
 
 		return $this->success('设置成功');
 	}
@@ -955,17 +995,33 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 				)
 			);
 			$user['is_fans'] = ($fans_user ? 1 : 0);
+
+			// 删除帖子-投票的权限
+			$user['delete_topic'] = 0;
+			$user['delete_vote'] = 0;
+			if (ZhuiGe_Xcx_Addon::is_active('zhuige-auth')) {
+				$auth = ZhuiGe_Xcx::option_value('auth_delete_topic');
+				if ( $auth == 'all' || ($auth == 'vip' && isset($user['vip']) && $user['vip']['status'] == 1) ) {
+					$user['delete_topic'] = 1;
+				}
+
+				$auth = ZhuiGe_Xcx::option_value('auth_delete_vote');
+				if ( $auth == 'all' || ($auth == 'vip' && isset($user['vip']) && $user['vip']['status'] == 1) ) {
+					$user['delete_vote'] = 1;
+				}
+			}
 		} else {
 			$user['is_me'] = 0;
 			$user['is_follow'] = 0;
 			$user['is_fans'] = 0;
-		}
 
+			// 删除帖子-投票的权限
+			$user['delete_topic'] = 0;
+			$user['delete_vote'] = 0;
+		}
 		$data['user'] = $user;
 
-
 		$table_follow_user = $wpdb->prefix . 'zhuige_xcx_follow_user';
-
 		$follow_count = $wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT count(id) FROM `$table_follow_user` WHERE user_id=%d",
@@ -1185,7 +1241,16 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 				$post = get_post($notify['post_id']);
 				if ($post->post_type == 'zhuige_bbs_topic') {
 					$content = zhuige_xcx_get_post_excerpt($post);
-					$notify['link'] = '/pages/bbs/detail/detail?topic_id=' . $notify['post_id'];
+					$notify['link'] = '/pages/bbs/detail/detail?id=' . $notify['post_id'];
+				} else if ($post->post_type == 'zhuige_vote') {
+					$content = zhuige_xcx_get_post_excerpt($post);
+					$notify['link'] = '/pages/vote/detail/detail?id=' . $notify['post_id'];
+				} else if ($post->post_type == 'post') {
+					$content = $post->post_title;
+					$notify['link'] = '/pages/cms/detail/detail?id=' . $notify['post_id'];
+				} else if ($post->post_type == 'zhuige_res') {
+					$content = $post->post_title;
+					$notify['link'] = '/pages/resource/detail/detail?id=' . $notify['post_id'];
 				} else {
 					$content = $post->post_title;
 				}
@@ -1293,7 +1358,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 			$session = $this->wx_code2openid($code);
 			if (!$session) {
-				return $this->make_error('授权失败');
+				return $this->error('授权失败');
 			}
 
 			$res = $this->weixin_decryptData($app_id, $session['session_key'], $encrypted_data, $iv, $data);
@@ -1318,7 +1383,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 	{
 		$user_id = $this->param_int($request, 'source', '');
 		if (empty($user_id)) {
-			return $this->make_error('缺少参数');
+			return $this->error('缺少参数');
 		}
 
 		//添加积分
@@ -1326,7 +1391,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			zhuige_xcx_add_user_score_by_task('share', '', $user_id);
 		}
 
-		return $this->make_success('请求成功');
+		return $this->success('请求成功');
 	}
 
 	/**

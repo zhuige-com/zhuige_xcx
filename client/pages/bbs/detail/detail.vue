@@ -110,9 +110,9 @@
 		</view>
 
 		<!-- 自定义滚动广告 -->
-		<view v-if="topic && topic.rec_ad" class="zhuige-detail-ad">
-			<zhuige-scroll-ad ext-ad-class="zhuige-scroll-goods-mini" :title="topic.rec_ad.title"
-				:items="topic.rec_ad.items"></zhuige-scroll-ad>
+		<view v-if="topic && topic.ad_imgs" class="zhuige-detail-ad">
+			<zhuige-scroll-ad ext-ad-class="zhuige-scroll-goods-mini" :title="topic.ad_imgs.title"
+				:items="topic.ad_imgs.items"></zhuige-scroll-ad>
 		</view>
 
 		<!-- 点赞分享 -->
@@ -222,7 +222,7 @@
 		</view>
 		<!-- #endif -->
 
-		<!-- #ifdef MP-WEIXIN || MP-QQ || H5 -->
+		<!-- #ifdef MP-WEIXIN || H5 -->
 		<l-painter v-if="isShowPainter" isRenderImage custom-style="position: fixed; left: 200%;" :board="base"
 			@success="onPainterSuccess" />
 		<!-- #endif -->
@@ -530,6 +530,10 @@
 			 * 点击弹出评论框
 			 */
 			clickComment(comment_id) {
+				if (!Util.checkMobile()) {
+					return;
+				}
+				
 				this.comment_id = comment_id;
 				this.reply_user_id = 0;
 				this.$refs.popup.open('bottom')
@@ -574,8 +578,9 @@
 					content: this.comment_content
 				}).then(res => {
 					if (res.code == 0 || res.code == 100) {
-						Alert.toast('感谢评论~');
-						this.loadData();
+						// Alert.toast('感谢评论~');
+						// this.loadData();
+						Alert.toast(res.message);
 					} else {
 						Alert.toast(res.message);
 					}
@@ -704,7 +709,7 @@
 			// #endif
 
 			/**
-			 * 海报分享-微信-QQ
+			 * 海报分享-微信
 			 */
 			clickPoster() {
 				if (!this.poster) {
@@ -841,7 +846,7 @@
 						},
 						// #endif
 
-						// #ifdef MP-BAIDU || MP-QQ
+						// #ifdef MP-BAIDU
 						{
 							type: 'view',
 							css: {
@@ -909,16 +914,6 @@
 				});
 				// #endif
 
-				// #ifdef MP-QQ
-				Rest.post(Api.URL('posts', 'qqacode'), {
-					post_id: this.topic_id,
-				}).then(res => {
-					this.acode = res.data.acode;
-				}, err => {
-					console.log(err);
-				});
-				// #endif
-
 				// #ifdef MP-BAIDU || H5
 				Rest.post(Api.URL('posts', 'bdacode'), {
 					post_id: this.topic_id,
@@ -967,6 +962,29 @@
 	.zhuige-detail-ad {
 		margin-bottom: 20rpx;
 	}
+	.zhuige-detail-ad .zhuige-scroll-ad-box {
+		padding-bottom: 0!important;
+	}
+	.zhuige-detail-ad .zhuige-scroll-ad {
+		margin-top: -20rpx!important;
+	}
+	.zhuige-detail-ad .zhuige-scroll-ad-block {
+		vertical-align: text-top!important;
+	}
+	.zhuige-detail-ad .zhuige-scroll-ad-info .title-info {
+		font-size: 28rpx!important;
+		font-weight: 600!important;
+	}
+	.zhuige-detail-ad .price-unit {
+		display: none;
+	}
+	.zhuige-detail-ad .price-info {
+		padding: 0!important;
+	}
+	.zhuige-detail-ad .zhuige-scroll-goods-mini .price-info .item-price {
+		font-size: 26rpx!important;
+	}
+
 
 	.zhuige-reply-list .zhuige-block-head {
 		position: relative;

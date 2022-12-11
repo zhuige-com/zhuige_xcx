@@ -57,6 +57,19 @@ class ZhuiGe_Xcx_Base_Controller extends WP_REST_Controller
 		];
 
 		if ($data !== null) {
+
+			if (ZhuiGe_Xcx_Addon::is_active('zhuige-ban_words')) {
+				$find = ZhuiGe_Xcx::option_value('ban_words_find');
+				$find = preg_split('/[,;\r\n]+/', trim($find, ",;\r\n"));
+
+				$replace = ZhuiGe_Xcx::option_value('ban_words_replace');
+				$replace = trim($replace, ",;\r\n");
+
+				if (!empty($find) && !empty($replace)) {
+					zhuige_ban_words_replace($find, $replace, $data);
+				}
+			}
+
 			$response['data'] = $data;
 		}
 

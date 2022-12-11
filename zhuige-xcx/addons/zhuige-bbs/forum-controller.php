@@ -18,7 +18,7 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		$this->routes = [
 			'setting_forum' => 'get_setting_forum',
 			'setting_subject' => 'get_setting_subject',
-			'setting_forum_create_pre' => 'setting_forum_create_pre',
+			'setting_forum_create_pre' => ['callback' => 'setting_forum_create_pre', 'auth' => 'login'],
 
 			'forum_cats' => 'get_forum_cats',
 
@@ -81,6 +81,16 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 		$data['tabs'] = $tabs;
 
+
+		// 是否显示创建圈子按钮
+		$is_show_create_forum = 0;
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-auth')) {
+			$auth_create_forum = ZhuiGe_Xcx::option_value('auth_create_forum');
+			$is_show_create_forum = ($auth_create_forum != 'none') ? 1 : 0;
+		}
+		$data['is_show_create_forum'] = $is_show_create_forum;
+		
+
 		return $this->success($data);
 	}
 
@@ -140,6 +150,22 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 	 */
 	public function setting_forum_create_pre($request)
 	{
+		$my_user_id = get_current_user_id();
+		if (function_exists('zhuige_auth_is_black') && zhuige_auth_is_black($my_user_id)) {
+			return $this->error('操作太频繁了~');
+		}
+
+		if (!$this->_auth_create_forum($my_user_id)) {
+			return $this->error('无创建圈子权限~');
+		}
+
+		if (ZhuiGe_Xcx::option_value('bbs_forum_mobile_switch')) {
+			$mobile = get_user_meta($my_user_id, 'zhuige_xcx_user_mobile', true);
+			if (empty($mobile)) {
+				return $this->error('', 'require_mobile');
+			}
+		}
+
 		// 分类
 		$term_args = [
 			'taxonomy' => 'zhuige_bbs_forum_cat',
@@ -170,6 +196,14 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 	public function forum_create($request)
 	{
 		$my_user_id = get_current_user_id();
+
+		if (function_exists('zhuige_auth_is_black') && zhuige_auth_is_black($my_user_id)) {
+			return $this->error('操作太频繁了~');
+		}
+
+		if (!$this->_auth_create_forum($my_user_id)) {
+			return $this->error('无创建圈子权限~');
+		}
 
 		if (ZhuiGe_Xcx::option_value('bbs_forum_mobile_switch')) {
 			$mobile = get_user_meta($my_user_id, 'zhuige_xcx_user_mobile', true);
@@ -465,6 +499,7 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 		$forum['users'] = $users;
 
+
 		$options = get_post_meta($forum_id, 'zhuige-bbs-forum-option', true);
 
 		$forum['logo'] = ZhuiGe_Xcx::option_image_url($options['logo'], 'placeholder.jpg');
@@ -496,6 +531,27 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 			}
 		}
 		$forum['ad_menu'] = $ad_menu;
+
+		//广告
+		$forum_ad_imgs = $options['ad_imgs'];
+		if ($forum_ad_imgs && $forum_ad_imgs['switch']) {
+			$ad_imgs['title'] = $forum_ad_imgs['title'];
+			$items = [];
+			foreach ($forum_ad_imgs['items'] as $item) {
+				if ($item['switch']) {
+					$items[] = [
+						'title' => $item['title'],
+						'badge' => $item['badge'],
+						'image' => $item['image']['url'],
+						'link' => $item['link'],
+						'price' => $item['price'],
+					];
+				}
+			}
+			$ad_imgs['items'] = $items;
+
+			$forum['ad_imgs'] = $ad_imgs;
+		}
 
 
 		return $this->success(['forum' => $forum]);
@@ -637,6 +693,28 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		return $forum;
+	}
+
+	/**
+	 * 是否有创建圈子的权限
+	 */
+	private function _auth_create_forum($user_id)
+	{
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-auth')) {
+			$auth_create_forum = ZhuiGe_Xcx::option_value('auth_create_forum');
+			if ($auth_create_forum == 'all') {
+				return 1;
+			} else if ($auth_create_forum == 'vip') {
+				if ($user_id && function_exists('zhuige_xcx_vip_is_vip')) {
+					$cerify = zhuige_xcx_vip_is_vip($user_id);
+					if ($cerify['status'] == 1) {
+						return 1;
+					}
+				}
+			}
+		}
+
+		return 0;
 	}
 }
 

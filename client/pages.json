@@ -69,7 +69,7 @@
 				"text": ""
 			},
 			// #endif
-			// #ifdef MP-BAIDU || MP-QQ || H5
+			// #ifdef MP-BAIDU || H5
 			{
 				"pagePath": "pages/tabs/create/create",
 				"iconPath": "static/tabbar/plus.png",
@@ -169,6 +169,12 @@
 					"navigationBarTitleText": "登录",
 					"navigationStyle": "custom",
 					"navigationBarTextStyle": "white",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "verify/verify",
+				"style": {
+					"navigationBarTitleText": "完善资料",
 					"enablePullDownRefresh": false
 				}
 			}]

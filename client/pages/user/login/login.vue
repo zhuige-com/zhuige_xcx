@@ -29,10 +29,14 @@
 
 				<view @click="clickWalk" class="zhuige-button">随便逛逛</view>
 
-				<view v-if="yhxy || yszc" class="zhuige-login-tip">授权登录即同意
-					<text v-if="yhxy" @click="openLink(yhxy)">《用户协议》</text>
+				<view v-if="type!='mobile' && (yhxy || yszc)" class="zhuige-login-tip">
+					<label @click="clickAgreeLicense">
+						<radio :checked="argeeLicense" color="#ff4400" style="transform:scale(0.7)" />
+						我已阅读并同意
+					</label>
+					<text class="link" v-if="yhxy" @click="openLink(yhxy)">《用户协议》</text>
 					<template v-if="yhxy && yszc">及</template>
-					<text v-if="yszc" @click="openLink(yszc)">《隐私条款》</text>
+					<text class="link" v-if="yszc" @click="openLink(yszc)">《隐私条款》</text>
 				</view>
 			</view>
 		</view>
@@ -55,6 +59,8 @@
 				background: '',
 				logo: '',
 				title: '',
+				
+				argeeLicense: false,
 				yhxy: undefined,
 				yszc: undefined,
 			}
@@ -74,7 +80,7 @@
 
 			this.title = getApp().globalData.appName;
 
-			// #ifdef MP-WEIXIN || MP-QQ || MP-BAIDU
+			// #ifdef MP-WEIXIN || MP-BAIDU
 			uni.login({
 				success: (res) => {
 					this.code = res.code;
@@ -99,11 +105,23 @@
 			openLink(link) {
 				Util.openLink(link)
 			},
+			
+			/**
+			 * 点击同意协议
+			 */
+			clickAgreeLicense() {
+				this.argeeLicense = !this.argeeLicense;
+			},
 
 			/**
 			 * 点击登录
 			 */
 			clickLogin() {
+				if (!this.argeeLicense) {
+					Alert.toast('请阅读并同意《用户协议》及《隐私条款》');
+					return;
+				}
+				
 				// #ifdef H5
 				Rest.post(Api.URL('user', 'test_login')).then(res => {
 					if (res.code == 0) {
@@ -120,16 +138,7 @@
 				// #endif
 
 				// #ifdef MP-WEIXIN
-				wx.getUserProfile({
-					desc: '用于完善会员资料',
-					success: res => {
-						let userInfo = res.userInfo;
-						this.login(userInfo.nickName, userInfo.avatarUrl);
-					},
-					fail: (err) => {
-						console.log(err);
-					}
-				})
+				this.login('微信用户', '');
 				return;
 				// #endif
 
@@ -155,18 +164,30 @@
 				params.channel = 'weixin';
 				// #endif
 
-				// #ifdef MP-QQ
-				params.channel = 'qq';
-				// #endif
-
 				// #ifdef MP-BAIDU
 				params.channel = 'baidu';
 				// #endif
 
 				Rest.post(Api.URL('user', 'login'), params).then(res => {
-					Auth.setUser(res.data);
-					uni.$emit('zhuige_event_user_login', {});
-					Util.navigateBack();
+					if (res.code != 0) {
+						Auth.setUser(undefined);
+						uni.$emit('zhuige_event_user_login', {});
+						
+						Alert.toast(res.message);
+						setTimeout(() => {
+							uni.reLaunch({
+								url: '/pages/tabs/index/index'
+							})
+						}, 1000)
+					} else {
+						Auth.setUser(res.data);
+						uni.$emit('zhuige_event_user_login', {});
+						
+						Util.navigateBack();
+						if (res.data.first && res.data.first == 1) {
+							Util.openLink('/pages/user/verify/verify')
+						}
+					}
 				}, err => {
 					console.log(err)
 				});
@@ -204,6 +225,12 @@
 					code: this.code,
 				}).then(res => {
 					Alert.toast(res.message)
+					
+					// 更新本地缓存的信息
+					let user = Auth.getUser();
+					user.mobile = res.data.mobile;
+					Auth.setUser(user);
+					
 					uni.$emit('zhuige_event_user_mobile', {
 						mobile: res.data.mobile
 					});
@@ -270,7 +297,7 @@
 		color: #FFFFFF;
 	}
 
-	.zhuige-login-tip text {
+	.zhuige-login-tip text.link {
 		color: #EEEEEE;
 		text-decoration: underline;
 	}

@@ -242,6 +242,9 @@
 	.zhuige-notice-title {
 		height: 2em;
 		line-height: 1.8em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.zhuige-notice-title text:nth-child(1) {

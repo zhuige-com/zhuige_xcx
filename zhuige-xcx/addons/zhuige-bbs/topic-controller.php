@@ -18,11 +18,38 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		$this->routes = [
 			'topic_detail' => 'get_topic_detail',
 
+			'topic_create_pre' => ['callback' => 'topic_create_pre', 'auth' => 'login'],
 			'topic_create' => ['callback' => 'topic_create', 'auth' => 'login'],
+			'topic_delete' => ['callback' => 'topic_delete', 'auth' => 'login'],
 
 			'topic_list_subject' => 'get_topic_list_subject',
 			'topic_list_forum' => 'get_topic_list_forum',
 		];
+	}
+
+	/**
+	 * 发帖子的准备工作
+	 */
+	public function topic_create_pre($request)
+	{
+		$my_user_id = get_current_user_id();
+
+		if (function_exists('zhuige_auth_is_black') && zhuige_auth_is_black($my_user_id)) {
+			return $this->error('发帖太频繁了~');
+		}
+
+		if (!$this->_auth_post_topic($my_user_id)) {
+			return $this->error('无发帖权限~');
+		}
+
+		if (ZhuiGe_Xcx::option_value('bbs_topic_mobile_switch')) {
+			$mobile = get_user_meta($my_user_id, 'zhuige_xcx_user_mobile', true);
+			if (empty($mobile)) {
+				return $this->error('', 'require_mobile');
+			}
+		}
+
+		return $this->success();
 	}
 
 	/**
@@ -32,11 +59,13 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 	{
 		$my_user_id = get_current_user_id();
 
-		// $black_user_ids = ZhuiGe_Xcx::option_value('auth_other_user_topic');
-		// $black_user_ids = explode(',', $black_user_ids);
-		// if (in_array($my_user_id, $black_user_ids)) {
-		// 	return $this->error('你被禁止发帖了');
-		// }
+		if (function_exists('zhuige_auth_is_black') && zhuige_auth_is_black($my_user_id)) {
+			return $this->error('发帖太频繁了~');
+		}
+
+		if (!$this->_auth_post_topic($my_user_id)) {
+			return $this->error('无发帖权限~');
+		}
 
 		if (ZhuiGe_Xcx::option_value('bbs_topic_mobile_switch')) {
 			$mobile = get_user_meta($my_user_id, 'zhuige_xcx_user_mobile', true);
@@ -53,6 +82,11 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		$content = $this->param($request, 'content', '');
 		if (empty($content)) {
 			return $this->error('内容不可为空');
+		}
+
+		$os = $this->param($request, 'os', 'wx');
+		if (!$this->msg_sec_check($content, $os)) {
+			return $this->error('请勿发布敏感信息');
 		}
 
 		$marker = $this->param($request, 'marker', '');
@@ -140,6 +174,31 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		return $this->success(['post_id' => $post_id, 'status' => $status, 'options' => $options]);
+	}
+
+	/**
+	 * 删除帖子
+	 */
+	public function topic_delete($request)
+	{
+		$my_user_id = get_current_user_id();
+		if ($this->_checkDeleteAuth($my_user_id) != 1) {
+			return $this->error('无删除权限');
+		}
+
+		$topic_id = $this->param_int($request, 'topic_id', '');
+		$topic = get_post($topic_id);
+		if (empty($topic)) {
+			return $this->error('系统异常');
+		}
+
+		if ($topic->post_author != $my_user_id) {
+			return $this->error('无删除权限');
+		}
+
+		$res = wp_delete_post($topic_id, true);
+
+		return $this->success();
 	}
 
 	/**
@@ -366,24 +425,24 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		// 热门推荐
-		$detail_rec_ad = ZhuiGe_Xcx::option_value('bbs_detail_rec_ad');
-		if ($detail_rec_ad && $detail_rec_ad['switch']) {
-			$rec_ad = [];
-			$rec_ad['title'] = $detail_rec_ad['title'];
+		$topic_ad_imgs = ZhuiGe_Xcx::option_value('topic_ad_imgs');
+		if ($topic_ad_imgs && $topic_ad_imgs['switch']) {
+			$ad_imgs['title'] = $topic_ad_imgs['title'];
 			$items = [];
-			foreach ($detail_rec_ad['items'] as $item_ad) {
+			foreach ($topic_ad_imgs['items'] as $item_ad) {
 				if ($item_ad['switch'] && $item_ad['image'] && $item_ad['image']['url']) {
 					$items[] = [
 						'title' => $item_ad['title'],
 						'image' => $item_ad['image']['url'],
 						'link' => $item_ad['link'],
 						'badge' => $item_ad['badge'],
+						'price' => $item_ad['price'],
 					];
 				}
 			}
-			$rec_ad['items'] = $items;
+			$ad_imgs['items'] = $items;
 
-			$topic['rec_ad'] = $rec_ad;
+			$topic['ad_imgs'] = $ad_imgs;
 		}
 
 		// 海报配置
@@ -392,7 +451,11 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		$poster['background'] = ZhuiGe_Xcx::option_image_url($detail_poster['background'], 'placeholder.jpg');
 		$poster['title'] = $detail_poster['title'];
 		if ($options['type'] == 'image') {
-			$poster['thumb'] = $options['images'][0]['image']['url'];
+			if (is_array($options['images']) && count($options['images']) > 0) {
+				$poster['thumb'] = $options['images'][0]['image']['url'];
+			} else {
+				$poster['thumb'] = ZhuiGe_Xcx::option_image_url($detail_poster['thumb_image'], 'placeholder.jpg');
+			}
 		} else if ($options['type'] == 'video') {
 			$poster['thumb'] = ZhuiGe_Xcx::option_image_url($detail_poster['thumb_video'], 'placeholder.jpg');
 		}
@@ -563,6 +626,49 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		return $topics;
+	}
+
+	/**
+	 * 是否有创建圈子的权限
+	 */
+	private function _auth_post_topic($user_id)
+	{
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-auth')) {
+			$auth_post_topic = ZhuiGe_Xcx::option_value('auth_post_topic');
+			if ($auth_post_topic == 'all') {
+				return 1;
+			} else if ($auth_post_topic == 'vip') {
+				if ($user_id && function_exists('zhuige_xcx_vip_is_vip')) {
+					$cerify = zhuige_xcx_vip_is_vip($user_id);
+					if ($cerify['status'] == 1) {
+						return 1;
+					}
+				}
+			}
+
+			return 0;
+		} else {
+			return 1;
+		}
+	}
+
+	private function _checkDeleteAuth($my_user_id)
+	{
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-auth')) {
+			$auth = ZhuiGe_Xcx::option_value('auth_delete_topic');
+			if ($auth == 'all') {
+				return 1;
+			} else if ($auth == 'vip') {
+				if ($my_user_id && function_exists('zhuige_xcx_vip_is_vip')) {
+					$vip = zhuige_xcx_vip_is_vip($my_user_id);
+					if ($vip['status'] == 1) {
+						return 1;
+					}
+				}
+			}
+		}
+
+		return 0;
 	}
 }
 

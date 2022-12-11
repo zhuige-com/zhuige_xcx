@@ -33,7 +33,7 @@
 				</view>
 			</view>
 		</view>
-		
+
 		<!-- 视频 -->
 		<view v-else-if="type=='video'" class="zhuige-post-video-box">
 			<video v-if="video" :src="video.url"></video>
@@ -135,6 +135,8 @@
 
 	export default {
 		data() {
+			this.requesting = false;
+			
 			return {
 				type: 'image',
 
@@ -169,6 +171,8 @@
 			if (options.subject_name) {
 				this.subjects.push(options.subject_name);
 			}
+			
+			this.preCreate();
 
 			uni.$on('subjectChange', this.onSubjectChange);
 			uni.$on('forumChange', this.onForumChange);
@@ -379,24 +383,47 @@
 
 				params.subjects = this.subjects.join('-0-');
 
+				if (this.requesting) {
+					return;
+				}
+				this.requesting = true;
+				
 				Rest.post(Api.URL('bbs', 'topic_create'), params).then(res => {
 					if (res.code != 0) {
 						Alert.error(res.message);
 						return;
 					}
 
-					if (res.data.status == 'pending') {
+					// if (res.data.status == 'pending') {
 						Alert.toast('审核后，他人可见');
-					}
+					// }
 
 					setTimeout(() => {
 						Util.navigateBack();
-						Util.openLink('/pages/bbs/detail/detail?topic_id=' + res.data.post_id);
+						// Util.openLink('/pages/bbs/detail/detail?topic_id=' + res.data.post_id);
 					}, 1500)
 				}, err => {
+					this.requesting = false;
 					console.log(err)
 				});
 			},
+			
+			/**
+			 * 发帖前准备
+			 */
+			preCreate() {
+				Rest.post(Api.URL('bbs', 'topic_create_pre')).then(res => {
+					if (res.code != 0) {
+						Alert.error(res.message);
+						
+						setTimeout(() => {
+							Util.navigateBack();
+						}, 1500)
+					}
+				}, err => {
+					console.log(err)
+				});
+			}
 		}
 	}
 </script>

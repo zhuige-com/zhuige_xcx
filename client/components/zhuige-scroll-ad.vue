@@ -210,4 +210,12 @@
 	.zhuige-scroll-coterie .zhuige-scroll-ad-cover {
 		height: 240rpx;
 	}
+	
+	.zhuige-topic-scroll .zhuige-scroll-ad-block {
+		width: 42%!important;
+	}
+	.zhuige-topic-scroll .zhuige-scroll-ad-block .cover-text {
+		display: none;
+	}
+		
 </style>

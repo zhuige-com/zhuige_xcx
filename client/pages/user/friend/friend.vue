@@ -299,13 +299,9 @@
 				}
 				Rest.post(Api.URL('user', 'my_follows'), params).then(res => {
 					this.follows = this.follows.concat(res.data.users);
-					if (res.data.more) {
-						this.loadMoreFollow = res.data.more;
-					} else {
-						this.loadMoreFollow = 'nomore';
-					}
-
+					this.loadMoreFollow = res.data.more;
 					this.loadedFollow = true;
+					
 					if (res.data.tip) {
 						this.noDataTip = res.data.tip;
 					} else {
@@ -333,13 +329,9 @@
 				}
 				Rest.post(Api.URL('user', 'my_fans'), params).then(res => {
 					this.fans = this.fans.concat(res.data.users);
-					if (res.data.more) {
-						this.loadMoreFan = res.data.more;
-					} else {
-						this.loadMoreFan = 'nomore';
-					}
-
+					this.loadMoreFan = res.data.more;
 					this.loadedFan = true;
+					
 					if (res.data.tip) {
 						this.noDataTip = res.data.tip;
 					} else {

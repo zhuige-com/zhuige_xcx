@@ -22,7 +22,7 @@
 									<text v-if="system_count>0">{{system_count}}</text>
 								</view>
 								<view v-if="system_count>0">你有{{system_count}}条消息未读</view>
-								<view v-else>没有消息就是最好的消息</view>
+								<view v-else>没有消息就是好消息</view>
 							</view>
 						</view>
 						<view class="zhuige-message-act">
@@ -40,7 +40,7 @@
 									<text v-if="like_count>0">{{like_count}}</text>
 								</view>
 								<view v-if="like_count>0">你有{{like_count}}条消息未读</view>
-								<view v-else>没有消息就是最好的消息</view>
+								<view v-else>没有消息就是好消息</view>
 							</view>
 						</view>
 						<view class="zhuige-message-act">
@@ -58,7 +58,7 @@
 									<text v-if="favorite_count>0">{{favorite_count}}</text>
 								</view>
 								<view v-if="favorite_count>0">你有{{favorite_count}}条消息未读</view>
-								<view v-else>没有消息就是最好的消息</view>
+								<view v-else>没有消息就是好消息</view>
 							</view>
 						</view>
 						<view class="zhuige-message-act">
@@ -76,7 +76,7 @@
 									<text v-if="comment_count>0">{{comment_count}}</text>
 								</view>
 								<view v-if="comment_count>0">你有{{comment_count}}条消息未读</view>
-								<view v-else>没有消息就是最好的消息</view>
+								<view v-else>没有消息就是好消息</view>
 							</view>
 						</view>
 						<view class="zhuige-message-act">
@@ -94,7 +94,7 @@
 									<text v-if="follow_count>0">{{follow_count}}</text>
 								</view>
 								<view v-if="follow_count>0">你有{{follow_count}}条消息未读</view>
-								<view v-else>没有消息就是最好的消息</view>
+								<view v-else>没有消息就是好消息</view>
 							</view>
 						</view>
 						<view class="zhuige-message-act">
@@ -112,7 +112,7 @@
 									<text v-if="ait_count>0">{{ait_count}}</text>
 								</view>
 								<view v-if="ait_count>0">你有{{ait_count}}条消息未读</view>
-								<view v-else>没有消息就是最好的消息</view>
+								<view v-else>没有消息就是好消息</view>
 							</view>
 						</view>
 						<view class="zhuige-message-act">

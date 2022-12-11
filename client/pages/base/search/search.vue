@@ -5,7 +5,6 @@
 			<view class="zhuige-block">
 				<view class="zhuige-search-form">
 					<view class="zhuige-search-input">
-						<view>全部</view>
 						<view>
 							<uni-icons type="search" color="#999999" size="18"></uni-icons>
 							<input type="text" v-model="keywords" placeholder="关键词" @confirm="onSearch" />

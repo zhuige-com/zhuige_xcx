@@ -21,7 +21,8 @@ if ( ! class_exists( 'CSF_Field_map' ) ) {
     public function render() {
 
       $args              = wp_parse_args( $this->field, array(
-        'placeholder'    => esc_html__( 'Search...', 'csf' ),
+        // 'placeholder'    => esc_html__( 'Search...', 'csf' ),
+        'placeholder'    => '',
         'latitude_text'  => esc_html__( 'Latitude', 'csf' ),
         'longitude_text' => esc_html__( 'Longitude', 'csf' ),
         'address_field'  => '',
@@ -57,7 +58,7 @@ if ( ! class_exists( 'CSF_Field_map' ) ) {
         echo '<div class="csf--address-field" data-address-field="'. esc_attr( $args['address_field'] ) .'"></div>';
       }
 
-      echo '<div class="csf--map-osm-wrap"><div class="csf--map-osm" data-map="'. esc_attr( json_encode( $settings ) ) .'"'. $style_attr .'></div></div>';
+      // echo '<div class="csf--map-osm-wrap"><div class="csf--map-osm" data-map="'. esc_attr( json_encode( $settings ) ) .'"'. $style_attr .'></div></div>';
 
       echo '<div class="csf--map-inputs">';
 
@@ -73,7 +74,7 @@ if ( ! class_exists( 'CSF_Field_map' ) ) {
 
       echo '</div>';
 
-      echo '<input type="hidden" name="'. esc_attr( $this->field_name( '[zoom]' ) ) .'" value="'. esc_attr( $value['zoom'] ) .'" class="csf--zoom" />';
+      // echo '<input type="hidden" name="'. esc_attr( $this->field_name( '[zoom]' ) ) .'" value="'. esc_attr( $value['zoom'] ) .'" class="csf--zoom" />';
 
       echo $this->field_after();
 
@@ -81,13 +82,13 @@ if ( ! class_exists( 'CSF_Field_map' ) ) {
 
     public function enqueue() {
 
-      if ( ! wp_script_is( 'csf-leaflet' ) ) {
-        wp_enqueue_script( 'csf-leaflet', esc_url( $this->cdn_url . $this->version .'/dist/leaflet.js' ), array( 'csf' ), $this->version, true );
-      }
+      // if ( ! wp_script_is( 'csf-leaflet' ) ) {
+      //   wp_enqueue_script( 'csf-leaflet', esc_url( $this->cdn_url . $this->version .'/dist/leaflet.js' ), array( 'csf' ), $this->version, true );
+      // }
 
-      if ( ! wp_style_is( 'csf-leaflet' ) ) {
-        wp_enqueue_style( 'csf-leaflet', esc_url( $this->cdn_url . $this->version .'/dist/leaflet.css' ), array(), $this->version );
-      }
+      // if ( ! wp_style_is( 'csf-leaflet' ) ) {
+      //   wp_enqueue_style( 'csf-leaflet', esc_url( $this->cdn_url . $this->version .'/dist/leaflet.css' ), array(), $this->version );
+      // }
 
       if ( ! wp_script_is( 'jquery-ui-autocomplete' ) ) {
         wp_enqueue_script( 'jquery-ui-autocomplete' );

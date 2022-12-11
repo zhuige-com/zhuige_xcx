@@ -13,21 +13,14 @@
 					<view class="zhuige-user-info-block">
 						<view>
 							<image mode="aspectFill" :src="user.avatar"></image>
-
 						</view>
 						<view>
 							<text>{{user.nickname}}</text>
 							<image v-if="user.vip && user.vip.status==1" mode="aspectFit" :src="user.vip.icon"></image>
-							<!-- 
-							<image v-if="user.certify && user.certify.status==1" mode="aspectFill" :src="user.certify.icon"></image>
-						 -->
 						</view>
 					</view>
 					<!-- 操作相关 -->
 					<view class="zhuige-user-info-btn">
-						<!-- <view>
-							<uni-icons type="weixin" size="24"></uni-icons>
-						</view> -->
 						<button open-type="share">
 							<uni-icons type="redo-filled" size="24"></uni-icons>
 						</button>
@@ -86,7 +79,119 @@
 		<!-- 帖子列表 -->
 		<view class="zhuige-home-list">
 			<template v-if="posts && posts.length>0">
-				<zhuige-topic v-for="(topic, index) in posts" :key="index" :topic="topic"></zhuige-topic>
+				<template v-for="(topic, index) in posts">
+					<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :key="index" :topic="topic"
+						:trash="cur_tab=='publish' && user.delete_topic==1" @deleteTopic="onDeleteTopic">
+					</zhuige-topic>
+					<view v-else :key="index" class="zhuige-block" :class="topic.post_type" @click="clickPost(topic)">
+						<!-- 投票 -->
+						<template v-if="topic.post_type=='zhuige_vote'">
+							<!-- 用户信息 -->
+							<view class="zhuige-social-poster-blcok">
+								<view class="zhuige-social-poster">
+									<view class="zhuige-social-poster-avatar">
+										<image mode="aspectFill" :src="topic.author.avatar"></image>
+									</view>
+									<view class="zhuige-social-poster-info">
+										<view>
+											<text>{{topic.author.nickname}}</text>
+											<image v-if="topic.author.certify && topic.author.certify.status==1"
+												mode="aspectFill" :src="topic.author.certify.icon">
+											</image>
+											<image class="zhuige-social-vip"
+												v-if="topic.author.vip && topic.author.vip.status==1"
+												mode="aspectFill" :src="topic.author.vip.icon">
+											</image>
+										</view>
+										<view>
+											<text>{{topic.time}}</text>
+											<text
+												v-if="topic.author.certify && topic.author.certify.status==1">/</text>
+											<text
+												v-if="topic.author.certify && topic.author.certify.status==1">{{topic.author.certify.name}}</text>
+										</view>
+									</view>
+								</view>
+								<view class="zhuige-social-opt social-dell" v-if="cur_tab=='publish' && user.delete_vote==1" @click.stop="clickDeleteVote(topic)">
+									<uni-icons type="trash" color="#FF6146"></uni-icons>
+								</view>
+							</view>
+						
+							<!-- 话题 + 正文 -->
+							<view class="zhuige-social-cont">
+								<!-- 正文信息 -->
+								<text>{{topic.excerpt}}</text>
+							</view>
+						
+							<!-- pk模块 -->
+							<view v-if="topic.type=='pk'" class="zhuige-pkvote">
+								<view class="zhuige-vote-info">
+									<view class="zhuige-vote-msg">
+										<text class="zhuige-vote-num">{{topic.count}}</text>
+										人参与投票，截止时间
+										<text class="zhuige-vote-num">{{topic.deadline}}</text>
+									</view>
+									<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
+								</view>
+								<view class="zhuige-vote-data">
+									<view class="zhuige-vote-count">
+										<view v-if="topic.my_vote==1 || topic.is_end==1"
+											class="zhuige-vote-count-num">
+											{{topic.option_a.rate}}%{{topic.option_a.xuan==1?'（已投）':''}}
+										</view>
+										<image class="zhuige-vote-img" mode="aspectFill"
+											:src="topic.option_a.image"></image>
+									</view>
+									<view class="zhuige-vote-count">
+										<view v-if="topic.my_vote==1 || topic.is_end==1"
+											class="zhuige-vote-count-num">
+											{{topic.option_b.rate}}%{{topic.option_b.xuan==1?'（已投）':''}}
+										</view>
+										<image class="zhuige-vote-img" mode="aspectFill"
+											:src="topic.option_b.image">
+										</image>
+									</view>
+								</view>
+								<view class="zhuige-vote-opt">
+									<view class="vote-opt1box">
+										<view class="vote-option1">{{topic.option_a.title}}</view>
+									</view>
+									<view class="vote-opt2box">
+										<view class="vote-option2">{{topic.option_b.title}}</view>
+									</view>
+								</view>
+							</view>
+							<!-- pk模块 end -->
+						
+							<!-- 投票模块 -->
+							<view v-if="topic.type=='single' || topic.type=='multi'" class="zhuige-pklist">
+								<view class="zhuige-vote-info">
+									<view class="zhuige-vote-msg">
+										<template v-if="topic.type=='single'">(单选)</template>
+										<template v-else-if="topic.type=='multi'">(多选)</template>
+										<text class="zhuige-vote-num">{{topic.count}} </text>
+										人参与投票，截止时间
+										<text class="zhuige-vote-num"> {{topic.deadline}}</text>
+									</view>
+									<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
+								</view>
+								<view class="zhuige-vote-list">
+									<view v-for="(item, index) in topic.options" :key="index"
+										class="zhuige-vote-option" :class="item.xuan==1?'vote-check':''">
+										<view class="zhuige-vote-option-text">
+											{{item.title}}
+											<text v-if="item.xuan==1" class="active">已投</text>
+										</view>
+										<view v-if="topic.my_vote==1 || topic.is_end==1"
+											class="zhuige-vote-option-count">{{item.count}} 票 {{item.rate}}%
+										</view>
+									</view>
+								</view>
+							</view>
+							<!-- 投票模块 end -->
+						</template>
+					</view>
+				</template>
 			</template>
 			<template v-else-if="loaded">
 				<zhuige-nodata :tip="noDataTip"></zhuige-nodata>
@@ -254,6 +359,17 @@
 			openLink(link) {
 				Util.openLink(link);
 			},
+			
+			/**
+			 * 点击文章
+			 */
+			clickPost(post) {
+				if (post.driect_link_switch == '1') {
+					Util.openLink(post.driect_link);
+				} else {
+					Util.openLink(post.link + '?id=' + post.id);
+				}
+			},
 
 			/**
 			 * 点击切换TAB
@@ -317,9 +433,57 @@
 					offset: refresh ? 0 : this.posts.length
 				}).then(res => {
 					this.posts = refresh ? res.data.posts : this.posts.concat(res.data.posts);
-					this.loadMore = 'nomore';
+					this.loadMore = res.data.more;
 					this.loaded = true;
 					this.noDataTip = res.data.tip;
+				}, err => {
+					console.log(err)
+				});
+			},
+
+			/**
+			 * 删除帖子
+			 */
+			onDeleteTopic(topic) {
+				Rest.post(Api.URL('bbs', 'topic_delete'), {
+					topic_id: topic.id
+				}).then(res => {
+					if (res.code != 0) {
+						Alert.error(res.message);
+						return;
+					}
+
+					let newPosts = [];
+					this.posts.forEach(ele => {
+						if (topic.id != ele.id) {
+							newPosts.push(ele);
+						}
+					})
+					this.posts = newPosts;
+				}, err => {
+					console.log(err)
+				});
+			},
+			
+			/**
+			 * 删除投票
+			 */
+			clickDeleteVote(vote) {
+				Rest.post(Api.URL('vote', 'delete'), {
+					vote_id: vote.id
+				}).then(res => {
+					if (res.code != 0) {
+						Alert.error(res.message);
+						return;
+					}
+				
+					let newPosts = [];
+					this.posts.forEach(ele => {
+						if (vote.id != ele.id) {
+							newPosts.push(ele);
+						}
+					})
+					this.posts = newPosts;
 				}, err => {
 					console.log(err)
 				});

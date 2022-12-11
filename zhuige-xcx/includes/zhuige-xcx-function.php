@@ -668,11 +668,12 @@ if (!function_exists('zhuige_xcx_get_comment_tree')) {
         $where = "comment_post_ID=$post_id AND comment_parent=$parent";
 
         $my_user_id = get_current_user_id();
-        if ($my_user_id) {
-            $where = $where . " AND (comment_approved=1 OR user_id=$my_user_id)";
-        } else {
-            $where = $where . " AND comment_approved=1";
-        }
+        // if ($my_user_id) {
+        //     $where = $where . " AND (comment_approved=1 OR user_id=$my_user_id)";
+        // } else {
+        //     $where = $where . " AND comment_approved=1";
+        // }
+        $where = $where . " AND comment_approved=1";
 
         $limit = '';
         if ($offset !== null) {
@@ -789,6 +790,29 @@ if (!function_exists('zhuige_xcx_delete_dir')) {
 
         //删除目录
         return rmdir($path);
+    }
+}
+
+/**
+ * 获取作者信息
+ */
+if (!function_exists('zhuige_xcx_author_info')) {
+    function zhuige_xcx_author_info($user_id)
+    {
+        $author = [
+			'user_id' => $user_id,
+			'nickname' => get_user_meta($user_id, 'nickname', true),
+			'avatar' => ZhuiGe_Xcx::user_avatar($user_id),
+			'reward' => get_user_meta($user_id, 'zhuige_xcx_user_reward', true)
+		];
+		if (function_exists('zhuige_xcx_certify_is_certify')) {
+			$author['certify'] = zhuige_xcx_certify_is_certify($user_id);
+		}
+		if (function_exists('zhuige_xcx_vip_is_vip')) {
+			$author['vip'] = zhuige_xcx_vip_is_vip($user_id);
+		}
+
+        return $author;
     }
 }
 

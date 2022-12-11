@@ -90,6 +90,16 @@
 
 		onLoad(options) {
 			Rest.post(Api.URL('bbs', 'setting_forum_create_pre')).then(res => {
+				if (res.code != 0) {
+					Alert.error(res.message);
+					
+					setTimeout(() => {
+						Util.navigateBack();
+					}, 1500)
+					
+					return;
+				}
+				
 				this.licence = res.data.licence;
 				this.cats = res.data.cats;
 				let names = [];

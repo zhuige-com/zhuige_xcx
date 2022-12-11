@@ -127,7 +127,7 @@
 		},
 
 		onUnload() {
-			uni.$on('zhuige_event_user_mobile', this.onSetMobile);
+			uni.$off('zhuige_event_user_mobile', this.onSetMobile);
 		},
 
 		onShareAppMessage() {

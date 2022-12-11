@@ -230,42 +230,6 @@ CSF::createSection($prefix, array(
             )
         ),
 
-        // array(
-        //     'id'     => 'home_rec_forum',
-        //     'type'   => 'fieldset',
-        //     'title'  => '热门圈子',
-        //     'fields' => array(
-
-        //         array(
-        //             'id'          => 'title',
-        //             'type'        => 'text',
-        //             'title'       => '标题',
-        //             'placeholder' => '标题'
-        //         ),
-
-        //         array(
-        //             'id'          => 'forums',
-        //             'type'        => 'select',
-        //             'title'       => '推荐圈子',
-        //             'placeholder' => '选择圈子',
-        //             'chosen'      => true,
-        //             'multiple'    => true,
-        //             'sortable'    => true,
-        //             'options'     => 'posts',
-        //             'query_args'  => array(
-        //                 'post_type'  => 'zhuige_bbs_forum',
-        //             ),
-        //         ),
-
-        //         array(
-        //             'id'    => 'switch',
-        //             'type'  => 'switcher',
-        //             'title' => '开启/停用',
-        //             'default' => '1'
-        //         ),
-        //     )
-        // ),
-
         // 热门推荐
         array(
             'id'     => 'home_rec_post',

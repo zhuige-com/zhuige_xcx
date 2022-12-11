@@ -110,41 +110,65 @@ CSF::createSection($prefix, array(
 //
 // 话题页
 //
+$fields_subject = [
+    array(
+        'id'          => 'bbs_subject_rec',
+        'type'        => 'select',
+        'title'       => '推荐话题',
+        'placeholder' => '选择话题',
+        'chosen'      => true,
+        'multiple'    => true,
+        'sortable'    => true,
+        'options'     => 'categories',
+        'query_args'  => array(
+            'taxonomy'  => 'zhuige_bbs_topic_tag',
+        ),
+    ),
+
+    array(
+        'id'          => 'bbs_subject_hot',
+        'type'        => 'select',
+        'title'       => '热门话题',
+        'placeholder' => '选择话题',
+        'chosen'      => true,
+        'multiple'    => true,
+        'sortable'    => true,
+        'options'     => 'categories',
+        'query_args'  => array(
+            'taxonomy'  => 'zhuige_bbs_topic_tag',
+        ),
+    ),
+];
+
+if (ZhuiGe_Xcx_Addon::is_active('zhuige-subjects')) {
+    $fields_subject[] = array(
+        'id'          => 'home_subject_hot',
+        'type'        => 'select',
+        'title'       => '首页热门话题',
+        'placeholder' => '选择话题',
+        'chosen'      => true,
+        'multiple'    => true,
+        'sortable'    => true,
+        'options'     => 'categories',
+        'query_args'  => array(
+            'taxonomy'  => 'zhuige_bbs_topic_tag',
+        ),
+    );
+
+    $fields_subject[] = array(
+        'id'          => 'home_subject_hot_width',
+        'type'        => 'number',
+        'title'       => '容器宽度',
+        'class'       => 'text-class',
+        'description' => '首页热门话题容器宽度，单位rpx',
+    );
+}
+
 CSF::createSection($prefix, array(
     'parent' => 'bbs',
     'title' => '话题',
     'icon'  => 'fas fa-map-marker',
-    'fields' => array(
-
-        array(
-            'id'          => 'bbs_subject_rec',
-            'type'        => 'select',
-            'title'       => '推荐话题',
-            'placeholder' => '选择话题',
-            'chosen'      => true,
-            'multiple'    => true,
-            'sortable'    => true,
-            'options'     => 'categories',
-            'query_args'  => array(
-                'taxonomy'  => 'zhuige_bbs_topic_tag',
-            ),
-        ),
-
-        array(
-            'id'          => 'bbs_subject_hot',
-            'type'        => 'select',
-            'title'       => '热门话题',
-            'placeholder' => '选择话题',
-            'chosen'      => true,
-            'multiple'    => true,
-            'sortable'    => true,
-            'options'     => 'categories',
-            'query_args'  => array(
-                'taxonomy'  => 'zhuige_bbs_topic_tag',
-            ),
-        ),
-
-    )
+    'fields' => $fields_subject
 ));
 
 //

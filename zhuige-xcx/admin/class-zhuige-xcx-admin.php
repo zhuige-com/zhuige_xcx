@@ -16,7 +16,8 @@ class ZhuiGe_Xcx_Admin
 
     public function enqueue_scripts()
     {
-        wp_enqueue_script(ZHUIGE_XCX, ZHUIGE_XCX_BASE_URL . 'admin/js/zhuige-xcx-admin.js', array('jquery'), ZHUIGE_XCX_VERSION, false);
+        wp_enqueue_script('zhuige-layer', ZHUIGE_XCX_BASE_URL . "admin/js/layer/layer.js", array('jquery'), '1.0.0', true);
+        wp_enqueue_script(ZHUIGE_XCX, ZHUIGE_XCX_BASE_URL . 'admin/js/zhuige-xcx-admin.js', array('jquery', 'zhuige-layer'), ZHUIGE_XCX_VERSION, false);
 
         if (function_exists('zhuige_xcx_widget_shortcode')) {
             wp_enqueue_script(ZHUIGE_XCX . '_edit_extend', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-block/zhuige-block-edit-extend.js', array('quicktags'), $this->version, false);
@@ -82,6 +83,16 @@ class ZhuiGe_Xcx_Admin
                 ),
             )
         ));
+
+        function zhuige_xcx_admin_save_after($data, $option) {
+            $user_ids = $data['auth_black_list'];
+            if (is_array($user_ids)) {
+                foreach ($user_ids as $user_id) {
+                    update_user_meta($user_id, 'zhuige_xcx_user_token', '');
+                }
+            }
+        }
+        add_action("csf_{$prefix}_save_after", 'zhuige_xcx_admin_save_after', 10, 2);
     }
 
     public function admin_init()

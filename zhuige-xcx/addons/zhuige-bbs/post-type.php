@@ -46,109 +46,177 @@ function zhuige_xcx_bbs_create_custom_post_type()
         // 'show_restore' => true,
     ));
 
+    $forum_options = [
+        array(
+            'id'      => 'logo',
+            'type'    => 'media',
+            'title'   => 'LOGO',
+            'library' => 'image',
+        ),
+
+        array(
+            'id'      => 'background',
+            'type'    => 'media',
+            'title'   => '图片',
+            'library' => 'image',
+        ),
+
+        array(
+            'id'    => 'notice',
+            'type'  => 'textarea',
+            'title' => '公告',
+            'subtitle' => '',
+        ),
+
+        array(
+            'id'     => 'ad_link',
+            'type'   => 'fieldset',
+            'title'  => '推荐',
+            'fields' => array(
+
+                array(
+                    'id'      => 'title',
+                    'type'    => 'text',
+                    'title'   => '文案',
+                ),
+
+                array(
+                    'id'    => 'link',
+                    'type'  => 'text',
+                    'title' => '链接',
+                    'default' => 'https://www.zhuige.com'
+                ),
+
+            ),
+        ),
+
+        array(
+            'id'     => 'location',
+            'type'   => 'fieldset',
+            'title'  => '位置',
+            'fields' => array(
+                array(
+                    'id'    => 'marker',
+                    'type'  => 'text',
+                    'title' => '标志物',
+                ),
+                array(
+                    'id'    => 'address',
+                    'type'  => 'text',
+                    'title' => '地址',
+                ),
+                array(
+                    'id'    => 'longitude',
+                    'type'  => 'text',
+                    'title' => '经度',
+                ),
+                array(
+                    'id'    => 'latitude',
+                    'type'  => 'text',
+                    'title' => '维度',
+                ),
+            ),
+        ),
+
+        array(
+            'id'     => 'ad_menu',
+            'type'   => 'group',
+            'title'  => '底部菜单',
+            'fields' => array(
+
+                array(
+                    'id'    => 'title',
+                    'type'  => 'text',
+                    'title' => '标题',
+                ),
+
+                array(
+                    'id'    => 'link',
+                    'type'  => 'text',
+                    'title' => '链接',
+                    'default' => 'https://www.zhuige.com'
+                ),
+
+                array(
+                    'id'    => 'switch',
+                    'type'  => 'switcher',
+                    'title' => '启用',
+                    'default' => ''
+                ),
+
+            ),
+        ),
+    ];
+
+    if (ZhuiGe_Xcx_Addon::is_active('zhuige-ads')) {
+        $forum_options[] = array(
+            'id'       => 'ad_imgs',
+            'type'     => 'fieldset',
+            'title'    => '图片广告',
+            'fields'   => array(
+                array(
+                    'id'          => 'title',
+                    'type'        => 'text',
+                    'title'       => '标题',
+                    'placeholder' => '标题'
+                ),
+                array(
+                    'id'     => 'items',
+                    'type'   => 'group',
+                    'title'  => '菜单项',
+                    'fields' => array(
+                        array(
+                            'id'          => 'title',
+                            'type'        => 'text',
+                            'title'       => '标题',
+                            'placeholder' => '标题'
+                        ),
+                        array(
+                            'id'          => 'badge',
+                            'type'        => 'text',
+                            'title'       => '角标',
+                            'placeholder' => '角标'
+                        ),
+                        array(
+                            'id'      => 'image',
+                            'type'    => 'media',
+                            'title'   => '图片',
+                            'library' => 'image',
+                            'after' => '<a href="https://www.zhuige.com/docs/zg/216.html" target="_blank">图片规格建议</a>',
+                        ),
+                        array(
+                            'id'       => 'link',
+                            'type'     => 'text',
+                            'title'    => '链接',
+                            'default'  => 'https://www.zhuige.com',
+                            'after' => '<a href="https://www.zhuige.com/docs/zg/209.html" target="_blank">如何获取链接</a>',
+                        ),
+                        array(
+                            'id'          => 'price',
+                            'type'        => 'text',
+                            'title'       => '价格',
+                            'placeholder' => '价格'
+                        ),
+                        array(
+                            'id'    => 'switch',
+                            'type'  => 'switcher',
+                            'title' => '开启/停用',
+                            'default' => '1'
+                        ),
+                    )
+                ),
+                array(
+                    'id'    => 'switch',
+                    'type'  => 'switcher',
+                    'title' => '开启/停用',
+                    'default' => '1'
+                ),
+            )
+        );
+    }
+
     CSF::createSection($zhuige_bbs_forum_option, array(
-        'fields' => array(
-
-            array(
-                'id'      => 'logo',
-                'type'    => 'media',
-                'title'   => 'LOGO',
-                'library' => 'image',
-            ),
-
-            array(
-                'id'      => 'background',
-                'type'    => 'media',
-                'title'   => '图片',
-                'library' => 'image',
-            ),
-
-            array(
-                'id'    => 'notice',
-                'type'  => 'textarea',
-                'title' => '公告',
-                'subtitle' => '',
-            ),
-
-            array(
-                'id'     => 'ad_link',
-                'type'   => 'fieldset',
-                'title'  => '推荐',
-                'fields' => array(
-
-                    array(
-                        'id'      => 'title',
-                        'type'    => 'text',
-                        'title'   => '文案',
-                    ),
-
-                    array(
-                        'id'    => 'link',
-                        'type'  => 'text',
-                        'title' => '链接',
-                        'default' => 'https://www.zhuige.com'
-                    ),
-
-                ),
-            ),
-
-            array(
-                'id'     => 'location',
-                'type'   => 'fieldset',
-                'title'  => '位置',
-                'fields' => array(
-                    array(
-                        'id'    => 'marker',
-                        'type'  => 'text',
-                        'title' => '标志物',
-                    ),
-                    array(
-                        'id'    => 'address',
-                        'type'  => 'text',
-                        'title' => '地址',
-                    ),
-                    array(
-                        'id'    => 'longitude',
-                        'type'  => 'text',
-                        'title' => '经度',
-                    ),
-                    array(
-                        'id'    => 'latitude',
-                        'type'  => 'text',
-                        'title' => '维度',
-                    ),
-                ),
-            ),
-
-            array(
-                'id'     => 'ad_menu',
-                'type'   => 'group',
-                'title'  => '底部菜单',
-                'fields' => array(
-
-                    array(
-                        'id'    => 'title',
-                        'type'  => 'text',
-                        'title' => '标题',
-                    ),
-
-                    array(
-                        'id'    => 'link',
-                        'type'  => 'text',
-                        'title' => '链接',
-                        'default' => 'https://www.zhuige.com'
-                    ),
-
-                    array(
-                        'id'    => 'switch',
-                        'type'  => 'switcher',
-                        'title' => '启用',
-                        'default' => ''
-                    ),
-
-                ),
-            ),
-        )
+        'fields' => $forum_options
     ));
 
 
@@ -362,6 +430,12 @@ function zhuige_xcx_bbs_create_custom_post_type()
                 'type'    => 'media',
                 'title'   => 'LOGO',
                 'library' => 'image',
+            ),
+
+            array(
+                'id'    => 'badge',
+                'type'  => 'text',
+                'title' => '角标',
             ),
 
             array(

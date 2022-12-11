@@ -134,6 +134,15 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['post_type_name'] = $post_type_info['name'];
 				$item['link'] = $post_type_info['link'];
 				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_vote' && function_exists('zhuige_vote_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_vote_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$item['author'] = zhuige_xcx_author_info($post->post_author);
+				$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
+				$topics[] = $item;	
 			} else {
 				$post_type_info = $this->get_post_type_info($post->post_type);
 
@@ -411,6 +420,15 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['post_type_name'] = $post_type_info['name'];
 				$item['link'] = $post_type_info['link'];
 				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_vote' && function_exists('zhuige_vote_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_vote_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$item['author'] = zhuige_xcx_author_info($post->post_author);
+				$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
+				$topics[] = $item;	
 			} else {
 				$post_type_info = $this->get_post_type_info($post->post_type);
 
@@ -495,7 +513,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$args = [
 				'posts_per_page' => ZhuiGe_Xcx::POSTS_PER_PAGE,
 				'offset' => $offset,
-				'post_type' => 'zhuige_bbs_topic',
+				'post_type' => ['zhuige_bbs_topic', 'zhuige_vote'],
 				'ignore_sticky_posts' => 1,
 				'author' => $user_id,
 			];
@@ -504,7 +522,18 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$result = $query->query($args);
 			foreach ($result as $post) {
 				if ($post->post_type == 'zhuige_bbs_topic') {
-					$topics[] = zhuige_bbs_topic_format($post);
+					$item = zhuige_bbs_topic_format($post);
+					$item['post_type'] = 'zhuige_bbs_topic';
+					$topics[] = $item;
+				} else if ($post->post_type == 'zhuige_vote' && function_exists('zhuige_vote_format')) {
+					$post_type_info = $this->get_post_type_info($post->post_type);
+					$item = zhuige_vote_format($post);
+					$item['post_type'] = $post->post_type;
+					$item['post_type_name'] = $post_type_info['name'];
+					$item['link'] = $post_type_info['link'];
+					$item['author'] = zhuige_xcx_author_info($post->post_author);
+					$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
+					$topics[] = $item;
 				} else {
 					$topics[] = $post;
 				}
@@ -518,11 +547,15 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		global $wpdb;
 		$post_ids = [];
+		$table_posts = $wpdb->prefix . 'posts';
 		if ($tab == 'like') {
 			$table_post_like = $wpdb->prefix . 'zhuige_xcx_post_like';
 			$post_ids = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT `post_id` FROM `$table_post_like` WHERE `post_status`='publish' AND `user_id`=%d ORDER BY `id` DESC LIMIT %d, %d",
+					"SELECT `post_id` FROM `$table_post_like` WHERE " 
+					. " `post_id` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) " 
+					// . " AND `post_status`='publish' "
+					. " AND `user_id`=%d ORDER BY `id` DESC LIMIT %d, %d",
 					$user_id,
 					$offset,
 					ZhuiGe_Xcx::POSTS_PER_PAGE
@@ -532,7 +565,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$table_post_favorite = $wpdb->prefix . 'zhuige_xcx_post_favorite';
 			$post_ids = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT `post_id` FROM `$table_post_favorite` WHERE `post_status`='publish' AND `user_id`=%d ORDER BY `id` DESC LIMIT %d, %d",
+					"SELECT `post_id` FROM `$table_post_favorite` WHERE " 
+					. " `post_id` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) " 
+					// . " AND `post_status`='publish' "
+					. " AND `user_id`=%d ORDER BY `id` DESC LIMIT %d, %d",
 					$user_id,
 					$offset,
 					ZhuiGe_Xcx::POSTS_PER_PAGE
@@ -542,7 +578,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$table_comments = $wpdb->prefix . 'comments';
 			$post_ids = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT `comment_post_ID` FROM `$table_comments` WHERE `comment_approved`='1' AND `user_id`=%d ORDER BY `comment_ID` DESC LIMIT %d, %d",
+					"SELECT `comment_post_ID` AS `post_id` FROM `$table_comments` WHERE " 
+					. " `comment_post_ID` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) " 
+					// . " AND `post_status`='publish' "
+					. " AND `user_id`=%d ORDER BY `comment_ID` DESC LIMIT %d, %d",
 					$user_id,
 					$offset,
 					ZhuiGe_Xcx::POSTS_PER_PAGE
@@ -554,7 +593,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$args = [
 				'posts_per_page' => -1,
 				'offset' => 0,
-				'post_type' => 'zhuige_bbs_topic',
+				'post_type' => ['zhuige_bbs_topic', 'zhuige_vote'],
 				'ignore_sticky_posts' => 1,
 				'post__in' => array_column($post_ids, 'post_id'),
 				'orderby' => 'post__in',
@@ -565,6 +604,16 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			foreach ($result as $post) {
 				if ($post->post_type == 'zhuige_bbs_topic') {
 					$item = zhuige_bbs_topic_format($post);
+					$item['post_type'] = 'zhuige_bbs_topic';
+					$topics[] = $item;
+				} else if ($post->post_type == 'zhuige_vote' && function_exists('zhuige_vote_format')) {
+					$post_type_info = $this->get_post_type_info($post->post_type);
+					$item = zhuige_vote_format($post);
+					$item['post_type'] = $post->post_type;
+					$item['post_type_name'] = $post_type_info['name'];
+					$item['link'] = $post_type_info['link'];
+					$item['author'] = zhuige_xcx_author_info($post->post_author);
+					$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
 					$topics[] = $item;
 				} else {
 					$topics[] = $post;
@@ -624,6 +673,8 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$page = 'pages/cms/detail/detail';
 		} else if ($post->post_type == 'zhuige_res') {
 			$page = 'pages/resource/detail/detail';
+		} else if ($post->post_type == 'zhuige_vote') {
+			$page = 'pages/vote/detail/detail';
 		} else {
 			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg']);
 		}
@@ -653,7 +704,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (strstr($content, 'errcode') !== false || strstr($content, 'errmsg') !== false) {
 			// $json = json_decode($content, TRUE);
 			// return $this->error($json['errmsg']);
-			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/wxacode.jpg']);
+			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg']);
 		}
 
 		//输出二维码
@@ -700,11 +751,13 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		$post = get_post($post_id);
 		if ($post->post_type == 'zhuige_bbs_topic') {
-			$path = "pages/bbs/detail/detail?topic_id=$post_id";
+			$path = "pages/bbs/detail/detail?id=$post_id";
 		} else if ($post->post_type == 'post') {
-			$path = "pages/cms/detail/detail?topic_id=$post_id";
+			$path = "pages/cms/detail/detail?id=$post_id";
 		} else if ($post->post_type == 'zhuige_res') {
-			$path = "pages/resource/detail/detail?topic_id=$post_id";
+			$path = "pages/resource/detail/detail?id=$post_id";
+		} else if ($post->post_type == 'zhuige_vote') {
+			$path = "pages/vote/detail/detail?id=$post_id";
 		} else {
 			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg']);
 		}
@@ -731,7 +784,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		$content = wp_remote_retrieve_body($remote);
 		if (strstr($content, 'errcode') !== false || strstr($content, 'errmsg') !== false) {
-			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/qqacode.jpg']);
+			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg']);
 		}
 
 		//输出二维码
@@ -778,11 +831,13 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		$post = get_post($post_id);
 		if ($post->post_type == 'zhuige_bbs_topic') {
-			$path = "pages/bbs/detail/detail?topic_id=$post_id";
+			$path = "pages/bbs/detail/detail?id=$post_id";
 		} else if ($post->post_type == 'post') {
-			$path = "pages/cms/detail/detail?topic_id=$post_id";
+			$path = "pages/cms/detail/detail?id=$post_id";
 		} else if ($post->post_type == 'zhuige_res') {
-			$path = "pages/resource/detail/detail?topic_id=$post_id";
+			$path = "pages/resource/detail/detail?id=$post_id";
+		} else if ($post->post_type == 'zhuige_vote') {
+			$path = "pages/vote/detail/detail?id=$post_id";
 		} else {
 			return $this->success(['acode' => ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg']);
 		}

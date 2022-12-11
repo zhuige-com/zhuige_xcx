@@ -86,6 +86,10 @@
 				<zhuige-scroll-user :users="forum.users"></zhuige-scroll-user>
 			</view>
 		</view>
+		
+		<view v-if="forum && forum.ad_imgs"class="zhuige-cust-wide-block">
+			<zhuige-scroll-ad boxClass="zhuige-scroll-goods" :title="forum.ad_imgs.title" :items="forum.ad_imgs.items"></zhuige-scroll-ad>
+		</view>
 
 		<!-- 自定义滚动广告 -->
 		<view v-if="forum.ad_custom && forum.ad_custom.length>0" class="zhuige-detail-ad">
@@ -508,4 +512,37 @@
 		font-size: 26rpx;
 		font-weight: 400;
 	}
+	.zhuige-cust-wide-block {
+		padding: 0 20rpx 20rpx;
+	}
+	.zhuige-cust-wide-block .zhuige-scroll-ad {
+		margin-top: -20rpx;
+	}
+
+	.zhuige-cust-wide-block .zhuige-scroll-ad-block {
+		width: 36%!important;
+		vertical-align: text-top;
+	}
+	.zhuige-cust-wide-block .zhuige-scroll-ad-block .zhuige-scroll-ad-cover {
+		height: 240rpx!important;
+	}
+	.zhuige-cust-wide-block .zhuige-scroll-ad-info .title-info {
+		font-size: 28rpx!important;
+		font-weight: 600!important;
+	}
+	.zhuige-cust-wide-block .price-unit {
+		display: none;
+	}
+	.zhuige-cust-wide-block .price-info {
+		padding: 0!important;
+	}
+	.zhuige-cust-wide-block .price-info .item-price {
+		font-size: 26rpx!important;
+		color: #ff4400;
+	}
+	.zhuige-cust-wide-block .zhuige-scroll-ad-info {
+		padding-bottom: 0!important;
+	}
+
+	
 </style>

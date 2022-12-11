@@ -51,7 +51,7 @@
 									</view>
 								</view>
 							</template>
-							<template v-if="topic.thumbnails.length<3">
+							<template v-else-if="topic.thumbnails.length<3">
 								<!-- 大图 -->
 								<view v-if="index%5==4" class="zhugie-info-block">
 									<view class="zhugie-info-text">
@@ -116,7 +116,7 @@
 								</view>
 							</view> -->
 							<!-- 3图 -->
-							<view v-if="topic.thumbnails.length>=3" class="zhugie-info-block">
+							<view v-else-if="topic.thumbnails.length>=3" class="zhugie-info-block">
 								<view class="zhugie-info-text">
 									<view class="zhugie-info-title">{{topic.title}}</view>
 								</view>
@@ -209,6 +209,109 @@
 									</view>
 								</view>
 							</view>
+						</template>
+						<!-- 投票 -->
+						<template v-else-if="topic.post_type=='zhuige_vote'">
+							<!-- 用户信息 -->
+							<view class="zhuige-social-poster-blcok">
+								<view class="zhuige-social-poster">
+									<view class="zhuige-social-poster-avatar">
+										<image mode="aspectFill" :src="topic.author.avatar"></image>
+									</view>
+									<view class="zhuige-social-poster-info">
+										<view>
+											<text>{{topic.author.nickname}}</text>
+											<image v-if="topic.author.certify && topic.author.certify.status==1"
+												mode="aspectFill" :src="topic.author.certify.icon">
+											</image>
+											<image class="zhuige-social-vip"
+												v-if="topic.author.vip && topic.author.vip.status==1"
+												mode="aspectFill" :src="topic.author.vip.icon">
+											</image>
+										</view>
+										<view>
+											<text>{{topic.time}}</text>
+											<text
+												v-if="topic.author.certify && topic.author.certify.status==1">/</text>
+											<text
+												v-if="topic.author.certify && topic.author.certify.status==1">{{topic.author.certify.name}}</text>
+										</view>
+									</view>
+								</view>
+							</view>
+						
+							<!-- 话题 + 正文 -->
+							<view class="zhuige-social-cont">
+								<!-- 正文信息 -->
+								<text>{{topic.excerpt}}</text>
+							</view>
+						
+							<!-- pk模块 -->
+							<view v-if="topic.type=='pk'" class="zhuige-pkvote">
+								<view class="zhuige-vote-info">
+									<view class="zhuige-vote-msg">
+										<text class="zhuige-vote-num">{{topic.count}}</text>
+										人参与投票，截止时间
+										<text class="zhuige-vote-num">{{topic.deadline}}</text>
+									</view>
+									<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
+								</view>
+								<view class="zhuige-vote-data">
+									<view class="zhuige-vote-count">
+										<view v-if="topic.my_vote==1 || topic.is_end==1"
+											class="zhuige-vote-count-num">
+											{{topic.option_a.rate}}%{{topic.option_a.xuan==1?'（已投）':''}}
+										</view>
+										<image class="zhuige-vote-img" mode="aspectFill"
+											:src="topic.option_a.image"></image>
+									</view>
+									<view class="zhuige-vote-count">
+										<view v-if="topic.my_vote==1 || topic.is_end==1"
+											class="zhuige-vote-count-num">
+											{{topic.option_b.rate}}%{{topic.option_b.xuan==1?'（已投）':''}}
+										</view>
+										<image class="zhuige-vote-img" mode="aspectFill"
+											:src="topic.option_b.image">
+										</image>
+									</view>
+								</view>
+								<view class="zhuige-vote-opt">
+									<view class="vote-opt1box">
+										<view class="vote-option1">{{topic.option_a.title}}</view>
+									</view>
+									<view class="vote-opt2box">
+										<view class="vote-option2">{{topic.option_b.title}}</view>
+									</view>
+								</view>
+							</view>
+							<!-- pk模块 end -->
+						
+							<!-- 投票模块 -->
+							<view v-if="topic.type=='single' || topic.type=='multi'" class="zhuige-pklist">
+								<view class="zhuige-vote-info">
+									<view class="zhuige-vote-msg">
+										<template v-if="topic.type=='single'">(单选)</template>
+										<template v-else-if="topic.type=='multi'">(多选)</template>
+										<text class="zhuige-vote-num">{{topic.count}} </text>
+										人参与投票，截止时间
+										<text class="zhuige-vote-num"> {{topic.deadline}}</text>
+									</view>
+									<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
+								</view>
+								<view class="zhuige-vote-list">
+									<view v-for="(item, index) in topic.options" :key="index"
+										class="zhuige-vote-option" :class="item.xuan==1?'vote-check':''">
+										<view class="zhuige-vote-option-text">
+											{{item.title}}
+											<text v-if="item.xuan==1" class="active">已投</text>
+										</view>
+										<view v-if="topic.my_vote==1 || topic.is_end==1"
+											class="zhuige-vote-option-count">{{item.count}} 票 {{item.rate}}%
+										</view>
+									</view>
+								</view>
+							</view>
+							<!-- 投票模块 end -->
 						</template>
 						<template v-else>
 							<view class="zhugie-info-block left-side">
@@ -378,7 +481,7 @@
 
 				Rest.post(url, params).then(res => {
 					this.topics = refresh ? res.data.topics : this.topics.concat(res.data.topics);
-					this.loadMore = 'nomore';
+					this.loadMore = res.data.more;
 					this.loaded = true;
 
 					uni.stopPullDownRefresh();

@@ -38,7 +38,8 @@
 			</scroll-view>
 
 			<!-- 创建圈子按钮 -->
-			<view @click="openLink('/pages/bbs/forum-create/forum-create')" class="zhuige-classify-creat">
+			<view v-if="is_show_create_forum" @click="openLink('/pages/bbs/forum-create/forum-create')"
+				class="zhuige-classify-creat">
 				<view>建圈</view>
 			</view>
 
@@ -65,6 +66,8 @@
 
 				tabs: [],
 				cur_tab: undefined,
+
+				is_show_create_forum: undefined,
 
 				forums: [],
 			}
@@ -178,6 +181,10 @@
 
 					if (!this.cur_tab) {
 						this.cur_tab = res.data.cur_tab;
+					}
+
+					if (res.data.is_show_create_forum) {
+						this.is_show_create_forum = res.data.is_show_create_forum;
 					}
 
 					this.loadForums(this.cur_tab);

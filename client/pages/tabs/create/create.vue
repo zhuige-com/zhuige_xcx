@@ -1,9 +1,16 @@
 <template>
 	<view class="content">
-		<view class="zhuige-post-icon-set">
+		<!-- 发布页广告 -->
+		<view v-if="ad" class="zhuige-post-ad" @click="openLink(ad.link)">
+			<view :class="{active:active}">
+				<image mode="widthFix" :src="ad.image"></image>
+			</view>
+		</view>
+		
+		<view class="zhuige-post-icon-set">			
 			<view class="zhuige-post-bar">
 
-				<view v-for="(item, index) in items" :key="index" @click="openLink(item.link)" class="zhuige-post-icon"
+				<view v-for="(item, index) in items" :key="index" @click="clickPost(item.link)" class="zhuige-post-icon"
 					:class="{active:active}">
 					<view>
 						<image class="image" mode="aspectFill" :src="item.image"></image>
@@ -30,6 +37,7 @@
 		data() {
 			this.cache = false;
 			return {
+				ad: undefined,
 				items: [],
 				active: false,
 			}
@@ -82,12 +90,25 @@
 			openLink(link) {
 				Util.openLink(link);
 			},
+			
+			/**
+			 * 点击发布
+			 */
+			clickPost(link) {
+				if (Util.checkMobile()) {
+					Util.openLink(link);
+				}
+			},
 
 			/**
 			 * 加载配置
 			 */
 			loadSetting() {
 				Rest.post(Api.URL('setting', 'create')).then(res => {
+					if (res.data.ad) {
+						this.ad = res.data.ad;
+					}
+					
 					this.items = res.data.items;
 					setTimeout(() => {
 						this.active = true;
@@ -201,5 +222,20 @@
 
 	.zhuige-post-icon:nth-child(10) {
 		transition-delay: 0.55s;
+	}
+	.zhuige-post-ad {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding-top: 320rpx;
+	}
+	.zhuige-post-ad view {
+		width: 720rpx;
+		height: 180rpx;
+	}
+	.zhuige-post-ad image {
+		width: 100%;
+		height: auto;
+		border-radius: 12rpx;
 	}
 </style>
