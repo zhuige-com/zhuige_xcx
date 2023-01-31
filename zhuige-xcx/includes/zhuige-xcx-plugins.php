@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 if (!defined('ABSPATH')) {
@@ -23,7 +25,8 @@ if (!defined('ZHUIGE_XCX_PLUGINS')) {
 
 	add_action('admin_menu', 'zhuige_xcx_plugins_market_add_menu_items');
 
-	function zhuige_xcx_plugins_market_badge() {
+	function zhuige_xcx_plugins_market_badge()
+	{
 		$new_plugin_count = 0;
 
 		$filePath = ZHUIGE_XCX_ADDONS_DIR . 'cache_version.json';
@@ -33,7 +36,7 @@ if (!defined('ZHUIGE_XCX_PLUGINS')) {
 				$versions = json_decode($version_content, true);
 				foreach ($versions as &$version) {
 					if ($version['local_version'] != $version['version']) {
-						$new_plugin_count ++;
+						$new_plugin_count++;
 					}
 				}
 				return $new_plugin_count;
@@ -42,14 +45,14 @@ if (!defined('ZHUIGE_XCX_PLUGINS')) {
 
 		$response = wp_remote_get("https://www.zhuige.com/api/plugins/plugins_version");
 
-        if (is_wp_error($response) || $response['response']['code'] != 200) {
-            return false;
-        }
+		if (is_wp_error($response) || $response['response']['code'] != 200) {
+			return false;
+		}
 
-        $data = json_decode($response['body'], TRUE);
-        $datadata = $data['data'];
+		$data = json_decode($response['body'], TRUE);
+		$datadata = $data['data'];
 		$products = $datadata['products'];
-		
+
 		if (!file_exists($filePath)) {
 			foreach ($products as &$product) {
 				$product['local_version'] = $product['version'];
@@ -72,7 +75,7 @@ if (!defined('ZHUIGE_XCX_PLUGINS')) {
 					$version['version'] = $product['version'];
 
 					if ($version['local_version'] != $version['version']) {
-						$new_plugin_count ++;
+						$new_plugin_count++;
 					}
 
 					break;
@@ -83,7 +86,7 @@ if (!defined('ZHUIGE_XCX_PLUGINS')) {
 				continue;
 			}
 
-			$new_plugin_count ++;
+			$new_plugin_count++;
 			$new_plugins[] = [
 				'id' => $product['id'],
 				'alias' => $product['alias'],
@@ -93,14 +96,14 @@ if (!defined('ZHUIGE_XCX_PLUGINS')) {
 		}
 
 		file_put_contents($filePath, json_encode(array_merge($versions, $new_plugins)));
-		
+
 		return $new_plugin_count;
 	}
 
 	function zhuige_xcx_plugins_market_add_menu_items()
 	{
 		$badge = zhuige_xcx_plugins_market_badge();
-		
+
 		add_menu_page(
 			'追格插件管理',			 // Page title.
 			'追格插件管理' . ($badge ? '<span class="awaiting-mod">' . $badge . '</span>' : ''),			 // Menu title.
@@ -165,5 +168,4 @@ if (!defined('ZHUIGE_XCX_PLUGINS')) {
 	{
 		wp_enqueue_style('zhuige-plugins-market-css', ZHUIGE_XCX_BASE_URL . "admin/css/zhuige-xcx-plugins.css");
 	}
-
 }

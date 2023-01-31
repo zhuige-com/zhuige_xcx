@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
@@ -38,6 +40,31 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		// LOGO
 		$basic_logo = ZhuiGe_Xcx::option_value('basic_logo');
 		$data['logo'] = ZhuiGe_Xcx::option_image_url($basic_logo, 'placeholder.jpg');
+
+		// 是否有通知
+		$my_user_id = get_current_user_id();
+		$notify_count = 0;
+		if ($my_user_id) {
+			global $wpdb;
+			$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
+			$notify_count = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(`id`) FROM `$table_notify` WHERE `to_id`=%d AND `post_status`='publish' AND `isread`=0",
+					$my_user_id
+				)
+			);
+
+			if ($notify_count == 0 && ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+				$table_system_notice_notify = $wpdb->prefix . 'zhuige_xcx_system_notice_notify';
+				$notify_count = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(`id`) FROM `$table_system_notice_notify` WHERE `user_id`=%d AND `isread`='0'",
+						$my_user_id
+					)
+				);
+			}
+		}
+		$data['notify_count'] = (int)$notify_count;
 
 		return $this->success($data);
 	}
@@ -109,7 +136,8 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 			$data['subject_hot_width'] = ZhuiGe_Xcx::option_value('home_subject_hot_width');
 		}
 
-		
+
+		// 自定义广告
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-ads')) {
 			// 文字链接
 			$home_ad_hot_link = ZhuiGe_Xcx::option_value('home_ad_hot_link');
@@ -178,6 +206,21 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 
+		// 微信广告
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-traffic')) {
+			$traffic_index = ZhuiGe_Xcx::option_value('traffic_index');
+			if ($traffic_index && $traffic_index['switch_chp']) {
+				$data['traffic_chp'] = $traffic_index['ad_chp'];
+			}
+
+			$traffic_index_list = ZhuiGe_Xcx::option_value('traffic_index_list');
+			if ($traffic_index_list && $traffic_index_list['switch']) {
+				unset($traffic_index_list['switch']);
+				$data['traffic_list'] = $traffic_index_list;
+			}
+		}
+
+
 		// 推荐用户
 		$rec_user = ZhuiGe_Xcx::option_value('home_rec_user');
 		if ($rec_user && $rec_user['switch']) {
@@ -197,7 +240,7 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 				if (function_exists('zhuige_xcx_certify_is_certify')) {
 					$user['certify'] = zhuige_xcx_certify_is_certify($user_id);
 				}
-				
+
 				if (function_exists('zhuige_xcx_vip_is_vip')) {
 					$user['vip'] = zhuige_xcx_vip_is_vip($user_id);
 				}
@@ -285,7 +328,7 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 					'post_type' => $post_type,
 					'ignore_sticky_posts' => 1,
 				];
-		
+
 				$query = new WP_Query();
 				$result = $query->query($args);
 				$items = [];
@@ -413,11 +456,27 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (is_array($create_items_org)) {
 			foreach ($create_items_org as $item) {
 				if ($item['switch'] && $item['image'] && $item['image']['url']) {
-					$items[] = [
+					$i = [
 						'image' => $item['image']['url'],
 						'link' => $item['link'],
 						'title' => $item['title'],
 					];
+
+					if (stripos($item['link'], 'bbs/post/post') !== false) {
+						$i['require_mobile'] = (ZhuiGe_Xcx::option_value('bbs_topic_mobile_switch') ? 1 : 0);
+						$i['require_mobile_tip'] = '发帖';
+					} else if (stripos($item['link'], 'bbs/forum-create/forum-create') !== false) {
+						$i['require_mobile'] = (ZhuiGe_Xcx::option_value('bbs_forum_mobile_switch') ? 1 : 0);
+						$i['require_mobile_tip'] = '建圈';
+					} else if (stripos($item['link'], 'vote/post/post') !== false) {
+						$i['require_mobile'] = (ZhuiGe_Xcx::option_value('vote_mobile_switch') ? 1 : 0);
+						$i['require_mobile_tip'] = '发起投票';
+					} else if (stripos($item['link'], 'contribution/post-edit/post-edit') !== false) {
+						$i['require_mobile'] = (ZhuiGe_Xcx::option_value('contribution_mobile_switch') ? 1 : 0);
+						$i['require_mobile_tip'] = '投稿';
+					}
+
+					$items[] = $i;
 				}
 			}
 		}
@@ -602,7 +661,7 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 	 */
 	private function get_post_type_info($post_type)
 	{
-		foreach(ZhuiGe_Xcx::$post_types as $item) {
+		foreach (ZhuiGe_Xcx::$post_types as $item) {
 			if ($item['id'] == $post_type) {
 				return $item;
 			}

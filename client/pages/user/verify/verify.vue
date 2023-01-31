@@ -29,12 +29,21 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Auth from '@/utils/auth';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
 	import Rest from '@/utils/rest';
-	
+
 	export default {
 		data() {
 			return {
@@ -42,7 +51,7 @@
 				avatar: '/static/avatar.jpg'
 			}
 		},
-		
+
 		onLoad(options) {
 			let user = Auth.getUser();
 			if (user) {
@@ -52,7 +61,7 @@
 				}
 			}
 		},
-		
+
 		methods: {
 			/**
 			 * 点击打开链接
@@ -60,7 +69,7 @@
 			openLink(link) {
 				Util.openLink(link);
 			},
-			
+
 			/**
 			 * 选择头像
 			 */
@@ -71,7 +80,7 @@
 					Alert.error(err);
 				});
 			},
-			
+
 			/**
 			 * 点击提交
 			 */
@@ -92,7 +101,7 @@
 					console.log(err)
 				});
 			},
-			
+
 			/**
 			 * 点击返回
 			 */
@@ -124,7 +133,9 @@
 	.zhuige-verify-info {
 		padding-bottom: 80rpx;
 	}
-	.zhuige-verify-info button, .zhuige-verify-info button::after {
+
+	.zhuige-verify-info button,
+	.zhuige-verify-info button::after {
 		border: none;
 		background: none;
 	}

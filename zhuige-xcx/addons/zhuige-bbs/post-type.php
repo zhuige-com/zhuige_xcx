@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 function zhuige_xcx_bbs_create_custom_post_type()
@@ -57,7 +59,7 @@ function zhuige_xcx_bbs_create_custom_post_type()
         array(
             'id'      => 'background',
             'type'    => 'media',
-            'title'   => '图片',
+            'title'   => '头部背景',
             'library' => 'image',
         ),
 
@@ -113,7 +115,7 @@ function zhuige_xcx_bbs_create_custom_post_type()
                 array(
                     'id'    => 'latitude',
                     'type'  => 'text',
-                    'title' => '维度',
+                    'title' => '纬度',
                 ),
             ),
         ),
@@ -382,7 +384,7 @@ function zhuige_xcx_bbs_create_custom_post_type()
                     array(
                         'id'    => 'latitude',
                         'type'  => 'text',
-                        'title' => '维度',
+                        'title' => '纬度',
                     ),
                 ),
             ),

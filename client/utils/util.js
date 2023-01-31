@@ -292,7 +292,7 @@ function isMobile(mobile) {
 /**
  * 检查是否已绑定了手机
  */
-function checkMobile() {
+function checkMobile(tip) {
 	let user = Auth.getUser();
 	if (!user) {
 		uni.navigateTo({
@@ -300,14 +300,18 @@ function checkMobile() {
 		});
 		return false;
 	}
-	
+
 	if (!user.mobile) {
+		let url = '/pages/user/login/login?type=mobile';
+		if (tip) {
+			url += '&tip=' + tip;
+		}
 		uni.navigateTo({
-			url: '/pages/user/login/login?type=mobile',
+			url: url,
 		});
 		return false;
 	}
-	
+
 	return true;
 }
 
@@ -340,6 +344,21 @@ function addShareScore(source) {
 	})
 }
 
+/**
+ * 设置【消息】tab的红点 因为微信小程序bug的原因，只有在tab页面设置才有效
+ */
+function setNoticeRedDot() {
+	if (getApp().globalData.noticeRedDot) {
+		uni.showTabBarRedDot({
+			index: 3
+		})
+	} else {
+		uni.hideTabBarRedDot({
+			index: 3
+		})
+	}
+}
+
 module.exports = {
 	navigateBack,
 
@@ -354,4 +373,6 @@ module.exports = {
 	addShareScore,
 
 	getPopAd,
+
+	setNoticeRedDot,
 };

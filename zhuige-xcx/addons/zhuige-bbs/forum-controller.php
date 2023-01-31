@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
@@ -83,13 +85,13 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 
 
 		// 是否显示创建圈子按钮
-		$is_show_create_forum = 0;
+		$is_show_create_forum = 1;
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-auth')) {
 			$auth_create_forum = ZhuiGe_Xcx::option_value('auth_create_forum');
 			$is_show_create_forum = ($auth_create_forum != 'none') ? 1 : 0;
 		}
 		$data['is_show_create_forum'] = $is_show_create_forum;
-		
+
 
 		return $this->success($data);
 	}
@@ -241,11 +243,14 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		$status = 'pending'; //必须人工审核，以防垃圾信息
 		// $status = 'publish';
 		$post = array(
-			'post_title' => $name,
-			'post_content' => $brief,
-			'post_status' => $status,
-			'post_type' => 'zhuige_bbs_forum',
-			'post_author' => $my_user_id
+			'post_title' 	=> $name,
+			'post_content' 	=> $brief,
+			'post_status' 	=> $status,
+			'post_type' 	=> 'zhuige_bbs_forum',
+			'post_author' 	=> $my_user_id,
+			'tax_input'   	=> array(
+				"zhuige_bbs_forum_cat" => array($cat_id)
+			),
 		);
 
 		$post_id = wp_insert_post($post);
@@ -265,6 +270,7 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		];
 
 		$options['logo'] = json_decode($logo, true);
+		$options['notice'] = $brief;
 		update_post_meta($post_id, 'zhuige-bbs-forum-option', $options);
 
 		return $this->success();
@@ -345,7 +351,7 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 				'post_type' => ['zhuige_bbs_forum'],
 				'post__in' => $forum_ids
 			]);
-	
+
 			foreach ($result as $item) {
 				$forums[] = $this->_format_forum($item, $stat);
 			}
@@ -553,8 +559,18 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 			$forum['ad_imgs'] = $ad_imgs;
 		}
 
+		$data = ['forum' => $forum];
 
-		return $this->success(['forum' => $forum]);
+		// 微信广告
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-traffic')) {
+			$traffic_forum_list = ZhuiGe_Xcx::option_value('traffic_forum_list');
+			if ($traffic_forum_list && $traffic_forum_list['switch']) {
+				unset($traffic_forum_list['switch']);
+				$data['traffic_list'] = $traffic_forum_list;
+			}
+		}
+
+		return $this->success($data);
 	}
 
 	/**
@@ -712,9 +728,11 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 					}
 				}
 			}
-		}
 
-		return 0;
+			return 0;
+		} else {
+			return 1;
+		}
 	}
 }
 

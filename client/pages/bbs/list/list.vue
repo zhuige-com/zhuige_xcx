@@ -23,7 +23,19 @@
 		<!-- 帖子列表 -->
 		<view class="zhuige-social-list">
 			<template v-if="topics && topics.length>0">
-				<zhuige-topic v-for="(topic, index) in topics" :key="index" :topic="topic"></zhuige-topic>
+				<template v-for="(topic, index) in topics">
+					<!-- #ifdef MP-WEIXIN -->
+					<view class="zhuige-block zhuige-ad-cust"
+						v-if="traffic_list && traffic_list.frequency>0 && (index+1)%traffic_list.frequency==0">
+						<view class="zhuige-ad-cust-title">{{traffic_list.title}}</view>
+						<ad-custom :unit-id="traffic_list.ad"></ad-custom>
+						<view class="zhuige-ad-cust-footer">
+							<text>{{traffic_list.desc}}</text>
+						</view>
+					</view>
+					<!-- #endif -->
+					<zhuige-topic :key="index" :topic="topic"></zhuige-topic>
+				</template>
 			</template>
 			<template v-else-if="loaded">
 				<zhuige-nodata></zhuige-nodata>
@@ -36,6 +48,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -56,6 +77,10 @@
 				topics: [],
 				loadMore: 'more',
 				loaded: false,
+
+				// #ifdef MP-WEIXIN
+				traffic_list: undefined,
+				// #endif
 			}
 		},
 
@@ -162,6 +187,13 @@
 					if (res.data.subject) {
 						this.subject = res.data.subject;
 					}
+
+					// #ifdef MP-WEIXIN
+					if (res.data.traffic_list) {
+						this.traffic_list = res.data.traffic_list;
+					}
+					// #endif
+
 					this.topics = refresh ? res.data.topics : this.topics.concat(res.data.topics);
 					this.loadMore = res.data.more;
 					this.loaded = true;

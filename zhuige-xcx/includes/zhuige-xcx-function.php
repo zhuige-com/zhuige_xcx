@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 if (!function_exists('zhuige_xcx_import_image2attachment')) {
@@ -710,10 +712,10 @@ if (!function_exists('zhuige_xcx_get_comment_tree')) {
                 $user['certify'] = zhuige_xcx_certify_is_certify($comment->user_id);
             }
 
-			if (function_exists('zhuige_xcx_vip_is_vip')) {
-				$user['vip'] = zhuige_xcx_vip_is_vip($comment->user_id);
-			}
-			
+            if (function_exists('zhuige_xcx_vip_is_vip')) {
+                $user['vip'] = zhuige_xcx_vip_is_vip($comment->user_id);
+            }
+
             $item['user'] = $user;
 
             $reply_user_id = (int)(get_comment_meta($comment->comment_ID, 'zhuige_xcx_reply_user_id', true));
@@ -800,17 +802,17 @@ if (!function_exists('zhuige_xcx_author_info')) {
     function zhuige_xcx_author_info($user_id)
     {
         $author = [
-			'user_id' => $user_id,
-			'nickname' => get_user_meta($user_id, 'nickname', true),
-			'avatar' => ZhuiGe_Xcx::user_avatar($user_id),
-			'reward' => get_user_meta($user_id, 'zhuige_xcx_user_reward', true)
-		];
-		if (function_exists('zhuige_xcx_certify_is_certify')) {
-			$author['certify'] = zhuige_xcx_certify_is_certify($user_id);
-		}
-		if (function_exists('zhuige_xcx_vip_is_vip')) {
-			$author['vip'] = zhuige_xcx_vip_is_vip($user_id);
-		}
+            'user_id' => $user_id,
+            'nickname' => get_user_meta($user_id, 'nickname', true),
+            'avatar' => ZhuiGe_Xcx::user_avatar($user_id),
+            'reward' => get_user_meta($user_id, 'zhuige_xcx_user_reward', true)
+        ];
+        if (function_exists('zhuige_xcx_certify_is_certify')) {
+            $author['certify'] = zhuige_xcx_certify_is_certify($user_id);
+        }
+        if (function_exists('zhuige_xcx_vip_is_vip')) {
+            $author['vip'] = zhuige_xcx_vip_is_vip($user_id);
+        }
 
         return $author;
     }

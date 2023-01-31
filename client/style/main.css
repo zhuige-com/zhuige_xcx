@@ -1529,3 +1529,19 @@ uni-swiper .uni-swiper-dot-active {
 		font-weight: 300;
 	}
 	/* 多选 */
+.zhuige-ad-cust-title {
+	font-size: 30rpx;
+	font-weight: 600;
+	height: 2.4em;
+	line-height: 1.6em;
+}
+.zhuige-ad-cust-footer {
+	display: flex;
+	align-items: center;
+	padding: 16rpx 0 0rpx;
+}
+.zhuige-ad-cust-footer text {
+	font-size: 28rpx;
+	font-weight: 400;
+	color: #999999;
+}

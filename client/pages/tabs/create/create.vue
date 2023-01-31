@@ -6,11 +6,11 @@
 				<image mode="widthFix" :src="ad.image"></image>
 			</view>
 		</view>
-		
-		<view class="zhuige-post-icon-set">			
+
+		<view class="zhuige-post-icon-set">
 			<view class="zhuige-post-bar">
 
-				<view v-for="(item, index) in items" :key="index" @click="clickPost(item.link)" class="zhuige-post-icon"
+				<view v-for="(item, index) in items" :key="index" @click="clickPost(item)" class="zhuige-post-icon"
 					:class="{active:active}">
 					<view>
 						<image class="image" mode="aspectFill" :src="item.image"></image>
@@ -26,6 +26,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -90,14 +99,16 @@
 			openLink(link) {
 				Util.openLink(link);
 			},
-			
+
 			/**
 			 * 点击发布
 			 */
-			clickPost(link) {
-				if (Util.checkMobile()) {
-					Util.openLink(link);
+			clickPost(item) {
+				if (item.require_mobile && !Util.checkMobile(item.require_mobile_tip)) {
+					return;
 				}
+
+				Util.openLink(item.link);
 			},
 
 			/**
@@ -108,7 +119,7 @@
 					if (res.data.ad) {
 						this.ad = res.data.ad;
 					}
-					
+
 					this.items = res.data.items;
 					setTimeout(() => {
 						this.active = true;
@@ -223,16 +234,19 @@
 	.zhuige-post-icon:nth-child(10) {
 		transition-delay: 0.55s;
 	}
+
 	.zhuige-post-ad {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding-top: 320rpx;
 	}
+
 	.zhuige-post-ad view {
 		width: 720rpx;
 		height: 180rpx;
 	}
+
 	.zhuige-post-ad image {
 		width: 100%;
 		height: auto;

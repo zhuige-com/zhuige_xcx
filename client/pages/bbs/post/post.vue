@@ -128,6 +128,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -136,7 +145,7 @@
 	export default {
 		data() {
 			this.requesting = false;
-			
+
 			return {
 				type: 'image',
 
@@ -171,7 +180,7 @@
 			if (options.subject_name) {
 				this.subjects.push(options.subject_name);
 			}
-			
+
 			this.preCreate();
 
 			uni.$on('subjectChange', this.onSubjectChange);
@@ -387,38 +396,43 @@
 					return;
 				}
 				this.requesting = true;
-				
+
 				Rest.post(Api.URL('bbs', 'topic_create'), params).then(res => {
 					if (res.code != 0) {
-						Alert.error(res.message);
+						if (res.code == 'require_mobile') {
+							Util.openLink('/pages/user/login/login?type=mobile&tip=发帖');
+						} else {
+							Alert.error(res.message);
+						}
 						return;
 					}
 
-					// if (res.data.status == 'pending') {
-						Alert.toast('审核后，他人可见');
-					// }
+					Alert.toast('审核后，他人可见');
 
 					setTimeout(() => {
 						Util.navigateBack();
-						// Util.openLink('/pages/bbs/detail/detail?topic_id=' + res.data.post_id);
 					}, 1500)
 				}, err => {
 					this.requesting = false;
 					console.log(err)
 				});
 			},
-			
+
 			/**
 			 * 发帖前准备
 			 */
 			preCreate() {
 				Rest.post(Api.URL('bbs', 'topic_create_pre')).then(res => {
 					if (res.code != 0) {
-						Alert.error(res.message);
-						
-						setTimeout(() => {
+						if (res.code == 'require_mobile') {
 							Util.navigateBack();
-						}, 1500)
+							Util.openLink('/pages/user/login/login?type=mobile&tip=发帖');
+						} else {
+							Alert.error(res.message);
+							setTimeout(() => {
+								Util.navigateBack();
+							}, 1500)
+						}
 					}
 				}, err => {
 					console.log(err)

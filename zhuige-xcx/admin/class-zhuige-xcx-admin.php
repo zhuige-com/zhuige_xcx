@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Admin
@@ -25,6 +27,10 @@ class ZhuiGe_Xcx_Admin
 
         if (ZhuiGe_Xcx_Addon::is_active('zhuige-wxmall')) {
             wp_enqueue_script(ZHUIGE_XCX . '_wxmall', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-wxmall/mall-admin.js', array('jquery'), $this->version, false);
+        }
+
+        if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+            wp_enqueue_script(ZHUIGE_XCX . '_system_notice', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-system_notice/system-notice-admin.js', array('jquery'), $this->version, false);
         }
     }
 
@@ -84,7 +90,8 @@ class ZhuiGe_Xcx_Admin
             )
         ));
 
-        function zhuige_xcx_admin_save_after($data, $option) {
+        function zhuige_xcx_admin_save_after($data, $option)
+        {
             $user_ids = $data['auth_black_list'];
             if (is_array($user_ids)) {
                 foreach ($user_ids as $user_id) {

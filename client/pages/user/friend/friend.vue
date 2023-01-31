@@ -44,7 +44,7 @@
 					<zhuige-nodata v-if="loadedFollow" :tip="noDataTip"></zhuige-nodata>
 				</template>
 			</view>
-			
+
 			<uni-load-more v-if="cur_tab=='follow' && follows.length>0" :status="loadMoreFollow"></uni-load-more>
 
 			<view v-if="cur_tab=='fans'" class="zhuige-block">
@@ -85,12 +85,21 @@
 			</view>
 
 			<uni-load-more v-if="cur_tab=='fans' && fans.length>0" :status="loadMoreFan"></uni-load-more>
-			
+
 		</view>
 	</view>
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -301,7 +310,7 @@
 					this.follows = this.follows.concat(res.data.users);
 					this.loadMoreFollow = res.data.more;
 					this.loadedFollow = true;
-					
+
 					if (res.data.tip) {
 						this.noDataTip = res.data.tip;
 					} else {
@@ -331,7 +340,7 @@
 					this.fans = this.fans.concat(res.data.users);
 					this.loadMoreFan = res.data.more;
 					this.loadedFan = true;
-					
+
 					if (res.data.tip) {
 						this.noDataTip = res.data.tip;
 					} else {

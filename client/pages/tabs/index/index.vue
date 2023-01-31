@@ -13,7 +13,7 @@
 				</view>
 			</view>
 		</uni-nav-bar>
-		
+
 		<view class="" :style="style">
 			<view v-if="slides && slides.length>0" class="zhuige-wide-box">
 				<zhuige-swiper :items="slides"></zhuige-swiper>
@@ -75,7 +75,7 @@
 						<view class="zhuige-block">
 							<view class="zhuige-block-head">
 								<view>{{post.title}}</view>
-								<view v-if="post.more_link" @click="clickLink(post.more_link)">查看更多</view>
+								<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
 							</view>
 							<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block left-side"
 								@click="clickPost(item)">
@@ -90,7 +90,8 @@
 											<text
 												v-if="item.read_limit=='cost' && (!is_ios || (is_ios && item.cost_ios_switch=='1'))"
 												class="pay">￥{{item.cost_price}}</text>
-											<text v-if="item.read_limit=='score'" class="pay">{{item.cost_score}}积分</text>
+											<text v-if="item.read_limit=='score'"
+												class="pay">{{item.cost_score}}积分</text>
 											<text>浏览 {{item.views}}</text>
 											<text>点赞 {{item.likes}}</text>
 										</view>
@@ -102,7 +103,7 @@
 
 					<!-- 活动自定义 -->
 					<view v-else-if="post.post_type=='zhuige_activity'" class="zhuige-mini-custom-wide">
-						<view class="zhuige-mini-act-cover" @click="clickLink(post.more_link)">
+						<view class="zhuige-mini-act-cover" @click="openLink(post.more_link)">
 							<view>
 								<view>{{post.title}}</view>
 								<text>活动</text>
@@ -138,7 +139,7 @@
 						<view class="zhuige-block">
 							<view class="zhuige-block-head">
 								<view>{{post.title}}</view>
-								<view v-if="post.more_link" @click="clickLink(post.more_link)">查看更多</view>
+								<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
 							</view>
 							<view class="zhuige-mini-twins">
 								<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block"
@@ -165,7 +166,7 @@
 						<view class="zhuige-block">
 							<view class="zhuige-block-head">
 								<view>{{post.title}}</view>
-								<view v-if="post.more_link" @click="clickLink(post.more_link)">查看更多</view>
+								<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
 							</view>
 							<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block left-side"
 								@click="clickPost(item)">
@@ -181,7 +182,8 @@
 												<text
 													v-if="item.limit=='cost' && (!is_ios || (is_ios && item.cost_ios_switch=='1'))"
 													class="pay">￥ {{item.cost_price}}</text>
-												<text v-if="item.limit=='score'" class="pay">{{item.cost_score}} 积分</text>
+												<text v-if="item.limit=='score'" class="pay">{{item.cost_score}}
+													积分</text>
 												<text>浏览 {{item.views}}</text>
 												<text>点赞 {{item.likes}}</text>
 											</view>
@@ -200,7 +202,7 @@
 						<view class="zhuige-block">
 							<view class="zhuige-block-head">
 								<view>{{post.title}}</view>
-								<view v-if="post.more_link" @click="clickLink(post.more_link)">查看更多</view>
+								<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
 							</view>
 							<view class="zhuige-scroll-ad">
 								<scroll-view scroll-x="true">
@@ -227,20 +229,23 @@
 					</view>
 					<!-- 帖子 -->
 					<zhuige-scroll-ad v-else-if="post.post_type=='zhuige_bbs_topic'"
-						ext-ad-class="zhuige-scroll-coterie zhuige-topic-scroll" :title="post.title" :items="post.items">
+						ext-ad-class="zhuige-scroll-coterie zhuige-topic-scroll" :title="post.title"
+						:items="post.items">
 					</zhuige-scroll-ad>
 					<!-- 其他 -->
-					<zhuige-scroll-ad v-else ext-ad-class="zhuige-scroll-coterie" :title="post.title" :items="post.items">
+					<zhuige-scroll-ad v-else ext-ad-class="zhuige-scroll-coterie" :title="post.title"
+						:items="post.items">
 					</zhuige-scroll-ad>
 
 				</view>
 			</template>
-		
-			<view v-if="tab_switch==1" class="zhuige-block-tab" :style="'top:' + tab_sticky_top + 'px;padding-top: 0rpx;'">
+
+			<view v-if="tab_switch==1" class="zhuige-block-tab"
+				:style="'top:' + tab_sticky_top + 'px;padding-top: 0rpx;'">
 				<zhuige-tab v-if="tab_type==1" type="scroll" :tabs="tabs" :cur-tab="cur_tab" @clickTab="clickTab">
 				</zhuige-tab>
-				<zhuige-tab v-if="tab_type==2 && lastLoaded || followLoaded" type="simple" :tabs="tabs" :cur-tab="cur_tab"
-					@clickTab="clickTab"></zhuige-tab>
+				<zhuige-tab v-if="tab_type==2 && lastLoaded || followLoaded" type="simple" :tabs="tabs"
+					:cur-tab="cur_tab" @clickTab="clickTab"></zhuige-tab>
 			</view>
 
 			<template v-if="list_switch==1">
@@ -254,6 +259,17 @@
 								<zhuige-user-list v-if="rec_user && rec_user.position==index" type="scroll"
 									:title="rec_user.title" :users="rec_user.users" ext-class="zhuige-user-followed">
 								</zhuige-user-list>
+
+								<!-- #ifdef MP-WEIXIN -->
+								<view class="zhuige-block zhuige-ad-cust"
+									v-if="traffic_list && traffic_list.frequency>0 && (index+1)%traffic_list.frequency==0">
+									<view class="zhuige-ad-cust-title">{{traffic_list.title}}</view>
+									<ad-custom :unit-id="traffic_list.ad"></ad-custom>
+									<view class="zhuige-ad-cust-footer">
+										<text>{{traffic_list.desc}}</text>
+									</view>
+								</view>
+								<!-- #endif -->
 
 								<!-- 新增滑动全宽度自定义广告 用滚动广告组件 输出有效数据即可，展示差异我再用外层容器控制 -->
 								<view v-if="imgs_embed && imgs_embed.position==index" class="zhuige-cust-wide-block">
@@ -414,7 +430,8 @@
 												</view>
 												<view class="zhuige-info-post">
 													<view class="zhuige-info-rate">
-														<uni-rate :value="topic.score" size="12" :activeColor="'#FF6146'" />
+														<uni-rate :value="topic.score" size="12"
+															:activeColor="'#FF6146'" />
 														<view>{{topic.score}}</view>
 													</view>
 
@@ -482,7 +499,8 @@
 												<view class="zhuige-social-poster-info">
 													<view>
 														<text>{{topic.author.nickname}}</text>
-														<image v-if="topic.author.certify && topic.author.certify.status==1"
+														<image
+															v-if="topic.author.certify && topic.author.certify.status==1"
 															mode="aspectFill" :src="topic.author.certify.icon">
 														</image>
 														<image class="zhuige-social-vip"
@@ -604,7 +622,8 @@
 
 					<view class="zhuige-social-list">
 						<template v-if="followTopics && followTopics.length>0">
-							<zhuige-topic v-for="(topic, index) in followTopics" :key="index" :topic="topic"></zhuige-topic>
+							<zhuige-topic v-for="(topic, index) in followTopics" :key="index" :topic="topic">
+							</zhuige-topic>
 						</template>
 						<template v-else-if="followLoaded">
 							<zhuige-nodata></zhuige-nodata>
@@ -612,15 +631,17 @@
 					</view>
 				</view>
 
-				<uni-load-more v-if="(tab_type==1 || (tab_type==2 && cur_tab=='last')) && lastTopics && lastTopics.length>0"
+				<uni-load-more
+					v-if="(tab_type==1 || (tab_type==2 && cur_tab=='last')) && lastTopics && lastTopics.length>0"
 					:status="lastLoadMore">
 				</uni-load-more>
 
-				<uni-load-more v-if="cur_tab=='follow' && followTopics && followTopics.length>0" :status="followLoadMore">
+				<uni-load-more v-if="cur_tab=='follow' && followTopics && followTopics.length>0"
+					:status="followLoadMore">
 				</uni-load-more>
 			</template>
 		</view>
-		
+
 		<view v-if="pop_ad" class="zhugie-pop-cover">
 			<view class="" @click="clickPopAd" class="zhuige-pop-box">
 				<image mode="aspectFit" :src="pop_ad.image"></image>
@@ -629,11 +650,20 @@
 				</view>
 			</view>
 		</view>
-		
+
 	</view>
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Constant from '@/utils/constants';
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
@@ -651,6 +681,11 @@
 	export default {
 		data() {
 			this.loginReload = false;
+
+			// #ifdef MP-WEIXIN
+			// 微信广告
+			this.traffic_chp = null;
+			// #endif
 
 			return {
 				logo: undefined,
@@ -704,9 +739,14 @@
 
 				is_ios: false,
 
-				//弹窗广告
+				// 弹窗广告
 				pop_ad: undefined,
-				
+
+				// #ifdef MP-WEIXIN
+				// 微信流量主广告
+				traffic_list: undefined,
+				// #endif
+
 				style: '',
 			}
 		},
@@ -745,6 +785,8 @@
 		},
 
 		onShow() {
+			Util.setNoticeRedDot();
+
 			if (this.loginReload) {
 				this.loginReload = false;
 
@@ -807,13 +849,6 @@
 				} else {
 					Util.openLink(post.link + '?id=' + post.id);
 				}
-			},
-
-			/**
-			 * 点击打开链接
-			 */
-			clickLink(link) {
-				Util.openLink(link);
 			},
 
 			/**
@@ -962,6 +997,23 @@
 					}
 
 					this.pop_ad = Util.getPopAd(res.data.pop_ad, Constant.ZHUIGE_INDEX_MAXAD_LAST_TIME);
+
+					// #ifdef MP-WEIXIN
+					if (res.data.traffic_chp && wx.createInterstitialAd && !this.traffic_chp) {
+						this.traffic_chp = wx.createInterstitialAd({
+							adUnitId: res.data.traffic_chp
+						})
+						this.traffic_chp.onLoad(() => {})
+						this.traffic_chp.onError((err) => {
+							console.log(err)
+						})
+						this.traffic_chp.onClose(() => {})
+						this.traffic_chp.show();
+					}
+					if (res.data.traffic_list) {
+						this.traffic_list = res.data.traffic_list;
+					}
+					// #endif
 
 					uni.stopPullDownRefresh();
 				}, err => {
@@ -1153,8 +1205,6 @@
 		margin-bottom: 20rpx;
 	}
 
-
-
 	.zhuige-tags-list-box {
 		overflow-x: scroll;
 		padding-bottom: 12rpx;
@@ -1205,7 +1255,6 @@
 	/** hot tags end **/
 
 
-
 	/** cust-wide **/
 	.zhuige-cust-wide-block {
 		margin-bottom: 20rpx;
@@ -1217,10 +1266,11 @@
 
 	.zhuige-cust-wide-block .zhuige-scroll-ad-block {
 		vertical-align: text-top;
-		width: 52%!important;
+		width: 52% !important;
 	}
+
 	.zhuige-cust-wide-block .zhuige-scroll-ad-cover {
-		height: 340rpx!important;
+		height: 340rpx !important;
 	}
 
 	.zhuige-cust-wide-block .zhuige-scroll-ad-info {
@@ -1231,20 +1281,20 @@
 		font-size: 30rpx !important;
 		font-weight: 600 !important;
 		height: 1.4em !important;
-		line-height: 1.4em !important;	
+		line-height: 1.4em !important;
 	}
 
 	.zhuige-cust-wide-block .zhuige-scroll-ad-info .item-price {
 		font-size: 26rpx !important;
 		height: 1.4em !important;
-		line-height: 1.4em!important;
-		color: #FF4400!important;
+		line-height: 1.4em !important;
+		color: #FF4400 !important;
 	}
 
 	.zhuige-cust-wide-block .price-info .price-unit {
 		display: none !important;
 	}
-	
+
 
 	/**
 	 * 弹窗 start

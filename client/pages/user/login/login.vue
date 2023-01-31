@@ -4,7 +4,7 @@
 			<view class="zhuige-logo">
 				<image mode="aspectFill" :src="logo"></image>
 				<view v-if="title">{{title}}</view>
-				<view v-if="type=='mobile'">绑定手机号才能发帖，评论和建圈</view>
+				<view v-if="type=='mobile' && tip">绑定手机号才能{{tip}}</view>
 			</view>
 
 			<view class="zhuige-login-btn">
@@ -44,6 +44,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Constant from '@/utils/constants';
 	import Util from '@/utils/util';
 	import Auth from "@/utils/auth";
@@ -55,11 +64,12 @@
 		data() {
 			return {
 				type: 'login',
+				tip: undefined,
 
 				background: '',
 				logo: '',
 				title: '',
-				
+
 				argeeLicense: false,
 				yhxy: undefined,
 				yszc: undefined,
@@ -71,6 +81,10 @@
 
 			if (options.type) {
 				this.type = options.type;
+			}
+
+			if (options.tip) {
+				this.tip = options.tip;
 			}
 
 			let nav_title = (this.type == 'login' ? '登录' : '绑定手机号');
@@ -105,7 +119,7 @@
 			openLink(link) {
 				Util.openLink(link)
 			},
-			
+
 			/**
 			 * 点击同意协议
 			 */
@@ -121,7 +135,7 @@
 					Alert.toast('请阅读并同意《用户协议》及《隐私条款》');
 					return;
 				}
-				
+
 				// #ifdef H5
 				Rest.post(Api.URL('user', 'test_login')).then(res => {
 					if (res.code == 0) {
@@ -172,7 +186,7 @@
 					if (res.code != 0) {
 						Auth.setUser(undefined);
 						uni.$emit('zhuige_event_user_login', {});
-						
+
 						Alert.toast(res.message);
 						setTimeout(() => {
 							uni.reLaunch({
@@ -182,7 +196,7 @@
 					} else {
 						Auth.setUser(res.data);
 						uni.$emit('zhuige_event_user_login', {});
-						
+
 						Util.navigateBack();
 						if (res.data.first && res.data.first == 1) {
 							Util.openLink('/pages/user/verify/verify')
@@ -225,12 +239,12 @@
 					code: this.code,
 				}).then(res => {
 					Alert.toast(res.message)
-					
+
 					// 更新本地缓存的信息
 					let user = Auth.getUser();
 					user.mobile = res.data.mobile;
 					Auth.setUser(user);
-					
+
 					uni.$emit('zhuige_event_user_mobile', {
 						mobile: res.data.mobile
 					});

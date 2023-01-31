@@ -48,12 +48,13 @@ function request(url, data = {}, method = "GET") {
 						url: '/pages/user/login/login',
 					});
 					return;
-				} else if (res.data.code == 'require_mobile') {
-					uni.navigateTo({
-						url: '/pages/user/login/login?type=mobile',
-					});
-					return;
 				}
+				// else if (res.data.code == 'require_mobile') {
+				// 	uni.navigateTo({
+				// 		url: '/pages/user/login/login?type=mobile',
+				// 	});
+				// 	return;
+				// }
 
 				resolve(res.data);
 			},

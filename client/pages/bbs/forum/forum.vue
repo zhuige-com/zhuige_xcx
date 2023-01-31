@@ -86,9 +86,10 @@
 				<zhuige-scroll-user :users="forum.users"></zhuige-scroll-user>
 			</view>
 		</view>
-		
-		<view v-if="forum && forum.ad_imgs"class="zhuige-cust-wide-block">
-			<zhuige-scroll-ad boxClass="zhuige-scroll-goods" :title="forum.ad_imgs.title" :items="forum.ad_imgs.items"></zhuige-scroll-ad>
+
+		<view v-if="forum && forum.ad_imgs" class="zhuige-cust-wide-block">
+			<zhuige-scroll-ad boxClass="zhuige-scroll-goods" :title="forum.ad_imgs.title" :items="forum.ad_imgs.items">
+			</zhuige-scroll-ad>
 		</view>
 
 		<!-- 自定义滚动广告 -->
@@ -100,7 +101,19 @@
 			<!-- 圈子列表 近期tab -->
 			<view class="zhuige-social-list">
 				<template v-if="topics && topics.length>0">
-					<zhuige-topic v-for="(topic, index) in topics" :key="index" :topic="topic"></zhuige-topic>
+					<template v-for="(topic, index) in topics">
+						<!-- #ifdef MP-WEIXIN -->
+						<view class="zhuige-block zhuige-ad-cust"
+							v-if="traffic_list && traffic_list.frequency>0 && (index+1)%traffic_list.frequency==0">
+							<view class="zhuige-ad-cust-title">{{traffic_list.title}}</view>
+							<ad-custom :unit-id="traffic_list.ad"></ad-custom>
+							<view class="zhuige-ad-cust-footer">
+								<text>{{traffic_list.desc}}</text>
+							</view>
+						</view>
+						<!-- #endif -->
+						<zhuige-topic :key="index" :topic="topic"></zhuige-topic>
+					</template>
 				</template>
 				<template v-else>
 					<zhuige-nodata v-if="loaded"></zhuige-nodata>
@@ -123,6 +136,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -152,6 +174,10 @@
 				topics: [],
 				loadMore: 'more',
 				loaded: false,
+
+				// #ifdef MP-WEIXIN
+				traffic_list: undefined,
+				// #endif
 			}
 		},
 
@@ -357,6 +383,13 @@
 					forum_id: this.forum_id
 				}).then(res => {
 					this.forum = res.data.forum;
+
+					// #ifdef MP-WEIXIN
+					if (res.data.traffic_list) {
+						this.traffic_list = res.data.traffic_list;
+					}
+					// #endif
+
 					uni.stopPullDownRefresh();
 				}, err => {
 					console.log(err)
@@ -512,37 +545,43 @@
 		font-size: 26rpx;
 		font-weight: 400;
 	}
+
 	.zhuige-cust-wide-block {
 		padding: 0 20rpx 20rpx;
 	}
+
 	.zhuige-cust-wide-block .zhuige-scroll-ad {
 		margin-top: -20rpx;
 	}
 
 	.zhuige-cust-wide-block .zhuige-scroll-ad-block {
-		width: 36%!important;
+		width: 36% !important;
 		vertical-align: text-top;
 	}
+
 	.zhuige-cust-wide-block .zhuige-scroll-ad-block .zhuige-scroll-ad-cover {
-		height: 240rpx!important;
+		height: 240rpx !important;
 	}
+
 	.zhuige-cust-wide-block .zhuige-scroll-ad-info .title-info {
-		font-size: 28rpx!important;
-		font-weight: 600!important;
+		font-size: 28rpx !important;
+		font-weight: 600 !important;
 	}
+
 	.zhuige-cust-wide-block .price-unit {
 		display: none;
 	}
+
 	.zhuige-cust-wide-block .price-info {
-		padding: 0!important;
-	}
-	.zhuige-cust-wide-block .price-info .item-price {
-		font-size: 26rpx!important;
-		color: #ff4400;
-	}
-	.zhuige-cust-wide-block .zhuige-scroll-ad-info {
-		padding-bottom: 0!important;
+		padding: 0 !important;
 	}
 
-	
+	.zhuige-cust-wide-block .price-info .item-price {
+		font-size: 26rpx !important;
+		color: #ff4400;
+	}
+
+	.zhuige-cust-wide-block .zhuige-scroll-ad-info {
+		padding-bottom: 0 !important;
+	}
 </style>

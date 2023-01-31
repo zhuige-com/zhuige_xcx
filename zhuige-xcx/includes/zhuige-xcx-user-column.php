@@ -1,12 +1,13 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
-
 
 add_filter('manage_users_columns', 'zhuige_xcx_manage_user_columns', 10, 2);
 add_action('manage_users_custom_column', 'zhuige_xcx_manage_user_custom_columnns', 10, 3);

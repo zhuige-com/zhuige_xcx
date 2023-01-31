@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
@@ -140,26 +142,26 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		update_post_meta($post_id, 'zhuige_bbs_forum_id', $forum_id);
 
 		// 选择的话题
-		global $wpdb;
-		$subjects = $this->param($request, 'subjects', '');
-		if (!empty($subjects)) {
-			$subjects = explode('-0-', $subjects);
-			if (is_array($subjects)) {
-				$table_posts = $wpdb->prefix . 'posts';
-				$subject_ids = [];
-				foreach ($subjects as $subject) {
-					$subject_id = $wpdb->get_var($wpdb->prepare("SELECT `id` FROM $table_posts WHERE `post_title`=%s", $subject));
-					if ($subject_id) {
-						$subject_ids[] = $subject_id;
-					} else {
-						$subject_id = wp_insert_post(['post_title' => $subject, 'post_content' => $subject, 'post_type' => 'zhuige_bbs_subject']);
-						$subject_ids[] = $subject_id;
-					}
-				}
+		// global $wpdb;
+		// $subjects = $this->param($request, 'subjects', '');
+		// if (!empty($subjects)) {
+		// 	$subjects = explode('-0-', $subjects);
+		// 	if (is_array($subjects)) {
+		// 		$table_posts = $wpdb->prefix . 'posts';
+		// 		$subject_ids = [];
+		// 		foreach ($subjects as $subject) {
+		// 			$subject_id = $wpdb->get_var($wpdb->prepare("SELECT `id` FROM $table_posts WHERE `post_title`=%s", $subject));
+		// 			if ($subject_id) {
+		// 				$subject_ids[] = $subject_id;
+		// 			} else {
+		// 				$subject_id = wp_insert_post(['post_title' => $subject, 'post_content' => $subject, 'post_type' => 'zhuige_bbs_subject']);
+		// 				$subject_ids[] = $subject_id;
+		// 			}
+		// 		}
 
-				update_post_meta($post_id, 'zhuige_bbs_subject_ids', $subject_ids);
-			}
-		}
+		// 		update_post_meta($post_id, 'zhuige_bbs_subject_ids', $subject_ids);
+		// 	}
+		// }
 
 		//标签
 		$subjects = $this->param($request, 'subjects', '');
@@ -419,10 +421,10 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			];
 		}
 
-		$weixin_ad = ZhuiGe_Xcx::option_value('bbs_detail_weixin_ad');
-		if ($weixin_ad && $weixin_ad['switch']) {
-			$topic['weixin_ad'] = $weixin_ad['code'];
-		}
+		// $weixin_ad = ZhuiGe_Xcx::option_value('bbs_detail_weixin_ad');
+		// if ($weixin_ad && $weixin_ad['switch']) {
+		// 	$topic['weixin_ad'] = $weixin_ad['code'];
+		// }
 
 		// 热门推荐
 		$topic_ad_imgs = ZhuiGe_Xcx::option_value('topic_ad_imgs');
@@ -460,9 +462,28 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			$poster['thumb'] = ZhuiGe_Xcx::option_image_url($detail_poster['thumb_video'], 'placeholder.jpg');
 		}
 
+		// 评论是否要求手机号
+		$topic['comment_switch'] = ZhuiGe_Xcx::option_value('comment_switch') ? 1 : 0;
+		$topic['comment_require_mobile'] = ZhuiGe_Xcx::option_value('comment_mobile_switch') ? 1 : 0;
+
 		$data = ['topic' => $topic, 'poster' => $poster];
 
+		// 是否开放举报入口
 		$data['is_report'] = ZhuiGe_Xcx_Addon::is_active('zhuige-report') ? 1 : 0;
+
+		// 微信广告
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-traffic')) {
+			$traffic_topic_detail = ZhuiGe_Xcx::option_value('traffic_topic_detail');
+			if ($traffic_topic_detail) {
+				if ($traffic_topic_detail['switch_ysh']) {
+					$data['traffic_ad'] = $traffic_topic_detail['ad_ysh'];
+				}
+
+				if ($traffic_topic_detail['switch_chp']) {
+					$data['traffic_chp'] = $traffic_topic_detail['ad_chp'];
+				}
+			}
+		}
 
 		//添加积分
 		if (function_exists('zhuige_xcx_add_user_score_by_task')) {
@@ -531,11 +552,20 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 				'count' => $term->count,
 			];
 
-			$options = get_term_meta($subject_id, 'zhuige_bbs_topic_tag_options', true);
+			$options = get_term_meta($subject_id, 'zhuige_bbs_topic_tag_options', true) ?: ['logo' => null, 'cover' => null];
 			$subject['logo'] = ZhuiGe_Xcx::option_image_url($options['logo'], 'placeholder.jpg');
 			$subject['cover'] = ZhuiGe_Xcx::option_image_url($options['cover'], 'placeholder.jpg');
 
 			$data['subject'] = $subject;
+
+			// 微信广告
+			if (ZhuiGe_Xcx_Addon::is_active('zhuige-traffic')) {
+				$traffic_subject_list = ZhuiGe_Xcx::option_value('traffic_subject_list');
+				if ($traffic_subject_list && $traffic_subject_list['switch']) {
+					unset($traffic_subject_list['switch']);
+					$data['traffic_list'] = $traffic_subject_list;
+				}
+			}
 		}
 
 		return $this->success($data);

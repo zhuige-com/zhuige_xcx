@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
@@ -142,7 +144,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['link'] = $post_type_info['link'];
 				$item['author'] = zhuige_xcx_author_info($post->post_author);
 				$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
-				$topics[] = $item;	
+				$topics[] = $item;
 			} else {
 				$post_type_info = $this->get_post_type_info($post->post_type);
 
@@ -220,7 +222,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				if (function_exists('zhuige_xcx_certify_is_certify')) {
 					$item['certify'] = zhuige_xcx_certify_is_certify($user_id->follow_user_id);
 				}
-				
+
 				if (function_exists('zhuige_xcx_vip_is_vip')) {
 					$item['vip'] = zhuige_xcx_vip_is_vip($user_id->follow_user_id);
 				}
@@ -428,7 +430,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['link'] = $post_type_info['link'];
 				$item['author'] = zhuige_xcx_author_info($post->post_author);
 				$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
-				$topics[] = $item;	
+				$topics[] = $item;
 			} else {
 				$post_type_info = $this->get_post_type_info($post->post_type);
 
@@ -552,10 +554,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$table_post_like = $wpdb->prefix . 'zhuige_xcx_post_like';
 			$post_ids = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT `post_id` FROM `$table_post_like` WHERE " 
-					. " `post_id` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) " 
-					// . " AND `post_status`='publish' "
-					. " AND `user_id`=%d ORDER BY `id` DESC LIMIT %d, %d",
+					"SELECT `post_id` FROM `$table_post_like` WHERE "
+						. " `post_id` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) "
+						// . " AND `post_status`='publish' "
+						. " AND `user_id`=%d ORDER BY `id` DESC LIMIT %d, %d",
 					$user_id,
 					$offset,
 					ZhuiGe_Xcx::POSTS_PER_PAGE
@@ -565,10 +567,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$table_post_favorite = $wpdb->prefix . 'zhuige_xcx_post_favorite';
 			$post_ids = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT `post_id` FROM `$table_post_favorite` WHERE " 
-					. " `post_id` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) " 
-					// . " AND `post_status`='publish' "
-					. " AND `user_id`=%d ORDER BY `id` DESC LIMIT %d, %d",
+					"SELECT `post_id` FROM `$table_post_favorite` WHERE "
+						. " `post_id` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) "
+						// . " AND `post_status`='publish' "
+						. " AND `user_id`=%d ORDER BY `id` DESC LIMIT %d, %d",
 					$user_id,
 					$offset,
 					ZhuiGe_Xcx::POSTS_PER_PAGE
@@ -578,10 +580,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$table_comments = $wpdb->prefix . 'comments';
 			$post_ids = $wpdb->get_results(
 				$wpdb->prepare(
-					"SELECT `comment_post_ID` AS `post_id` FROM `$table_comments` WHERE " 
-					. " `comment_post_ID` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) " 
-					// . " AND `post_status`='publish' "
-					. " AND `user_id`=%d ORDER BY `comment_ID` DESC LIMIT %d, %d",
+					"SELECT `comment_post_ID` AS `post_id` FROM `$table_comments` WHERE "
+						. " `comment_post_ID` IN (SELECT `ID` FROM $table_posts WHERE `post_status`='publish' AND (`post_type`='zhuige_bbs_topic' OR `post_type`='zhuige_vote') ) "
+						// . " AND `post_status`='publish' "
+						. " AND `user_id`=%d ORDER BY `comment_ID` DESC LIMIT %d, %d",
 					$user_id,
 					$offset,
 					ZhuiGe_Xcx::POSTS_PER_PAGE
@@ -882,7 +884,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 	 */
 	private function get_post_type_info($post_type)
 	{
-		foreach(ZhuiGe_Xcx::$post_types as $item) {
+		foreach (ZhuiGe_Xcx::$post_types as $item) {
 			if ($item['id'] == $post_type) {
 				return $item;
 			}
@@ -890,7 +892,6 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		return ['name' => '未知', 'link' => '/pages/base/page/page'];
 	}
-
 }
 
 ZhuiGe_Xcx::$rest_controllers[] = new ZhuiGe_Xcx_Post_Controller();

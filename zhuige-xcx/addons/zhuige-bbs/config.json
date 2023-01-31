@@ -7,7 +7,7 @@
         "社区论坛"
     ],
     "help": "https://www.zhuige.com/docs/cat/39.html",
-    "setting" : "admin.php?page=zhuige-xcx#tab=%e8%bf%bd%e6%a0%bc%e5%9c%88%e5%ad%90/%e5%9c%88%e5%ad%90",
+    "setting": "admin.php?page=zhuige-xcx#tab=%e8%bf%bd%e6%a0%bc%e5%9c%88%e5%ad%90/%e5%9c%88%e5%ad%90",
     "sql": [
         "zhuige-bbs/sql.php"
     ],

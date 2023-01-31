@@ -142,9 +142,9 @@
 
 		<!-- 流量主广告 -->
 		<!-- #ifdef MP-WEIXIN -->
-		<view v-if="topic.weixin_ad" class="zhuige-traffic-ad">
+		<view v-if="traffic_ad" class="zhuige-traffic-ad">
 			<view class="zhuige-block">
-				<ad-custom :unit-id="topic.weixin_ad"></ad-custom>
+				<ad-custom :unit-id="traffic_ad"></ad-custom>
 			</view>
 		</view>
 		<!-- #endif -->
@@ -244,6 +244,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -266,6 +275,11 @@
 			this.comment_id = 0;
 			this.reply_user_id = 0;
 
+			// #ifdef MP-WEIXIN
+			// 微信广告
+			this.traffic_chp = null;
+			// #endif
+
 			return {
 				curImage: 100, // 只有类型是图片时有效
 
@@ -284,6 +298,11 @@
 
 				// 举报功能
 				is_report: false,
+
+				// #ifdef MP-WEIXIN
+				// 微信广告
+				traffic_ad: undefined,
+				// #endif
 
 				//登录后 重新加载
 				loginReload: false,
@@ -530,10 +549,15 @@
 			 * 点击弹出评论框
 			 */
 			clickComment(comment_id) {
-				if (!Util.checkMobile()) {
+				if (!this.topic.comment_switch) {
+					Alert.error('评论已关闭');
 					return;
 				}
-				
+
+				if (this.topic.comment_require_mobile && !Util.checkMobile('评论')) {
+					return;
+				}
+
 				this.comment_id = comment_id;
 				this.reply_user_id = 0;
 				this.$refs.popup.open('bottom')
@@ -577,13 +601,16 @@
 					reply_id: this.reply_user_id,
 					content: this.comment_content
 				}).then(res => {
-					if (res.code == 0 || res.code == 100) {
-						// Alert.toast('感谢评论~');
-						// this.loadData();
-						Alert.toast(res.message);
-					} else {
-						Alert.toast(res.message);
+					if (res.code != 0) {
+						if (res.code == 'require_mobile') {
+							Util.openLink('/pages/user/login/login?type=mobile&tip=评论');
+						} else {
+							Alert.toast(res.message);
+						}
+						return;
 					}
+
+					Alert.toast('审核后，他人可见');
 
 					this.comment_id = 0;
 					this.reply_user_id = 0;
@@ -651,6 +678,23 @@
 					if (this.topic.images) {
 						this.curImage = 0;
 					}
+
+					// #ifdef MP-WEIXIN
+					if (res.data.traffic_ad) {
+						this.traffic_ad = res.data.traffic_ad;
+					}
+					if (res.data.traffic_chp && wx.createInterstitialAd && !this.traffic_chp) {
+						this.traffic_chp = wx.createInterstitialAd({
+							adUnitId: res.data.traffic_chp
+						})
+						this.traffic_chp.onLoad(() => {})
+						this.traffic_chp.onError((err) => {
+							console.log(err)
+						})
+						this.traffic_chp.onClose(() => {})
+						this.traffic_chp.show();
+					}
+					// #endif
 
 					this.loadACode();
 
@@ -962,27 +1006,34 @@
 	.zhuige-detail-ad {
 		margin-bottom: 20rpx;
 	}
+
 	.zhuige-detail-ad .zhuige-scroll-ad-box {
-		padding-bottom: 0!important;
+		padding-bottom: 0 !important;
 	}
+
 	.zhuige-detail-ad .zhuige-scroll-ad {
-		margin-top: -20rpx!important;
+		margin-top: -20rpx !important;
 	}
+
 	.zhuige-detail-ad .zhuige-scroll-ad-block {
-		vertical-align: text-top!important;
+		vertical-align: text-top !important;
 	}
+
 	.zhuige-detail-ad .zhuige-scroll-ad-info .title-info {
-		font-size: 28rpx!important;
-		font-weight: 600!important;
+		font-size: 28rpx !important;
+		font-weight: 600 !important;
 	}
+
 	.zhuige-detail-ad .price-unit {
 		display: none;
 	}
+
 	.zhuige-detail-ad .price-info {
-		padding: 0!important;
+		padding: 0 !important;
 	}
+
 	.zhuige-detail-ad .zhuige-scroll-goods-mini .price-info .item-price {
-		font-size: 26rpx!important;
+		font-size: 26rpx !important;
 	}
 
 

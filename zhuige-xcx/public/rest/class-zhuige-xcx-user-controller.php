@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
@@ -36,7 +38,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			'home' => 'home',
 
 			'notify' => ['callback' => 'get_notify', 'auth' => 'login'],
-			'notify_read' => 'notify_read',
+			'notify_read' => ['callback' => 'notify_read', 'auth' => 'login'],
 			'notify_clear' => ['callback' => 'notify_clear', 'auth' => 'login'],
 
 			'share_score' => 'share_score'
@@ -330,7 +332,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (function_exists('zhuige_xcx_vip_is_vip')) {
 			$data['vip'] = zhuige_xcx_vip_is_vip($user_id);
 		}
-		
+
 		return $this->success($data);
 	}
 
@@ -682,7 +684,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			if (function_exists('zhuige_xcx_certify_is_certify')) {
 				$owner['certify'] = zhuige_xcx_certify_is_certify($forum->post_author);
 			}
-	
+
 			if (function_exists('zhuige_xcx_vip_is_vip')) {
 				$owner['vip'] = zhuige_xcx_vip_is_vip($forum->post_author);
 			}
@@ -707,7 +709,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 				if (function_exists('zhuige_xcx_certify_is_certify')) {
 					$user['certify'] = zhuige_xcx_certify_is_certify($user_id);
 				}
-		
+
 				if (function_exists('zhuige_xcx_vip_is_vip')) {
 					$user['vip'] = zhuige_xcx_vip_is_vip($user_id);
 				}
@@ -754,7 +756,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			if (function_exists('zhuige_xcx_certify_is_certify')) {
 				$item['certify'] = zhuige_xcx_certify_is_certify($user->follow_user_id);
 			}
-			
+
 			if (function_exists('zhuige_xcx_vip_is_vip')) {
 				$item['vip'] = zhuige_xcx_vip_is_vip($user->follow_user_id);
 			}
@@ -818,7 +820,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			if (function_exists('zhuige_xcx_certify_is_certify')) {
 				$item['certify'] = zhuige_xcx_certify_is_certify($user->follow_user_id);
 			}
-			
+
 			if (function_exists('zhuige_xcx_vip_is_vip')) {
 				$item['vip'] = zhuige_xcx_vip_is_vip($user->follow_user_id);
 			}
@@ -902,7 +904,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			if (function_exists('zhuige_xcx_certify_is_certify')) {
 				$item['certify'] = zhuige_xcx_certify_is_certify($user->user_id);
 			}
-			
+
 			if (function_exists('zhuige_xcx_vip_is_vip')) {
 				$item['vip'] = zhuige_xcx_vip_is_vip($user->user_id);
 			}
@@ -956,7 +958,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (function_exists('zhuige_xcx_certify_is_certify')) {
 			$user['certify'] = zhuige_xcx_certify_is_certify($user_id);
 		}
-		
+
 		if (function_exists('zhuige_xcx_vip_is_vip')) {
 			$user['vip'] = zhuige_xcx_vip_is_vip($user_id);
 		}
@@ -1001,12 +1003,12 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			$user['delete_vote'] = 0;
 			if (ZhuiGe_Xcx_Addon::is_active('zhuige-auth')) {
 				$auth = ZhuiGe_Xcx::option_value('auth_delete_topic');
-				if ( $auth == 'all' || ($auth == 'vip' && isset($user['vip']) && $user['vip']['status'] == 1) ) {
+				if ($auth == 'all' || ($auth == 'vip' && isset($user['vip']) && $user['vip']['status'] == 1)) {
 					$user['delete_topic'] = 1;
 				}
 
 				$auth = ZhuiGe_Xcx::option_value('auth_delete_vote');
-				if ( $auth == 'all' || ($auth == 'vip' && isset($user['vip']) && $user['vip']['status'] == 1) ) {
+				if ($auth == 'all' || ($auth == 'vip' && isset($user['vip']) && $user['vip']['status'] == 1)) {
 					$user['delete_vote'] = 1;
 				}
 			}
@@ -1089,6 +1091,9 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			$data['rec_ad'] = $rec_ad;
 		}
 
+		// 私信按钮
+		$data['btn_message'] = ZhuiGe_Xcx_Addon::is_active('zhuige-message') ? 1 : 0;
+
 		return $this->success($data);
 	}
 
@@ -1133,51 +1138,68 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (function_exists('zhuige_xcx_vip_is_vip')) {
 			$stat['vip'] = zhuige_xcx_vip_is_vip($my_user_id);
 		}
-		
+
 		return $this->success($stat);
 	}
 
 	private function _notify_count($my_user_id)
 	{
 		global $wpdb;
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+			$table_system_notice_notify = $wpdb->prefix . 'zhuige_xcx_system_notice_notify';
+			$data['system_count'] = (int)$wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(`id`) FROM `$table_system_notice_notify` WHERE `user_id`=%d AND `isread`='0'",
+					$my_user_id
+				)
+			);
+		} else {
+			$data['system_count'] = 0;
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-message')) {
+			$table_message = $wpdb->prefix . 'zhuige_xcx_message';
+			$data['message_count'] = (int)$wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(`id`) FROM `$table_message` WHERE `to_id`=%d AND `isread`='0'",
+					$my_user_id
+				)
+			);
+		} else {
+			$data['message_count'] = 0;
+		}
+
 		$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
-
-		$data['system_count'] = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(`id`) FROM `$table_notify` WHERE `type`='system' AND `to_id`=%d AND `isread`=0",
-				$my_user_id
-			)
-		);
-
-		$data['like_count'] = $wpdb->get_var(
+		$data['like_count'] = (int)$wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(`id`) FROM `$table_notify` WHERE `type`='like' AND `to_id`=%d AND `post_status`='publish' AND `isread`=0",
 				$my_user_id
 			)
 		);
 
-		$data['favorite_count'] = $wpdb->get_var(
+		$data['favorite_count'] = (int)$wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(`id`) FROM `$table_notify` WHERE `type`='favorite' AND `to_id`=%d AND `post_status`='publish' AND `isread`=0",
 				$my_user_id
 			)
 		);
 
-		$data['comment_count'] = $wpdb->get_var(
+		$data['comment_count'] = (int)$wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(`id`) FROM `$table_notify` WHERE `type`='comment' AND `to_id`=%d AND `post_status`='publish' AND `isread`=0",
 				$my_user_id
 			)
 		);
 
-		$data['follow_count'] = $wpdb->get_var(
+		$data['follow_count'] = (int)$wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(`id`) FROM `$table_notify` WHERE `type`='follow' AND `to_id`=%d AND `post_status`='publish' AND `isread`=0",
 				$my_user_id
 			)
 		);
 
-		$data['ait_count'] = $wpdb->get_var(
+		$data['ait_count'] = (int)$wpdb->get_var(
 			$wpdb->prepare(
 				"SELECT COUNT(`id`) FROM `$table_notify` WHERE (`type`='reply' OR `type`='ait') AND `to_id`=%d AND `post_status`='publish' AND `isread`=0",
 				$my_user_id
@@ -1293,9 +1315,6 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 	public function notify_read($request)
 	{
 		$my_user_id = get_current_user_id();
-		if (!$my_user_id) {
-			return $this->error('尚未登录');
-		}
 
 		$notify_id = $this->param_int($request, 'notify_id', 0);
 		if ($notify_id) {
@@ -1306,8 +1325,9 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		$data = $this->_notify_count($my_user_id);
 
-		$data['sys_msg'] = 0;
+		$data['sys_msg'] = ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice') ? 1 : 0;
 		$data['ait_msg'] = 0;
+		$data['message'] = ZhuiGe_Xcx_Addon::is_active('zhuige-message') ? 1 : 0;
 
 		return $this->success($data);
 	}
@@ -1322,6 +1342,16 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		global $wpdb;
 		$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
 		$wpdb->query($wpdb->prepare("UPDATE `$table_notify` SET `isread`=1 WHERE `to_id`=%d AND `isread`=0", $my_user_id));
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+			$table_system_notice_notify = $wpdb->prefix . 'zhuige_xcx_system_notice_notify';
+			$wpdb->update($table_system_notice_notify, ['isread' => '1'], ['isread' => '0', 'user_id' => $my_user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-message')) {
+			$table_message = $wpdb->prefix . 'zhuige_xcx_message';
+			$wpdb->update($table_message, ['isread' => '1'], ['isread' => '0', 'to_id' => $my_user_id]);
+		}
 
 		return $this->success();
 	}

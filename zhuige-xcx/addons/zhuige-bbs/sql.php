@@ -1,5 +1,4 @@
 <?php {
-
     //版块关注表
     $table_zhuige_bbs_forum_users = $wpdb->prefix . 'zhuige_bbs_forum_users';
     $bbs_sql = "CREATE TABLE IF NOT EXISTS `$table_zhuige_bbs_forum_users` (

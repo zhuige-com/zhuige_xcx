@@ -21,9 +21,16 @@
 					</view>
 					<!-- 操作相关 -->
 					<view class="zhuige-user-info-btn">
-						<button open-type="share">
+						<!-- 分享先隐藏 -->
+						<!-- <button open-type="share">
 							<uni-icons type="redo-filled" size="24"></uni-icons>
-						</button>
+						</button> -->
+
+						<!-- 新增私信 -->
+						<view v-if="btn_message" @click="openLink('/pages/message/detail/detail?user_id=' + user.user_id)">
+							<uni-icons type="chatboxes-filled" color="#010101" size="24"></uni-icons>
+						</view>
+
 						<template v-if="!user.is_me">
 							<template v-if="user.is_follow">
 								<view class="follow active" @click="clickFollowUser">{{user.is_fans?'互关':'已关注'}}</view>
@@ -99,30 +106,31 @@
 												mode="aspectFill" :src="topic.author.certify.icon">
 											</image>
 											<image class="zhuige-social-vip"
-												v-if="topic.author.vip && topic.author.vip.status==1"
-												mode="aspectFill" :src="topic.author.vip.icon">
+												v-if="topic.author.vip && topic.author.vip.status==1" mode="aspectFill"
+												:src="topic.author.vip.icon">
 											</image>
 										</view>
 										<view>
 											<text>{{topic.time}}</text>
-											<text
-												v-if="topic.author.certify && topic.author.certify.status==1">/</text>
+											<text v-if="topic.author.certify && topic.author.certify.status==1">/</text>
 											<text
 												v-if="topic.author.certify && topic.author.certify.status==1">{{topic.author.certify.name}}</text>
 										</view>
 									</view>
 								</view>
-								<view class="zhuige-social-opt social-dell" v-if="cur_tab=='publish' && user.delete_vote==1" @click.stop="clickDeleteVote(topic)">
+								<view class="zhuige-social-opt social-dell"
+									v-if="cur_tab=='publish' && user.delete_vote==1"
+									@click.stop="clickDeleteVote(topic)">
 									<uni-icons type="trash" color="#FF6146"></uni-icons>
 								</view>
 							</view>
-						
+
 							<!-- 话题 + 正文 -->
 							<view class="zhuige-social-cont">
 								<!-- 正文信息 -->
 								<text>{{topic.excerpt}}</text>
 							</view>
-						
+
 							<!-- pk模块 -->
 							<view v-if="topic.type=='pk'" class="zhuige-pkvote">
 								<view class="zhuige-vote-info">
@@ -135,20 +143,17 @@
 								</view>
 								<view class="zhuige-vote-data">
 									<view class="zhuige-vote-count">
-										<view v-if="topic.my_vote==1 || topic.is_end==1"
-											class="zhuige-vote-count-num">
+										<view v-if="topic.my_vote==1 || topic.is_end==1" class="zhuige-vote-count-num">
 											{{topic.option_a.rate}}%{{topic.option_a.xuan==1?'（已投）':''}}
 										</view>
-										<image class="zhuige-vote-img" mode="aspectFill"
-											:src="topic.option_a.image"></image>
+										<image class="zhuige-vote-img" mode="aspectFill" :src="topic.option_a.image">
+										</image>
 									</view>
 									<view class="zhuige-vote-count">
-										<view v-if="topic.my_vote==1 || topic.is_end==1"
-											class="zhuige-vote-count-num">
+										<view v-if="topic.my_vote==1 || topic.is_end==1" class="zhuige-vote-count-num">
 											{{topic.option_b.rate}}%{{topic.option_b.xuan==1?'（已投）':''}}
 										</view>
-										<image class="zhuige-vote-img" mode="aspectFill"
-											:src="topic.option_b.image">
+										<image class="zhuige-vote-img" mode="aspectFill" :src="topic.option_b.image">
 										</image>
 									</view>
 								</view>
@@ -162,7 +167,7 @@
 								</view>
 							</view>
 							<!-- pk模块 end -->
-						
+
 							<!-- 投票模块 -->
 							<view v-if="topic.type=='single' || topic.type=='multi'" class="zhuige-pklist">
 								<view class="zhuige-vote-info">
@@ -176,8 +181,8 @@
 									<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
 								</view>
 								<view class="zhuige-vote-list">
-									<view v-for="(item, index) in topic.options" :key="index"
-										class="zhuige-vote-option" :class="item.xuan==1?'vote-check':''">
+									<view v-for="(item, index) in topic.options" :key="index" class="zhuige-vote-option"
+										:class="item.xuan==1?'vote-check':''">
 										<view class="zhuige-vote-option-text">
 											{{item.title}}
 											<text v-if="item.xuan==1" class="active">已投</text>
@@ -204,6 +209,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -249,6 +263,9 @@
 				loaded: false,
 
 				noDataTip: '哇哦，什么也没有',
+				
+				// 是否显示私信按钮
+				btn_message: false,
 			}
 		},
 
@@ -359,7 +376,7 @@
 			openLink(link) {
 				Util.openLink(link);
 			},
-			
+
 			/**
 			 * 点击文章
 			 */
@@ -416,6 +433,10 @@
 					if (res.data.rec_ad) {
 						this.rec_ad = res.data.rec_ad;
 					}
+					
+					if (res.data.btn_message) {
+						this.btn_message = res.data.btn_message;
+					}
 
 					uni.stopPullDownRefresh();
 				}, err => {
@@ -464,7 +485,7 @@
 					console.log(err)
 				});
 			},
-			
+
 			/**
 			 * 删除投票
 			 */
@@ -476,7 +497,7 @@
 						Alert.error(res.message);
 						return;
 					}
-				
+
 					let newPosts = [];
 					this.posts.forEach(ele => {
 						if (vote.id != ele.id) {

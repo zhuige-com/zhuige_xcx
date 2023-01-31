@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 defined('ABSPATH') or die("Direct access to the script does not allowed");
@@ -240,11 +242,11 @@ class ZhuiGe_Xcx_AJAX
             // @unlink($file_path . '.zip');
 
             $zip = new ZipArchive;
-            if($zip->open($file_path . '.zip') === TRUE) { 
+            if ($zip->open($file_path . '.zip') === TRUE) {
                 $zip->extractTo("../wp-content/plugins/zhuige-xcx/addons/$alias");
                 $zip->close();
             }
-            
+
             @unlink($file_path . '.zip');
         }
 
@@ -300,11 +302,11 @@ class ZhuiGe_Xcx_AJAX
             // @unlink($file_path . '.zip');
 
             $zip = new ZipArchive;
-            if($zip->open($file_path . '.zip') === TRUE) { 
+            if ($zip->open($file_path . '.zip') === TRUE) {
                 $zip->extractTo("../wp-content/plugins/zhuige-xcx/addons/$alias");
                 $zip->close();
             }
-            
+
             @unlink($file_path . '.zip');
 
             // 启用新插件
@@ -322,7 +324,8 @@ class ZhuiGe_Xcx_AJAX
     /**
      * 删除插件
      */
-    public function ajax_zhuige_xcx_plugins_market_delete() {
+    public function ajax_zhuige_xcx_plugins_market_delete()
+    {
         $alias = isset($_POST['alias']) ? sanitize_text_field(wp_unslash($_POST['alias'])) : '';
         if (empty($alias)) {
             wp_send_json_error();
@@ -368,11 +371,11 @@ class ZhuiGe_Xcx_AJAX
             zhuige_xcx_download_file($data['data']['url'], $file_path);
 
             $zip = new ZipArchive;
-            if($zip->open($file_path) === TRUE) { 
+            if ($zip->open($file_path) === TRUE) {
                 $zip->extractTo(WP_PLUGIN_DIR . '/' . $plugin);
                 $zip->close();
             }
-            
+
             @unlink($file_path);
         }
 
@@ -410,7 +413,8 @@ class ZhuiGe_Xcx_AJAX
         die();
     }
 
-    private function _clear_badge($addon) {
+    private function _clear_badge($addon)
+    {
         $filePath = ZHUIGE_XCX_ADDONS_DIR . 'cache_version.json';
         $version_content = file_get_contents($filePath);
         $versions = json_decode($version_content, true);

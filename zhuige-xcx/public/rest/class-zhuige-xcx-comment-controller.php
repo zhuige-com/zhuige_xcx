@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
@@ -51,7 +53,7 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (!ZhuiGe_Xcx::option_value('comment_switch')) {
 			return $this->error('评论已关闭');
 		}
-		
+
 		if (function_exists('zhuige_auth_is_black') && zhuige_auth_is_black($user_id)) {
 			return $this->error('评论太频繁了~');
 		}
@@ -99,7 +101,7 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 			}
 		}
 
-		
+
 		$parent_id = $this->param_int($request, 'parent_id', 0);
 		$reply_id = $this->param_int($request, 'reply_id', 0);
 		$content = $this->param($request, 'content', '');
@@ -126,33 +128,12 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 			add_comment_meta($comment_id, 'zhuige_xcx_reply_user_id', $reply_id);
 		}
 
-		//通知
-		// --------------------------------------------------
-		$to_id = $post->post_author;
-
-		global $wpdb;
-		$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
-		$now_time = time();
-		$wpdb->insert($table_notify, [
-			'type' => 'comment',
-			'from_id' => $user_id,
-			'to_id' => $to_id,
-			'post_id' => $post_id,
-			'isread' => 0,
-			'time' => $now_time
-		]);
-		// --------------------------------------------------
-
 		//添加积分
 		if (function_exists('zhuige_xcx_add_user_score_by_task')) {
 			zhuige_xcx_add_user_score_by_task('comment', $post->post_type . ',' . $post_id);
 		}
 
-		if ($comment_approved) {
-			return $this->success();
-		} else {
-			return $this->error('评论审核后，他人可见', 100);
-		}
+		return $this->success('审核后，他人可见');
 	}
 
 	/**

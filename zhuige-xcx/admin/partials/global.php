@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 //
@@ -21,7 +23,7 @@ CSF::createSection($prefix, array(
  * 已注册的文章种类
  */
 $zhuige_xcx_post_types = [];
-foreach(ZhuiGe_Xcx::$post_types as $post_type) {
+foreach (ZhuiGe_Xcx::$post_types as $post_type) {
     $zhuige_xcx_post_types[$post_type['id']] = $post_type['name'];
 }
 
@@ -405,7 +407,7 @@ CSF::createSection($prefix, array(
                     'title' => '开启/停用',
                     'default' => '1'
                 ),
-                
+
             ),
         ),
 

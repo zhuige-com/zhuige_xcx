@@ -13,6 +13,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -139,11 +148,13 @@
 	.zhuige-single-view {
 		padding: 0 30rpx 30rpx;
 	}
+
 	.zhuige-single-view .zhuige-block {
 		min-height: 560rpx;
 		padding: 30rpx;
 		line-height: 2.2em;
 	}
+
 	.zhuige-single-view channel-video {
 		width: 100%;
 		height: 480rpx;

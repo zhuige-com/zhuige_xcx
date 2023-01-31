@@ -1,13 +1,13 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
-
-//require_once ZHUIGE_XCX_BASE_DIR . 'includes/zhuige-verify-options.php';
 
 class ZhuiGe_Xcx
 {
@@ -299,8 +299,8 @@ class ZhuiGe_Xcx
 		$this->loader->add_action('untrashed_post', $public, 'untrashed_post');
 		$this->loader->add_action('deleted_post', $public, 'deleted_post');
 
+		$this->loader->add_action('transition_post_status', $public, 'transition_post_status', 10, 3);
 		$this->loader->add_action('transition_comment_status', $public, 'transition_comment_status', 10, 3);
-
 
 		foreach (ZhuiGe_Xcx::$rest_controllers as $control) {
 			$this->loader->add_action('rest_api_init', $control, 'register_routes');

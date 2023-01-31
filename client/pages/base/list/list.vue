@@ -143,28 +143,29 @@
 						</template>
 						<!-- 课程 -->
 						<template v-else-if="topic.post_type=='zhuige_column'">
-								<view class="zhugie-info-block left-side">
+							<view class="zhugie-info-block left-side">
 								<view class="zhugie-info-image">
 									<image mode="aspectFill" :src="topic.thumbnail" />
 								</view>
 								<view class="zhugie-info-text">
 									<view class="zhugie-info-title">{{topic.title}}</view>
 									<view class="zhuige-info-data">
-										<text v-for="(badge, badgeIndex) in topic.badges" :key="badgeIndex">{{badge}}</text>
+										<text v-for="(badge, badgeIndex) in topic.badges"
+											:key="badgeIndex">{{badge}}</text>
 									</view>
 									<view class="zhuige-info-post">
 										<view class="zhuige-info-rate">
 											<uni-rate :value="topic.score" size="12" :activeColor="'#FF6146'" />
 											<view>{{topic.score}}</view>
 										</view>
-										
+
 										<template v-if="!is_ios || (is_ios && topic.ios_price_switch==1)">
 											<view v-if="topic.limit=='cost'" class="info-money">
 												<text>￥</text>
 												<text>{{topic.cost_price}}</text>
 											</view>
 										</template>
-										
+
 										<view v-if="topic.limit=='score'" class="info-point">
 											<text>{{topic.cost_score}}</text>
 											<text>积分</text>
@@ -174,7 +175,7 @@
 							</view>
 						</template>
 						<!-- 知识库 -->
-						<template v-else-if="topic.post_type=='zhuige_res'">								
+						<template v-else-if="topic.post_type=='zhuige_res'">
 							<view class="zhugie-info-block left-side">
 								<view class="zhugie-info-image">
 									<image mode="aspectFill" :src="topic.thumbnail" />
@@ -225,27 +226,26 @@
 												mode="aspectFill" :src="topic.author.certify.icon">
 											</image>
 											<image class="zhuige-social-vip"
-												v-if="topic.author.vip && topic.author.vip.status==1"
-												mode="aspectFill" :src="topic.author.vip.icon">
+												v-if="topic.author.vip && topic.author.vip.status==1" mode="aspectFill"
+												:src="topic.author.vip.icon">
 											</image>
 										</view>
 										<view>
 											<text>{{topic.time}}</text>
-											<text
-												v-if="topic.author.certify && topic.author.certify.status==1">/</text>
+											<text v-if="topic.author.certify && topic.author.certify.status==1">/</text>
 											<text
 												v-if="topic.author.certify && topic.author.certify.status==1">{{topic.author.certify.name}}</text>
 										</view>
 									</view>
 								</view>
 							</view>
-						
+
 							<!-- 话题 + 正文 -->
 							<view class="zhuige-social-cont">
 								<!-- 正文信息 -->
 								<text>{{topic.excerpt}}</text>
 							</view>
-						
+
 							<!-- pk模块 -->
 							<view v-if="topic.type=='pk'" class="zhuige-pkvote">
 								<view class="zhuige-vote-info">
@@ -258,20 +258,17 @@
 								</view>
 								<view class="zhuige-vote-data">
 									<view class="zhuige-vote-count">
-										<view v-if="topic.my_vote==1 || topic.is_end==1"
-											class="zhuige-vote-count-num">
+										<view v-if="topic.my_vote==1 || topic.is_end==1" class="zhuige-vote-count-num">
 											{{topic.option_a.rate}}%{{topic.option_a.xuan==1?'（已投）':''}}
 										</view>
-										<image class="zhuige-vote-img" mode="aspectFill"
-											:src="topic.option_a.image"></image>
+										<image class="zhuige-vote-img" mode="aspectFill" :src="topic.option_a.image">
+										</image>
 									</view>
 									<view class="zhuige-vote-count">
-										<view v-if="topic.my_vote==1 || topic.is_end==1"
-											class="zhuige-vote-count-num">
+										<view v-if="topic.my_vote==1 || topic.is_end==1" class="zhuige-vote-count-num">
 											{{topic.option_b.rate}}%{{topic.option_b.xuan==1?'（已投）':''}}
 										</view>
-										<image class="zhuige-vote-img" mode="aspectFill"
-											:src="topic.option_b.image">
+										<image class="zhuige-vote-img" mode="aspectFill" :src="topic.option_b.image">
 										</image>
 									</view>
 								</view>
@@ -285,7 +282,7 @@
 								</view>
 							</view>
 							<!-- pk模块 end -->
-						
+
 							<!-- 投票模块 -->
 							<view v-if="topic.type=='single' || topic.type=='multi'" class="zhuige-pklist">
 								<view class="zhuige-vote-info">
@@ -299,8 +296,8 @@
 									<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
 								</view>
 								<view class="zhuige-vote-list">
-									<view v-for="(item, index) in topic.options" :key="index"
-										class="zhuige-vote-option" :class="item.xuan==1?'vote-check':''">
+									<view v-for="(item, index) in topic.options" :key="index" class="zhuige-vote-option"
+										:class="item.xuan==1?'vote-check':''">
 										<view class="zhuige-vote-option-text">
 											{{item.title}}
 											<text v-if="item.xuan==1" class="active">已投</text>
@@ -336,6 +333,15 @@
 </template>
 
 <script>
+	/*
+	 * 追格小程序
+	 * 作者: 追格
+	 * 文档: https://www.zhuige.com/docs/zg.html
+	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+	 * github: https://github.com/zhuige-com/zhuige_xcx
+	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 */
+
 	import Util from '@/utils/util';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
@@ -445,7 +451,7 @@
 			clickLink(link) {
 				Util.openLink(link);
 			},
-			
+
 			/**
 			 * 点击文章
 			 */

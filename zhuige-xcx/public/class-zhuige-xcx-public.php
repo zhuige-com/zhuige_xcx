@@ -1,10 +1,12 @@
 <?php
 
-/*
+/**
  * 追格小程序
- * Author: 追格
- * Help document: https://www.zhuige.com
- * Copyright © 2022 www.zhuige.com All rights reserved.
+ * 作者: 追格
+ * 文档: https://www.zhuige.com/docs/zg.html
+ * gitee: https://gitee.com/zhuige_com/zhuige_xcx
+ * github: https://github.com/zhuige-com/zhuige_xcx
+ * Copyright © 2022-2023 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Public
@@ -71,6 +73,11 @@ class ZhuiGe_Xcx_Public
 		$where = ['post_id' => $post_id];
 		$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
 		$wpdb->update($table_notify, $data, $where);
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+			$table_system_notice_notify = $wpdb->prefix . 'zhuige_xcx_system_notice_notify';
+			$wpdb->delete($table_system_notice_notify, ['post_id' => $post_id], ['%d']);
+		}
 	}
 
 	public function untrashed_post($post_id)
@@ -112,16 +119,75 @@ class ZhuiGe_Xcx_Public
 
 		$table_vote_log = $wpdb->prefix . 'zhuige_xcx_vote_log';
 		$wpdb->query("DELETE FROM `$table_vote_log` WHERE vote_id=$post_id");
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+			$table_system_notice_notify = $wpdb->prefix . 'zhuige_xcx_system_notice_notify';
+			$wpdb->delete($table_system_notice_notify, ['post_id' => $post_id], ['%d']);
+		}
+	}
+
+	function transition_post_status($new_status, $old_status, $post)
+	{
+		// file_put_contents('post-status.txt', $post->post_title . '-' . $new_status . '-' . $old_status . PHP_EOL, FILE_APPEND);
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+			global $wpdb;
+
+			$result = false;
+			if ($new_status == 'publish' && $old_status == 'pending') { // 审核通过
+				$result = '1';
+			} else if ($new_status == 'trash' && $old_status == 'pending') { // 审核未通过
+				$result = '0';
+			}
+
+			if ($result !== false) {
+				$table_system_notice_notify = $wpdb->prefix . 'zhuige_xcx_system_notice_notify';
+				$wpdb->insert($table_system_notice_notify, [
+					'type' => 'post',
+					'notice_id' => 0,
+					'post_id' => $post->ID,
+					'result' => $result,
+					'user_id' => $post->post_author,
+					'isread' => '0',
+					'createtime' => time()
+				]);
+			}
+		}
 	}
 
 	public function transition_comment_status($new_status, $old_status, $comment)
 	{
 		global $wpdb;
+
 		$table_plus_notify = $wpdb->prefix . 'zhuige_xcx_notify';
 		$wpdb->update(
 			$table_plus_notify,
 			['post_status' => ($new_status == 'approved' ? 'publish' : 'trash')],
 			['type' => 'comment', 'post_id' => $comment->comment_post_ID]
 		);
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+			$result = false;
+			if ($new_status == 'approved' && $old_status == 'unapproved') { // 审核通过
+				$result = '1';
+			} else if (($new_status == 'spam' || $new_status == 'trash') && $old_status == 'unapproved') { // 审核未通过
+				$result = '0';
+			}
+
+			if ($result !== false) {
+				$post = get_post($comment->comment_post_ID);
+				$table_system_notice_notify = $wpdb->prefix . 'zhuige_xcx_system_notice_notify';
+				$wpdb->insert($table_system_notice_notify, [
+					'type' => 'comment',
+					'notice_id' => 0,
+					'post_id' => $post->ID,
+					'comment_id' => $comment->comment_ID,
+					'result' => $result,
+					'user_id' => $comment->user_id,
+					'isread' => '0',
+					'createtime' => time()
+				]);
+			}
+		}
 	}
 }
