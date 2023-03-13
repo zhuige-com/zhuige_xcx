@@ -4,7 +4,7 @@
 		<view class="zhuige-post-box">
 			<view class="zhuige-block">
 				<view class="zhuige-post-input">
-					<textarea v-model="content" placeholder="想说你就多说点..."></textarea>
+					<textarea v-model="content" placeholder="想说你就多说点..." maxlength="140"></textarea>
 				</view>
 				<view class="zhuige-post-plug">
 					<view @click="clickType('image')" :class="{active:type=='image'}">

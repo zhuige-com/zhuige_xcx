@@ -359,6 +359,39 @@ function setNoticeRedDot() {
 	}
 }
 
+/**
+ * 设置购物车角标
+ */
+// function updateCartBadge(count) {
+// 	if (count > 0) {
+// 		uni.setTabBarBadge({
+// 			index: 2,
+// 			text: '' + count,
+// 			fail(e) {
+// 				console.log(e);
+// 			}
+// 		})
+// 	} else {
+// 		uni.removeTabBarBadge({
+// 			index: 2
+// 		})
+// 	}
+// }
+
+/**
+ * 保存 购物车
+ */
+function saveCart(cart) {
+	uni.setStorageSync('zhuige_wpmall_cart', cart);
+}
+
+/**
+ * 读取 购物车
+ */
+function loadCart() {
+	return uni.getStorageSync('zhuige_wpmall_cart');
+}
+
 module.exports = {
 	navigateBack,
 
@@ -375,4 +408,7 @@ module.exports = {
 	getPopAd,
 
 	setNoticeRedDot,
+	
+	saveCart,
+	loadCart, 
 };

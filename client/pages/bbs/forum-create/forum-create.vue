@@ -92,7 +92,7 @@
 				marker: '',
 				address: '',
 
-				agree: true,
+				agree: false,
 				licence: '',
 			};
 		},

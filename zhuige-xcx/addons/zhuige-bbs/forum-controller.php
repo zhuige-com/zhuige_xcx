@@ -174,6 +174,9 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 			'hide_empty' => false
 		];
 		$terms = get_terms($term_args);
+		if (empty($terms)) {
+			return $this->error('请在后台添加圈子分类~');
+		}
 		$tabs = [];
 		foreach ($terms as $term) {
 			$tabs[] = [

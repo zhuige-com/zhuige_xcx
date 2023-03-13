@@ -7,6 +7,15 @@
 		:style="background ? 'background: url(' + background + ') no-repeat center; background-size: cover;' : ''">
 		<view class="zhuige-block-head">
 			<view>{{title}}</view>
+			<view v-if="timedown" class="time-down">
+				<view class="_view">1天</view>
+				<text class="_text">:</text>
+				<view class="_view">00</view>
+				<text class="_text">:</text>
+				<view class="_view">30</view>
+				<text class="_text">:</text>
+				<view class="_view">29</view>
+			</view>
 			<view>滑动查看</view>
 		</view>
 		<!-- 圈子推荐 class 增加 zhuige-scroll-coterie -->
@@ -59,6 +68,10 @@
 				default: []
 			},
 			background: {
+				type: String,
+				default: ''
+			},
+			timedown: {
 				type: String,
 				default: ''
 			}
@@ -217,5 +230,30 @@
 	.zhuige-topic-scroll .zhuige-scroll-ad-block .cover-text {
 		display: none;
 	}
-		
+	
+	.time-down {
+		display: flex;
+		align-items: center;
+		flex-wrap: nowrap;
+		padding-left: 20rpx;
+	}
+	
+	.time-down ._view,
+	.time-down ._text,
+	.time-down ._view:nth-child(1) {
+		height: 28rpx;
+		line-height: 28rpx;
+		padding: 8rpx;
+		border-radius: 4rpx;
+		background: #333333;
+		color: #FFFFFF;
+		font-size: 22rpx;
+		font-weight: 3;
+	}
+	
+	.time-down ._text {
+		background: none;
+		color: #FFFFFF;
+		padding: 8rpx 4rpx;
+	}
 </style>
