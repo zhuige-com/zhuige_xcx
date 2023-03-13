@@ -19,7 +19,7 @@ if (stripos($_SERVER["REQUEST_URI"], 'zhuige-xcx')) {
         }
     }
 
-    $res = wp_remote_get("https://www.zhuige.com/api/plugins/version?plugin=zhuige_xcx&version=1.3.0", ['timeout' => 1, 'sslverify' => false]);
+    $res = wp_remote_get("https://www.zhuige.com/api/plugins/version?plugin=zhuige_xcx&version=" . ZHUIGE_XCX_VERSION, ['timeout' => 1, 'sslverify' => false]);
     if (!is_wp_error($res) && $res['response']['code'] == 200) {
 
         $data = json_decode($res['body'], TRUE);
