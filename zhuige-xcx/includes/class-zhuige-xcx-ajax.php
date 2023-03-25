@@ -67,7 +67,7 @@ class ZhuiGe_Xcx_AJAX
                 'code' => $code,
                 'code2' => $code2,
                 'alias' => $addon,
-                'domain' => $_SERVER['SERVER_NAME']
+                'domain' => $_SERVER['HTTP_HOST']
             )
         ));
 
@@ -119,7 +119,7 @@ class ZhuiGe_Xcx_AJAX
             'method'      => 'POST',
             'body'        => array(
                 'code' => $code,
-                'domain' => $_SERVER['SERVER_NAME']
+                'domain' => $_SERVER['HTTP_HOST']
             )
         ));
 
