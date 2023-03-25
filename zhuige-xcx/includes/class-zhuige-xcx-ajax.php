@@ -241,11 +241,16 @@ class ZhuiGe_Xcx_AJAX
             // $unzipfile = unzip_file($file_path . '.zip',  "../wp-content/plugins/zhuige-xcx/addons/$alias");
             // @unlink($file_path . '.zip');
 
-            $zip = new ZipArchive;
-            if ($zip->open($file_path . '.zip') === TRUE) {
-                $zip->extractTo("../wp-content/plugins/zhuige-xcx/addons/$alias");
-                $zip->close();
+            if (class_exists('ZipArchive')) {
+                $zip = new ZipArchive;
+                if ($zip->open($file_path . '.zip') === TRUE) {
+                    $zip->extractTo("../wp-content/plugins/zhuige-xcx/addons/$alias");
+                    $zip->close();
+                }
+            } else {
+                unzip_file($file_path . '.zip',  "../wp-content/plugins/zhuige-xcx/addons/$alias");
             }
+            
 
             @unlink($file_path . '.zip');
         }
