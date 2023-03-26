@@ -199,7 +199,9 @@
 
 		onShow() {
 			this.is_login = !!Auth.getUser();
-			this.loadData();
+			if (this.is_login) {
+				this.loadData();
+			}
 		},
 
 		onShareAppMessage() {

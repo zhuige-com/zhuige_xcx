@@ -39,7 +39,7 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		// LOGO
 		$basic_logo = ZhuiGe_Xcx::option_value('basic_logo');
-		$data['logo'] = ZhuiGe_Xcx::option_image_url($basic_logo, 'placeholder.jpg');
+		$data['logo'] = ZhuiGe_Xcx::option_image_url($basic_logo, 'zhuige2.png');
 
 		// 是否有通知
 		$my_user_id = get_current_user_id();
@@ -82,7 +82,7 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		// LOGO
 		$basic_logo = ZhuiGe_Xcx::option_value('basic_logo');
-		$data['logo'] = ZhuiGe_Xcx::option_image_url($basic_logo, 'placeholder.jpg');
+		$data['logo'] = ZhuiGe_Xcx::option_image_url($basic_logo, 'zhuige2.png');
 
 		// 幻灯片
 		$slides_org = ZhuiGe_Xcx::option_value('rec_slide');
