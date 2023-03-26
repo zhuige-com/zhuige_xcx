@@ -93,7 +93,7 @@
 		</view>
 
 		<!-- 自定义滚动广告 -->
-		<view v-if="forum.ad_custom && forum.ad_custom.length>0" class="zhuige-detail-ad">
+		<view v-if="forum && forum.ad_custom && forum.ad_custom.length>0" class="zhuige-detail-ad">
 			<zhuige-scroll-ad ext-ad-class="zhuige-scroll-goods-mini" :items="forum.ad_custom"></zhuige-scroll-ad>
 		</view>
 
@@ -129,7 +129,7 @@
 		</view>
 
 		<!-- 底部自定义菜单 -->
-		<view v-if="forum.ad_menu && forum.ad_menu.length>0" class="zhuige-coterie-menu">
+		<view v-if="forum && forum.ad_menu && forum.ad_menu.length>0" class="zhuige-coterie-menu">
 			<view v-for="(item, index) in forum.ad_menu" :key="index" @click="openLink(item.link)">{{item.title}}</view>
 		</view>
 	</view>

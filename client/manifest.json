@@ -61,7 +61,8 @@
 				"desc": "你的位置信息将用于标记发帖位置"
 			}
 		},
-		"requiredPrivateInfos": ["chooseLocation", "chooseAddress"]
+		"requiredPrivateInfos": ["chooseLocation", "chooseAddress"],
+		"requiredBackgroundModes": ["audio"]
 	},
 	"mp-alipay": {
 		"usingComponents": true

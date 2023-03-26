@@ -71,7 +71,8 @@
 				</view>
 			</view>
 			<view v-if="topic.type=='video'">
-				<video :src="topic.video.url" :poster="topic.video_cover.url" object-fit="cover" :style="{
+				<video :id="'topic_list_' + topic.id" :src="topic.video.url" :poster="topic.video_cover.url"
+					object-fit="cover" @play="videoPlay" :style="{
 					width: parseInt(topic.video.width)>parseInt(topic.video.height)?'674rpx':parseInt(topic.video.width)/parseInt(topic.video.height)*674 + 'rpx',
 					height: parseInt(topic.video.width)<parseInt(topic.video.height)?'674rpx':parseInt(topic.video.height)/parseInt(topic.video.width)*674 + 'rpx'
 				}"></video>
@@ -163,10 +164,20 @@
 			clickDetail() {
 				Util.openLink('/pages/bbs/detail/detail?topic_id=' + this.topic.id);
 			},
-			
+
 			clickTrashTopic(topic) {
 				this.$emit("deleteTopic", topic);
-			}
+			},
+
+			videoPlay(e) {
+				let videoId = e.currentTarget.id;
+				if (getApp().globalData.videoId !== videoId && getApp().globalData.videoContext) {
+					getApp().globalData.videoContext.stop();
+				}
+				getApp().globalData.videoId = videoId;
+				////创建控制视频标签的实例对象
+				getApp().globalData.videoContext = wx.createVideoContext(getApp().globalData.videoId, this);
+			},
 		}
 	}
 </script>

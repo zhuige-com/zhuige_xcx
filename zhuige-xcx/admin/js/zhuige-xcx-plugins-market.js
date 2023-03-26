@@ -92,6 +92,7 @@
          * 加载插件数据
          */
         function load_plugins_market_list() {
+            var loading = layer.load();
             $.post("/wp-admin/admin-ajax.php",
                 {
                     action: 'admin_zhuige_xcx_plugins_market_list',
@@ -99,12 +100,15 @@
                     free: (zhuige_xcx_plugins_market_free == '100' ? '' : zhuige_xcx_plugins_market_free),
                 },
                 function (res, status) {
+                    layer.close(loading);
                     // console.log(res);
+                    
                     if (status != 'success' || !res.success) {
                         return;
                     }
 
                     let plugins = res.data.products;
+                    let content = '';
                     for (let i = 0; i < plugins.length; i++) {
                         let plugin = plugins[i];
 
@@ -162,28 +166,51 @@
                         element += '</div>';
                         element += '</div>';
 
-                        $('.zhuige-market-list').append(element);
+                        content += element;
                     }
+                    $('.zhuige-market-list').append(content);
+                    $('.zhuige-market-list').addClass('slide-top');
 
                     let ads = res.data.ads;
+                    content = '';
                     for (let i = 0; i < ads.length; i++) {
                         let element = '';
 
-                        element += '<li>';
+                        element += '<li style="margin:0;">';
                         element += '<a href="' + ads[i].link + '" target="_blank" title="' + ads[i].title + '">' + ads[i].title + '</a>';
                         element += '</li>';
 
-                        $('.zhuige-plugins-market-ads').append(element);
+                        content += element;
                     }
+                    $('.zhuige-plugins-market-ads').append(content);
 
-                    $('.zhuige-plugins-market-ads').scrollQ({
-                        line: 1,
-                        scrollNum: 1,
-                        scrollTime: 2000
-                    });
-
+                    if (ads.length > 1) {
+                        // $('.zhuige-plugins-market-ads').scrollQ({
+                        //     line: 1,
+                        //     scrollNum: 1,
+                        //     scrollTime: 2000
+                        // });
+                        
+                        setInterval(() => {
+                            let slideCon = $('.zhuige-plugins-market-ads');
+                            let slideHeight = slideCon.parent().height();
+                            slideCon.stop(true, true).animate({
+                                marginTop: (-slideHeight) + "px"
+                            },
+                            500,
+                            function() {
+                                $(this).css({
+                                    marginTop: "0px"
+                                }).find("li:first").appendTo(this);
+                            });
+                        }, 2000)
+                    }
+                    
                     if (res.data.notice) {
-                        $('.zhuige-plugins-market-notice').html(res.data.notice);
+                        let notice = $('.zhuige-plugins-market-notice');
+                        notice.html(res.data.notice);
+                        notice.addClass('slide-down');
+                        notice.show();
                     }
                 });
         }

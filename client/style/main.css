@@ -1222,9 +1222,9 @@ uni-swiper .uni-swiper-dot-active {
 	margin: 20px 0;
 	border: 1px solid #DDDDDD;
 	border-radius: 6rpx;
-	display: -webkit-flex;
-	display: -ms-flexbox;
-	display: flex;
+	display: -webkit-flex!important;
+	display: -ms-flexbox!important;
+	display: flex!important;
 	-ms-flex-align: center;
 	align-items: center;
 	-webkit-align-items: center;

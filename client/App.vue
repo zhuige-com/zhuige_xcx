@@ -19,6 +19,9 @@
 			appDesc: '',
 			appLogo: '',
 			noticeRedDot: 0,
+			
+			videoId: '',
+			videoContext: undefined,
 		},
 
 		onLaunch() {

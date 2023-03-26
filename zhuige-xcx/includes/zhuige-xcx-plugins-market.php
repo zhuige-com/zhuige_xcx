@@ -66,15 +66,17 @@ if (!defined('ZHUIGE_XCX_PLUGINS_MARKET')) {
                         </li>
                     </ul>
 
-                    <div class="zhuige-market-ad">
+                    <div class="zhuige-market-ad" style="height:24px;overflow:hidden;">
                         <div class="dashicons-before dashicons-megaphone" aria-hidden="true"></div>
-                        <ol class="zhuige-plugins-market-ads">
+                        <div style="height:24px;">
+                            <ol class="zhuige-plugins-market-ads">
 
-                        </ol>
+                            </ol>
+                        </div>
                     </div>
                 </div>
 
-                <div class="zhuige-plugins-market-notice"></div>
+                <div class="zhuige-plugins-market-notice" style="display:none;"></div>
 
                 <div class="zhuige-market-list">
                     <!-- 内容待填充 -->

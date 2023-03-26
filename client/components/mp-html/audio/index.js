@@ -1,7 +1,7 @@
 /**
  * @fileoverview audio 插件
  */
-const context = require('./context')
+import context from './context'
 let index = 0
 
 function Audio (vm) {
@@ -25,12 +25,10 @@ Audio.prototype.onLoad = function () {
   setTimeout(() => {
     for (let i = 0; i < this.audios.length; i++) {
       const ctx = context.get(this.audios[i])
-	  if (ctx) {
-		  ctx.id = this.audios[i]
-	  }
+      ctx.id = this.audios[i]
       this.vm._videos.push(ctx)
     }
-  }, 50)
+  }, 500)
 }
 
-module.exports = Audio
+export default Audio

@@ -48,8 +48,8 @@
 					</view>
 				</view>
 
-				<video v-if="topic.video" :src="topic.video.url" :poster="topic.video_cover.url" object-fit="cover"
-					:style="{
+				<video v-if="topic.video" :id="'topic_detail_' + topic.id" :src="topic.video.url"
+					:poster="topic.video_cover.url" object-fit="cover" @play="videoPlay" :style="{
 					width: parseInt(topic.video.width)>parseInt(topic.video.height)?'654rpx':parseInt(topic.video.width)/parseInt(topic.video.height)*674 + 'rpx',
 					height: parseInt(topic.video.width)<parseInt(topic.video.height)?'654rpx':parseInt(topic.video.height)/parseInt(topic.video.width)*674 + 'rpx'
 				}"></video>
@@ -967,6 +967,16 @@
 					console.log(err);
 				});
 				// #endif
+			},
+			
+			videoPlay(e) {
+				let videoId = e.currentTarget.id;
+				if (getApp().globalData.videoId !== videoId && getApp().globalData.videoContext) {
+					getApp().globalData.videoContext.stop();
+				}
+				getApp().globalData.videoId = videoId;
+				////创建控制视频标签的实例对象
+				getApp().globalData.videoContext = wx.createVideoContext(getApp().globalData.videoId, this);
 			},
 		}
 	}

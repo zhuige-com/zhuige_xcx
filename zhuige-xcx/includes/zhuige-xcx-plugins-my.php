@@ -71,22 +71,24 @@ if (!defined('ZHUIGE_XCX_PLUGINS_MY')) {
                     if (count($ads) > 0) {
                     ?>
 
-                        <div class="zhuige-market-ad">
+                        <div class="zhuige-market-ad" style="height:24px;overflow:hidden;">
                             <div class="dashicons-before dashicons-megaphone" aria-hidden="true"></div>
-                            <ol class="zhuige-plugins-market-ads">
-                                <?php
-                                foreach ($ads as $ad) {
-                                    echo '<li><a href="' . $ad['link'] . '" target="_blank" title="' . $ad['title'] . '">' . $ad['title'] . '</a></li>';
-                                }
-                                ?>
-                            </ol>
+                            <div style="height:24px;">
+                                <ol class="zhuige-plugins-market-ads">
+                                    <?php
+                                    foreach ($ads as $ad) {
+                                        echo '<li><a href="' . $ad['link'] . '" target="_blank" title="' . $ad['title'] . '">' . $ad['title'] . '</a></li>';
+                                    }
+                                    ?>
+                                </ol>
+                            </div>
                         </div>
                     <?php
                     }
                     ?>
                 </div>
 
-                <div class="zhuige-market-list">
+                <div class="zhuige-market-list slide-top">
                     <!-- 结构块-->
                     <?php
                     $filePath = ZHUIGE_XCX_ADDONS_DIR . 'cache_version.json';
