@@ -119,7 +119,8 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			]);
 
 			if (is_wp_error($user_id)) {
-				return $this->error('创建用户失败');
+				return $this->error($user_id->get_error_message());
+				// return $this->error('创建用户失败');
 			}
 
 			//是否他人邀请
@@ -217,11 +218,13 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		];
 
 		$result = wp_remote_get(add_query_arg($params, 'https://api.weixin.qq.com/sns/jscode2session'));
-		if (!is_array($result) || is_wp_error($result) || $result['response']['code'] != '200') {
+		if (!is_array($result) 
+				|| is_wp_error($result) 
+				|| $result['response']['code'] != '200' 
+				|| ($result['body'] && isset($result['body']['errcode']))) {
+					file_put_contents('wx_login', json_encode($result));
 			return false;
 		}
-
-		// file_put_contents('wx_login', json_encode($result));
 
 		$body = stripslashes($result['body']);
 		$session = json_decode($body, true);
