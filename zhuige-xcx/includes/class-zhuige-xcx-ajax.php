@@ -387,7 +387,7 @@ class ZhuiGe_Xcx_AJAX
                 }
             } else {
                 WP_Filesystem();
-                unzip_file($file_path . '.zip',  WP_PLUGIN_DIR . '/' . $plugin);
+                unzip_file($file_path, WP_PLUGIN_DIR . '/' . $plugin);
             }
 
 
