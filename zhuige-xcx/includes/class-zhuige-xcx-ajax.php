@@ -240,9 +240,6 @@ class ZhuiGe_Xcx_AJAX
             $file_path = ZHUIGE_XCX_ADDONS_DIR . $alias;
             zhuige_xcx_download_file($data['data']['url'], $file_path . '.zip');
 
-            // WP_Filesystem();
-            // $unzipfile = unzip_file($file_path . '.zip',  "../wp-content/plugins/zhuige-xcx/addons/$alias");
-            // @unlink($file_path . '.zip');
 
             if (class_exists('ZipArchive')) {
                 $zip = new ZipArchive;
@@ -251,9 +248,10 @@ class ZhuiGe_Xcx_AJAX
                     $zip->close();
                 }
             } else {
+                WP_Filesystem();
                 unzip_file($file_path . '.zip',  "../wp-content/plugins/zhuige-xcx/addons/$alias");
             }
-            
+
 
             @unlink($file_path . '.zip');
         }
@@ -303,17 +301,19 @@ class ZhuiGe_Xcx_AJAX
             if ($is_addon_active) {
                 ZhuiGe_Xcx_Addon::deactive($alias);
             }
-            // zhuige_xcx_delete_dir("../wp-content/plugins/zhuige-xcx/addons/$alias");
 
-            // WP_Filesystem();
-            // $unzipfile = unzip_file($file_path . '.zip',  "../wp-content/plugins/zhuige-xcx/addons/$alias");
-            // @unlink($file_path . '.zip');
 
-            $zip = new ZipArchive;
-            if ($zip->open($file_path . '.zip') === TRUE) {
-                $zip->extractTo("../wp-content/plugins/zhuige-xcx/addons/$alias");
-                $zip->close();
+            if (class_exists('ZipArchive')) {
+                $zip = new ZipArchive;
+                if ($zip->open($file_path . '.zip') === TRUE) {
+                    $zip->extractTo("../wp-content/plugins/zhuige-xcx/addons/$alias");
+                    $zip->close();
+                }
+            } else {
+                WP_Filesystem();
+                unzip_file($file_path . '.zip',  "../wp-content/plugins/zhuige-xcx/addons/$alias");
             }
+
 
             @unlink($file_path . '.zip');
 
@@ -378,11 +378,18 @@ class ZhuiGe_Xcx_AJAX
             $file_path = WP_PLUGIN_DIR . '/' . $plugin . '.zip';
             zhuige_xcx_download_file($data['data']['url'], $file_path);
 
-            $zip = new ZipArchive;
-            if ($zip->open($file_path) === TRUE) {
-                $zip->extractTo(WP_PLUGIN_DIR . '/' . $plugin);
-                $zip->close();
+
+            if (class_exists('ZipArchive')) {
+                $zip = new ZipArchive;
+                if ($zip->open($file_path) === TRUE) {
+                    $zip->extractTo(WP_PLUGIN_DIR . '/' . $plugin);
+                    $zip->close();
+                }
+            } else {
+                WP_Filesystem();
+                unzip_file($file_path . '.zip',  WP_PLUGIN_DIR . '/' . $plugin);
             }
+
 
             @unlink($file_path);
         }
