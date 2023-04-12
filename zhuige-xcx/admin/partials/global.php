@@ -110,6 +110,14 @@ CSF::createSection($prefix, array(
             'title' => '热门搜索',
             'subtitle' => '英文逗号分隔',
         ),
+
+        array(
+            'id'    => 'zhuige_switch_oss',
+            'type'  => 'switcher',
+            'title' => '小程序码导入媒体库',
+            'subtitle' => '使用七牛/阿里/腾讯OSS的需要开启',
+            'default' => ''
+        ),
     )
 ));
 

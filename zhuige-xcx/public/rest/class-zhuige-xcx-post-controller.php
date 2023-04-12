@@ -93,6 +93,14 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$args['post_type'] = $post_type;
 		}
 
+		// 如果是资讯，过滤掉隐藏的分类
+		if ($post_type = 'post') {
+			$cms_cat_hide = ZhuiGe_Xcx::option_value('cms_cat_hide');
+			if (!empty($cms_cat_hide)) {
+				$args['category__not_in'] = $cms_cat_hide;
+			}
+		}
+
 		$query = new WP_Query();
 		$result = $query->query($args);
 		$topics = [];
@@ -713,7 +721,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		file_put_contents($qrcode, $content);
 
 		//同步到媒体库
-		$res = zhuige_xcx_import_image2attachment($qrcode);
+		$res = zhuige_xcx_import_image2attachment($qrcode, $post_id, 'current', true);
 		if (!is_wp_error($res)) {
 			$qrcode_link = $uploads['baseurl'] . '/zhuige_wxacode/' . $res;
 		}
@@ -793,7 +801,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		file_put_contents($qrcode, $content);
 
 		//同步到媒体库
-		$res = zhuige_xcx_import_image2attachment($qrcode);
+		$res = zhuige_xcx_import_image2attachment($qrcode, $post_id, 'current', true);
 		if (!is_wp_error($res)) {
 			$qrcode_link = $uploads['baseurl'] . '/zhuige_qqacode/' . $res;
 		}
@@ -871,7 +879,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		file_put_contents($qrcode, $content);
 
 		//同步到媒体库
-		$res = zhuige_xcx_import_image2attachment($qrcode);
+		$res = zhuige_xcx_import_image2attachment($qrcode, $post_id, 'current', true);
 		if (!is_wp_error($res)) {
 			$qrcode_link = $uploads['baseurl'] . '/zhuige_bdacode/' . $res;
 		}

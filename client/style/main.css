@@ -1232,7 +1232,7 @@ uni-swiper .uni-swiper-dot-active {
 	position: relative;
 	overflow: hidden;
 }
-.zhuige-shortcode-box .wxParse-cite {
+.zhuige-shortcode-box >view:nth-child(1) {
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 110px;
 	-ms-flex: 0 0 110px;
@@ -1248,6 +1248,7 @@ uni-swiper .uni-swiper-dot-active {
 	width: 100px!important;
 	border-radius: 6rpx 0 0  6rpx;
 	margin: 0;
+	object-fit: cover;
 }
 .zhuige-shortcode-content {
 	padding: 0 4px 0 10px;

@@ -11,8 +11,12 @@
 
 if (!function_exists('zhuige_xcx_import_image2attachment')) {
     //把图片添加到媒体库
-    function zhuige_xcx_import_image2attachment($file, $post_id = 0, $import_date = 'current')
+    function zhuige_xcx_import_image2attachment($file, $post_id = 0, $import_date = 'current', $qrcode = false)
     {
+        if ($qrcode && !ZhuiGe_Xcx::option_value('zhuige_switch_oss')) {
+            return new WP_Error('zhuige', 'zhuige');
+        }
+
         set_time_limit(0);
 
         // Initially, Base it on the -current- time.

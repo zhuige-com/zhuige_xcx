@@ -425,8 +425,11 @@
 				Rest.post(Api.URL('bbs', 'topic_create_pre')).then(res => {
 					if (res.code != 0) {
 						if (res.code == 'require_mobile') {
-							Util.navigateBack();
-							Util.openLink('/pages/user/login/login?type=mobile&tip=发帖');
+							// Util.navigateBack();
+							// Util.openLink('/pages/user/login/login?type=mobile&tip=发帖');
+							uni.redirectTo({
+								url: '/pages/user/login/login?type=mobile&tip=发帖'
+							})
 						} else {
 							Alert.error(res.message);
 							setTimeout(() => {

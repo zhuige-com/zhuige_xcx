@@ -3,7 +3,7 @@ const Auth = require("./auth.js");
 /**
  * request封装
  */
-function request(url, data = {}, method = "GET") {
+function request(url, data = {}, method = "GET", redirect) {
 	return new Promise(function(resolve, reject) {
 		uni.showLoading({
 			title: '加载中'
@@ -31,9 +31,15 @@ function request(url, data = {}, method = "GET") {
 			success(res) {
 				if (res.statusCode == 500 && res.data.code == 'user_not_login') {
 					uni.clearStorageSync();
-					uni.navigateTo({
-						url: '/pages/user/login/login',
-					});
+					if (redirect) {
+						uni.redirectTo({
+							url: '/pages/user/login/login',
+						});
+					} else {
+						uni.navigateTo({
+							url: '/pages/user/login/login',
+						});
+					}
 					return;
 				}
 
@@ -44,17 +50,17 @@ function request(url, data = {}, method = "GET") {
 
 				if (res.data.code == 'user_not_login') {
 					uni.clearStorageSync();
-					uni.navigateTo({
-						url: '/pages/user/login/login',
-					});
+					if (redirect) {
+						uni.redirectTo({
+							url: '/pages/user/login/login',
+						});
+					} else {
+						uni.navigateTo({
+							url: '/pages/user/login/login',
+						});
+					}
 					return;
 				}
-				// else if (res.data.code == 'require_mobile') {
-				// 	uni.navigateTo({
-				// 		url: '/pages/user/login/login?type=mobile',
-				// 	});
-				// 	return;
-				// }
 
 				resolve(res.data);
 			},
@@ -127,15 +133,15 @@ function upload(url, path, data = {}) {
 /**
  * get请求
  */
-function get(url, data = {}) {
-	return request(url, data, 'GET');
+function get(url, data = {}, redirect=false) {
+	return request(url, data, 'GET', redirect);
 }
 
 /**
  * post请求
  */
-function post(url, data = {}) {
-	return request(url, data, 'POST');
+function post(url, data = {}, redirect=false) {
+	return request(url, data, 'POST', redirect);
 }
 
 module.exports = {
