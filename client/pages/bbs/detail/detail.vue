@@ -173,7 +173,7 @@
 		</view>
 
 		<!-- 图片广告 -->
-		<view v-if="topic.bottom_img_ad" class="zhuige-wide-image-ad">
+		<view v-if="topic && topic.bottom_img_ad" class="zhuige-wide-image-ad">
 			<view @click="openLink(topic.bottom_img_ad.link)">
 				<image mode="aspectFill" :src="topic.bottom_img_ad.image"></image>
 			</view>
