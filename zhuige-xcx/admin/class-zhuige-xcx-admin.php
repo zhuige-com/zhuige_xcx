@@ -22,15 +22,15 @@ class ZhuiGe_Xcx_Admin
         wp_enqueue_script(ZHUIGE_XCX, ZHUIGE_XCX_BASE_URL . 'admin/js/zhuige-xcx-admin.js', array('jquery', 'zhuige-layer'), ZHUIGE_XCX_VERSION, false);
 
         if (function_exists('zhuige_xcx_widget_shortcode')) {
-            wp_enqueue_script(ZHUIGE_XCX . '_edit_extend', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-block/zhuige-block-edit-extend.js', array('quicktags'), $this->version, false);
+            wp_enqueue_script(ZHUIGE_XCX . '_edit_extend', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-block/zhuige-block-edit-extend.js', array('quicktags'), ZHUIGE_XCX_VERSION, false);
         }
 
         if (ZhuiGe_Xcx_Addon::is_active('zhuige-wxmall')) {
-            wp_enqueue_script(ZHUIGE_XCX . '_wxmall', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-wxmall/mall-admin.js', array('jquery'), $this->version, false);
+            wp_enqueue_script(ZHUIGE_XCX . '_wxmall', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-wxmall/mall-admin.js', array('jquery'), ZHUIGE_XCX_VERSION, false);
         }
 
         if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
-            wp_enqueue_script(ZHUIGE_XCX . '_system_notice', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-system_notice/system-notice-admin.js', array('jquery'), $this->version, false);
+            wp_enqueue_script(ZHUIGE_XCX . '_system_notice', ZHUIGE_XCX_BASE_URL . 'addons/zhuige-system_notice/system-notice-admin.js', array('jquery'), ZHUIGE_XCX_VERSION, false);
         }
     }
 
