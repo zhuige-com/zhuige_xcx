@@ -1,6 +1,6 @@
 <template>
 	<view>
-		<web-view :src="src"></web-view>
+		<web-view v-if="src" :src="src"></web-view>
 	</view>
 </template>
 
@@ -19,16 +19,21 @@
 	export default {
 		data() {
 			return {
-				src: 'https://www.zhuige.com/'
+				src: ''
 			};
 		},
 
 		onLoad(options) {
+			if (!options.src) {
+				uni.reLaunch({
+					url: '/pages/tabs/index/index'
+				})
+				return;
+			}
+				
 			Util.addShareScore(options.source);
 
-			if (options.src) {
-				this.src = decodeURIComponent(options.src);
-			}
+			this.src = decodeURIComponent(options.src);
 		},
 
 		onShareAppMessage(options) {
