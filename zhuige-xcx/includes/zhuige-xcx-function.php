@@ -448,6 +448,16 @@ if (!function_exists('zhuige_xcx_time_stamp_beautify')) {
 }
 
 /**
+ * 字符串转时间
+ */
+if (!function_exists('zhuige_xcx_strtotime')) {
+    function zhuige_xcx_strtotime($string)
+    {
+        return date_create($string, wp_timezone())->getTimestamp();
+    }
+}
+
+/**
  * 获取缩略图
  */
 if (!function_exists('zhuige_xcx_get_post_thumbnails')) {

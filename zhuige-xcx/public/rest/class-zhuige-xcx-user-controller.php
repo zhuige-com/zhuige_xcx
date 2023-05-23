@@ -75,11 +75,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 	{
 		$code = $this->param($request, 'code', '');
 		$nickname = $this->param($request, 'nickname', '');
-		// $avatar = $this->param($request, 'avatar', '');
 		$channel = $this->param($request, 'channel', '');
-		// if (empty($code) || empty($nickname) || empty($avatar) || empty($channel)) {
-		// 	return $this->error('缺少参数');
-		// }
 		if (empty($code) || empty($nickname) || empty($channel)) {
 			return $this->error('缺少参数');
 		}
@@ -120,7 +116,6 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 			if (is_wp_error($user_id)) {
 				return $this->error($user_id->get_error_message());
-				// return $this->error('创建用户失败');
 			}
 
 			//是否他人邀请
@@ -156,25 +151,6 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			update_user_meta($user_id, 'zhuige_unionid', $session['unionid']);
 		}
 
-		//如果每次都同步微信头像 会导致小程序设置的头像失效；所以没有头像时，才同步头像
-		// $old_avatar = get_user_meta($user_id, 'zhuige_xcx_user_avatar', true);
-		// if (!$old_avatar || strstr($old_avatar, 'qlogo.cn')) {
-		// 	$new_avatar = $this->download_wx_avatar($avatar, $user_id);
-
-		// 	if ($new_avatar) {
-		// 		$new_avatar_url = $new_avatar['url'];
-		// 		$dres = zhuige_xcx_import_image2attachment($new_avatar['path']);
-		// 		if (!is_wp_error($dres)) {
-		// 			$upload_dir = wp_upload_dir();
-		// 			$new_avatar_url = $upload_dir['url'] . '/' . $dres;
-		// 		}
-		// 		update_user_meta($user_id, 'zhuige_xcx_user_avatar', $new_avatar_url);
-		// 	} else {
-		// 		update_user_meta($user_id, 'zhuige_xcx_user_avatar', $avatar);
-		// 	}
-		// }
-
-
 		$zhuige_xcx_user_token = $this->_generate_token();
 		update_user_meta($user_id, 'zhuige_xcx_user_token', $zhuige_xcx_user_token);
 
@@ -187,7 +163,6 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		if ($first) {
 			$user['first'] = $first;
-			// $user['avatar'] = ZhuiGe_Xcx::user_avatar($user_id);
 		}
 
 		return $this->success($user);
@@ -218,11 +193,13 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		];
 
 		$result = wp_remote_get(add_query_arg($params, 'https://api.weixin.qq.com/sns/jscode2session'));
-		if (!is_array($result) 
-				|| is_wp_error($result) 
-				|| $result['response']['code'] != '200' 
-				|| ($result['body'] && isset($result['body']['errcode']))) {
-					file_put_contents('wx_login', json_encode($result));
+		if (
+			!is_array($result)
+			|| is_wp_error($result)
+			|| $result['response']['code'] != '200'
+			|| ($result['body'] && isset($result['body']['errcode']))
+		) {
+			file_put_contents('wx_login', json_encode($result));
 			return false;
 		}
 

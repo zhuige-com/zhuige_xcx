@@ -968,7 +968,7 @@
 				});
 				// #endif
 			},
-			
+
 			videoPlay(e) {
 				let videoId = e.currentTarget.id;
 				if (getApp().globalData.videoId !== videoId && getApp().globalData.videoContext) {

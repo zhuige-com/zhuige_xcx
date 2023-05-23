@@ -190,7 +190,6 @@
 		position: relative;
 		margin: 10rpx 0;
 		width: 674rpx;
-		/* width: 620rpx; */
 	}
 
 	.zhugie-img .img-box .img-cover {

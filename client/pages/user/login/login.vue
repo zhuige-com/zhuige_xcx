@@ -197,9 +197,7 @@
 						Auth.setUser(res.data);
 						uni.$emit('zhuige_event_user_login', {});
 
-						// Util.navigateBack();
 						if (res.data.first && res.data.first == 1) {
-							// Util.openLink('/pages/user/verify/verify')
 							uni.redirectTo({
 								url: '/pages/user/verify/verify'
 							})

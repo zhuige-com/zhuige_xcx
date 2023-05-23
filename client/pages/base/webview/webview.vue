@@ -30,7 +30,7 @@
 				})
 				return;
 			}
-				
+
 			Util.addShareScore(options.source);
 
 			this.src = decodeURIComponent(options.src);

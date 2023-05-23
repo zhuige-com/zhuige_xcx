@@ -27,7 +27,8 @@
 						</button> -->
 
 						<!-- 新增私信 -->
-						<view v-if="btn_message" @click="openLink('/pages/message/detail/detail?user_id=' + user.user_id)">
+						<view v-if="btn_message"
+							@click="openLink('/pages/message/detail/detail?user_id=' + user.user_id)">
 							<uni-icons type="chatboxes-filled" color="#010101" size="24"></uni-icons>
 						</view>
 
@@ -263,7 +264,7 @@
 				loaded: false,
 
 				noDataTip: '哇哦，什么也没有',
-				
+
 				// 是否显示私信按钮
 				btn_message: false,
 			}
@@ -433,7 +434,7 @@
 					if (res.data.rec_ad) {
 						this.rec_ad = res.data.rec_ad;
 					}
-					
+
 					if (res.data.btn_message) {
 						this.btn_message = res.data.btn_message;
 					}

@@ -182,7 +182,8 @@
 												<text
 													v-if="item.limit=='cost' && (!is_ios || (is_ios && item.cost_ios_switch=='1'))"
 													class="pay">￥ {{item.cost_price}}</text>
-												<text v-if="item.limit=='score'" class="pay">{{item.cost_score}}积分</text>
+												<text v-if="item.limit=='score'"
+													class="pay">{{item.cost_score}}积分</text>
 												<text>浏览 {{item.views}}</text>
 												<text>点赞 {{item.likes}}</text>
 											</view>
@@ -1294,7 +1295,6 @@
 		display: none !important;
 	}
 
-
 	/**
 	 * 弹窗 start
 	 */
@@ -1332,7 +1332,6 @@
 		left: 50%;
 		margin-left: -24rpx;
 	}
-
 	/**
 	 * 弹窗 end
 	 */

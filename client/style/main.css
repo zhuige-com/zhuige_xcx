@@ -214,6 +214,7 @@ page {
 .zhuige-scroll-mall .zhuige-block-head {
 	margin-bottom: 30rpx;
 }
+
 /* 
 .zhuige-scroll-mall .zhuige-block-head view {
 	color: #FFFFFF !important;
@@ -530,6 +531,12 @@ page {
 	font-weight: 600;
 	height: 60rpx;
 	line-height: 60rpx;
+	word-break: break-all;
+	text-overflow: ellipsis;
+	overflow: hidden;
+	display: -webkit-box!important;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
 }
 
 .zhuige-classify-text view text {
@@ -715,84 +722,94 @@ page {
 	color: #FFFFFF;
 	background: #010101;
 }
+
 /* =========== 自定义图标模块 =========== */
 
 /* .zhuige-icon {
 	
 } */
 
-	.zhuige-icon view {
-		width: 20%;
-		text-align: center;
-		padding-bottom: 10rpx;
-	}
-	.zhuige-icon image {
-		height: 90rpx;
-		width: 90rpx;
-	}
-	.zhuige-icon text {
-		display: block;
-		line-height: 1.2em;
-		font-size: 28rpx;
-	}
+.zhuige-icon view {
+	width: 20%;
+	text-align: center;
+	padding-bottom: 10rpx;
+}
+
+.zhuige-icon image {
+	height: 90rpx;
+	width: 90rpx;
+}
+
+.zhuige-icon text {
+	display: block;
+	line-height: 1.2em;
+	font-size: 28rpx;
+}
+
 /* --- 滚动模式 --- */
 .zhuige-scroll-icon {
 	white-space: nowrap;
 }
-	.zhuige-scroll-icon scroll-view view {
-		display: inline-block;
-	}
-	
+
+.zhuige-scroll-icon scroll-view view {
+	display: inline-block;
+}
+
 /* --- 自动换行模式 --- */
 .zhuige-wrap-icon {
 	display: flex;
 	flex-wrap: wrap;
 }
+
 /* --- 滚动模式 带当前状态的 --- */
 /* .zhuige-scroll-style {
 	
 } */
-	.zhuige-scroll-style view {
-		width: 18.7%;
-		text-align: center;
-		padding: 20rpx 0;
-		background: #FFFFFF;
-		border-radius: 12rpx;
-		margin-right: 1.4%;
-	}
-	.zhuige-scroll-style .active {
-		background: #363B51;
-	}
-	.zhuige-scroll-style image {
-		height: 64rpx;
-		width: 64rpx;
-	}
-	.zhuige-scroll-style .active text {
-		color: #FFFFFF;
-	}
-	
+.zhuige-scroll-style view {
+	width: 18.7%;
+	text-align: center;
+	padding: 20rpx 0;
+	background: #FFFFFF;
+	border-radius: 12rpx;
+	margin-right: 1.4%;
+}
+
+.zhuige-scroll-style .active {
+	background: #363B51;
+}
+
+.zhuige-scroll-style image {
+	height: 64rpx;
+	width: 64rpx;
+}
+
+.zhuige-scroll-style .active text {
+	color: #FFFFFF;
+}
+
 /* --- 滚动模式 带当前状态 文字独立的 --- */
 
-	.zhuige-style-block scroll-view view view {
-		display:block;
-		width: 128rpx;
-		height: 128rpx;
-		border-radius: 50%;
-		margin: 0 auto 20rpx;
-		background: #FFFFFF;
-		padding: 0;
-	}
-	.zhuige-style-block scroll-view view.active view {
-		background: #363B51;
-	}
-	
-		.zhuige-style-block scroll-view view view image {
-			height: 56rpx;
-			width: 56rpx;
-			display: inline-block;
-			margin-top: 40rpx;
-		}
-		
+.zhuige-style-block scroll-view view view {
+	display: block;
+	width: 128rpx;
+	height: 128rpx;
+	border-radius: 50%;
+	margin: 0 auto 20rpx;
+	background: #FFFFFF;
+	padding: 0;
+}
+
+.zhuige-style-block scroll-view view.active view {
+	background: #363B51;
+}
+
+.zhuige-style-block scroll-view view view image {
+	height: 56rpx;
+	width: 56rpx;
+	display: inline-block;
+	margin-top: 40rpx;
+}
+
 
 
 /* =========== 轮播图 =========== */
@@ -860,10 +877,15 @@ uni-swiper .uni-swiper-dot-active {
 
 .zhuige-top-menu text {
 	font-size: 26rpx;
-	font-weight: 300;
+	font-weight: 400;
 	color: #FFFFFF;
 	margin: 0 12rpx;
-	color: #FFFFFF;
+	vertical-align: middle;
+	display: inline-block;
+	margin-bottom: 2rpx;
+}
+.zhuige-top-menu text:nth-child(2) {
+	margin-left: 0;
 }
 
 /* 顶部搜索  */
@@ -900,6 +922,7 @@ uni-swiper .uni-swiper-dot-active {
 	font-size: 28rpx;
 	font-weight: 300;
 	color: #FFFFFF;
+	white-space: nowrap;
 }
 
 .zhuige-top-search text {
@@ -907,6 +930,7 @@ uni-swiper .uni-swiper-dot-active {
 	font-weight: 300;
 	color: #999999;
 	margin: 0 8rpx;
+	white-space: nowrap;
 }
 
 /* 顶部搜索+滚动关键字 */
@@ -1212,8 +1236,8 @@ uni-swiper .uni-swiper-dot-active {
 }
 
 .zhuige-pop-left-links view view {
-	font-size: 26rpx;
-	font-weight: 300;
+	font-size: 28rpx;
+	font-weight: 400;
 }
 
 
@@ -1222,9 +1246,9 @@ uni-swiper .uni-swiper-dot-active {
 	margin: 20px 0;
 	border: 1px solid #DDDDDD;
 	border-radius: 6rpx;
-	display: -webkit-flex!important;
-	display: -ms-flexbox!important;
-	display: flex!important;
+	display: -webkit-flex !important;
+	display: -ms-flexbox !important;
+	display: flex !important;
 	-ms-flex-align: center;
 	align-items: center;
 	-webkit-align-items: center;
@@ -1232,43 +1256,49 @@ uni-swiper .uni-swiper-dot-active {
 	position: relative;
 	overflow: hidden;
 }
-.zhuige-shortcode-box >view:nth-child(1) {
+
+.zhuige-shortcode-box>view:nth-child(1) {
 	-webkit-box-flex: 0;
 	-webkit-flex: 0 0 110px;
 	-ms-flex: 0 0 110px;
 	flex: 0 0 110px;
 	width: 110px;
 	height: 100px;
-	border-radius: 6rpx 0 0  6rpx;
+	border-radius: 6rpx 0 0 6rpx;
 	overflow: hidden;
 }
-.zhuige-shortcode-box image, .zhuige-shortcode-box img {
+
+.zhuige-shortcode-box image,
+.zhuige-shortcode-box img {
 	display: inherit;
-	height: 100px!important;
-	width: 100px!important;
-	border-radius: 6rpx 0 0  6rpx;
+	height: 100px !important;
+	width: 100px !important;
+	border-radius: 6rpx 0 0 6rpx;
 	margin: 0;
 	object-fit: cover;
 }
+
 .zhuige-shortcode-content {
 	padding: 0 4px 0 10px;
 	width: 68%;
-	
+
 	/* #ifdef MP-BAIDU */
 	width: 400rpx;
 	overflow: hidden;
 	padding-right: 30rpx;
 	/* #endif */
 }
+
 .zhuige-shortcode-content rich-text {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	width: 100%;
-	height: 2em; 
-	line-height: 1.6em;	
+	height: 2em;
+	line-height: 1.6em;
 	font-weight: 400;
 }
+
 .zhuige-shortcode-title {
 	font-size: 32rpx;
 	font-weight: 600;
@@ -1276,10 +1306,11 @@ uni-swiper .uni-swiper-dot-active {
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
-	height: 2em; 
+	height: 2em;
 	line-height: 1.6em;
 	margin: 6rpx 0 0;
 }
+
 .zhuige-shortcode-synopsis {
 	font-size: 26rpx;
 	font-weight: 300;
@@ -1288,23 +1319,27 @@ uni-swiper .uni-swiper-dot-active {
 	text-overflow: ellipsis;
 	white-space: nowrap;
 	line-height: 1.4em;
-	height: 2em; 
+	height: 2em;
 }
+
 .zhuige-shortcode-operation {
 	line-height: auto;
 	padding-top: 6rpx;
 }
+
 .zhuige-shortcode-operation {
 	font-size: 36rpx;
 	font-weight: 600;
 	color: #ff6146;
 	line-height: 1em;
 }
+
 .zhuige-shortcode-operation .zhuige-shortcode-operation-unit {
 	font-size: 24rpx;
 	font-weight: 300;
 	color: #ff6146;
 }
+
 .zhuige-shortcode-operation .button {
 	height: 44rpx;
 	line-height: 44rpx;
@@ -1323,7 +1358,8 @@ uni-swiper .uni-swiper-dot-active {
 	margin-right: -30rpx;
 	/* #endif */
 }
- /* 短代码 追格块 end */
+
+/* 短代码 追格块 end */
 
 .zhuige-popup-center {
 	padding: 30rpx;
@@ -1331,216 +1367,225 @@ uni-swiper .uni-swiper-dot-active {
 	border-radius: 12rpx;
 	text-align: center;
 }
+
 .zhuige-popup-tips {
 	height: 3em;
 	line-height: 3em;
 	font-size: 28rpx;
 	font-weight: 400;
 }
+
 .zhuigezhuige-popup-qr {
 	width: 400rpx;
 	height: 400rpx;
 }
+
 .zhuigezhuige-popup-qr image {
 	height: 100%;
 	width: 100%;
 }
 
 
-	/* pk */
-	.zhuige-pkvote {
-		padding: 0 0 10rpx;
-	}
+/* pk */
+.zhuige-pkvote {
+	padding: 0 0 10rpx;
+}
 
-	.zhuige-vote-info {
-		display: flex;
-		align-items: center;
-		height: 1.8rem;
-		line-height: 1.2rem;
-		font-size: 26rpx;
-		font-weight: 400;
-		color: #666666;
-	}
+.zhuige-vote-info {
+	display: flex;
+	align-items: center;
+	height: 1.8rem;
+	line-height: 1.2rem;
+	font-size: 26rpx;
+	font-weight: 400;
+	color: #666666;
+}
 
-	.zhuige-vote-num {
-		font-weight: 600;
-		color: #010101;
-		padding: 0 12rpx;
-	}
-	.zhuige-vote-num:nth-child(2) {
-		font-weight: 400;
-		color: #666666;
-	}
+.zhuige-vote-num {
+	font-weight: 600;
+	color: #010101;
+	padding: 0 12rpx;
+}
 
-	.vote-end {
-		font-weight: 400;
-	}
+.zhuige-vote-num:nth-child(2) {
+	font-weight: 400;
+	color: #666666;
+}
 
-	.zhuige-vote-data,
-	.zhuige-vote-opt {
-		display: flex;
-		width: 540rpx;
-		align-items: center;
-		justify-content: center;
-	}
-	.zhuige-vote-data {
-		padding-top: 12rpx;
-	}
+.vote-end {
+	font-weight: 400;
+}
 
-	.zhuige-vote-count {
-		position: relative;
-		width: 260rpx;
-		height: 260rpx;
-	}
+.zhuige-vote-data,
+.zhuige-vote-opt {
+	display: flex;
+	width: 540rpx;
+	align-items: center;
+	justify-content: center;
+}
 
-	.zhuige-vote-count:nth-child(1) {
-		margin-right: 20rpx;
-	}
+.zhuige-vote-data {
+	padding-top: 12rpx;
+}
 
-	.zhuige-vote-count-num {
-		position: absolute;
-		z-index: 9;
-		height: 80rpx;
-		line-height: 90rpx;
-		text-align: center;
-		width: 100%;
-		bottom: 0;
-		color: #FFFFFF;
-		border-radius: 0 0 12rpx 12rpx;
-		background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
-	}
+.zhuige-vote-count {
+	position: relative;
+	width: 260rpx;
+	height: 260rpx;
+}
 
-	.zhuige-vote-img {
-		height: 100%;
-		width: 100%;
-		border-radius: 12rpx;
-		position: relative;
-	}
+.zhuige-vote-count:nth-child(1) {
+	margin-right: 20rpx;
+}
 
-	.zhuige-vote-opt {
-		overflow: hidden;
-		margin-top: 20rpx;
-		flex-wrap: nowrap;
-	}
+.zhuige-vote-count-num {
+	position: absolute;
+	z-index: 9;
+	height: 80rpx;
+	line-height: 90rpx;
+	text-align: center;
+	width: 100%;
+	bottom: 0;
+	color: #FFFFFF;
+	border-radius: 0 0 12rpx 12rpx;
+	background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+}
 
-	.vote-opt1box,
-	.vote-opt2box {
-		width: 50%;
-		display: flex;
-	}
+.zhuige-vote-img {
+	height: 100%;
+	width: 100%;
+	border-radius: 12rpx;
+	position: relative;
+}
 
-	.vote-opt1box {
-		flex-direction: row-reverse;
-	}
+.zhuige-vote-opt {
+	overflow: hidden;
+	margin-top: 20rpx;
+	flex-wrap: nowrap;
+}
 
-	.vote-option1,
-	.vote-option2 {
-		height: 72rpx;
-		line-height: 72rpx;
-		min-width: 160rpx;
-		font-size: 28rpx;
-		font-weight: 400;
-		text-align: center;
-		position: relative;
-		padding: 0 20rpx;
-	}
+.vote-opt1box,
+.vote-opt2box {
+	width: 50%;
+	display: flex;
+}
 
-	.vote-option1 {
-		background: #ffeae4;
-		color: #fd6a55;
-		margin-right: 30rpx;
-		border-radius: 8rpx 0 8rpx 8rpx;
-	}
+.vote-opt1box {
+	flex-direction: row-reverse;
+}
 
-	.vote-option1::after {
-		content: '';
-		position: absolute;
-		width: 74rpx;
-		height: 72rpx;
-		top: -42rpx;
-		z-index: 4;
-		right: -50rpx;
-		transform: rotate(90deg) skewX(70deg) scale(1, 0.4);
-		background: #ffeae4;
-	}
+.vote-option1,
+.vote-option2 {
+	height: 72rpx;
+	line-height: 72rpx;
+	min-width: 160rpx;
+	font-size: 28rpx;
+	font-weight: 400;
+	text-align: center;
+	position: relative;
+	padding: 0 20rpx;
+}
 
-	.vote-option2 {
-		background: #e8f5fe;
-		color: #64bbfa;
-		margin-left: 20rpx;
-		border-radius: 8rpx 8rpx 8rpx 0;
-	}
+.vote-option1 {
+	background: #ffeae4;
+	color: #fd6a55;
+	margin-right: 30rpx;
+	border-radius: 8rpx 0 8rpx 8rpx;
+}
 
-	.vote-option2::after {
-		content: '';
-		position: absolute;
-		width: 74rpx;
-		height: 72rpx;
-		bottom: -42rpx;
-		z-index: 4;
-		left: -50rpx;
-		transform: rotate(-90deg) skewX(70deg) scale(1, 0.4);
-		background: #e8f5fe;
-	}
+.vote-option1::after {
+	content: '';
+	position: absolute;
+	width: 74rpx;
+	height: 72rpx;
+	top: -42rpx;
+	z-index: 4;
+	right: -50rpx;
+	transform: rotate(90deg) skewX(70deg) scale(1, 0.4);
+	background: #ffeae4;
+}
 
-	/* pk */
-	/* 多选 */
-	.zhuige-vote-list {
-		padding: 20rpx 0;
-		width: 100%;
-	}
+.vote-option2 {
+	background: #e8f5fe;
+	color: #64bbfa;
+	margin-left: 20rpx;
+	border-radius: 8rpx 8rpx 8rpx 0;
+}
 
-	.zhuige-vote-option {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-		margin-bottom: 30rpx;
-		border-radius: 6rpx;
-		background-color: #F4F4F4;
-		color: #777777;
-		height: 80rpx;
-		line-height: 80rpx;
-		transition: all 0.5s ease-out;
-	}
-	.zhuige-vote-option:last-of-type {
-		margin-bottom: 0;
-	}
+.vote-option2::after {
+	content: '';
+	position: absolute;
+	width: 74rpx;
+	height: 72rpx;
+	bottom: -42rpx;
+	z-index: 4;
+	left: -50rpx;
+	transform: rotate(-90deg) skewX(70deg) scale(1, 0.4);
+	background: #e8f5fe;
+}
 
-	.vote-check {
-		background-color: #ffeae4;
-		color: #fd6a55;
-	}
+/* pk */
+/* 多选 */
+.zhuige-vote-list {
+	padding: 20rpx 0;
+	width: 100%;
+}
 
-	.zhuige-vote-option-text {
-		padding-left: 30rpx;
-		font-size: 28rpx;
-		font-weight: 400;
-	}
+.zhuige-vote-option {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	margin-bottom: 30rpx;
+	border-radius: 6rpx;
+	background-color: #F4F4F4;
+	color: #777777;
+	height: 80rpx;
+	line-height: 80rpx;
+	transition: all 0.5s ease-out;
+}
 
-	.zhuige-vote-option-text .active {
-		font-size: 28rpx;
-		padding-left: 12rpx;
-		font-weight: 400;
-	}
+.zhuige-vote-option:last-of-type {
+	margin-bottom: 0;
+}
 
-	.zhuige-vote-option-count {
-		padding-right: 30rpx;
-		font-size: 28rpx;
-		font-weight: 300;
-	}
-	/* 多选 */
+.vote-check {
+	background-color: #ffeae4;
+	color: #fd6a55;
+}
+
+.zhuige-vote-option-text {
+	padding-left: 30rpx;
+	font-size: 28rpx;
+	font-weight: 400;
+}
+
+.zhuige-vote-option-text .active {
+	font-size: 28rpx;
+	padding-left: 12rpx;
+	font-weight: 400;
+}
+
+.zhuige-vote-option-count {
+	padding-right: 30rpx;
+	font-size: 28rpx;
+	font-weight: 300;
+}
+
+/* 多选 */
 .zhuige-ad-cust-title {
 	font-size: 30rpx;
 	font-weight: 600;
 	height: 2.4em;
 	line-height: 1.6em;
 }
+
 .zhuige-ad-cust-footer {
 	display: flex;
 	align-items: center;
 	padding: 16rpx 0 0rpx;
 }
+
 .zhuige-ad-cust-footer text {
 	font-size: 28rpx;
 	font-weight: 400;

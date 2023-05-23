@@ -33,8 +33,6 @@
 							</view>
 						</view>
 						<view class="zhuige-social-opt" @click.stop="clickFollowUser(user.user_id)">
-							<!-- 未关注时，增加  class="active" 其他状态无class-->
-							<!-- <view class="active">+关注</view> -->
 							<view v-if="user.is_follow && user.is_fans">已互关</view>
 							<view v-else>已关注</view>
 						</view>
@@ -60,11 +58,12 @@
 							<view class="zhuige-social-poster-info">
 								<view>
 									<text>{{user.nickname}}</text>
-									<!-- 图1 vip-->
-									<!-- <image v-if="user.vip" mode="aspectFill" src="/static/lvv.png"></image> -->
 									<!-- 图2 认证-->
 									<image v-if="user.certify && user.certify.status==1" mode="aspectFill"
 										:src="user.certify.icon"></image>
+									<!-- 图1 vip-->
+									<image class="zhuige-social-vip" v-if="user.vip && user.vip.status==1"
+										mode="aspectFit" :src="user.vip.icon"></image>
 								</view>
 								<view>
 									<text>作品 {{user.post_count}}</text>

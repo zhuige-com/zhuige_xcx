@@ -1,6 +1,7 @@
 <template>
 	<view>
-		<!-- 自定义图标模块 zhuige-icon 基础结构一致
+		<!-- 
+		自定义图标模块 zhuige-icon 基础结构一致
 		滚动模式 class 增加 zhuige-scroll-icon，增加scroll-view
 		自动换行模式 class 增加 zhuige-wrap-icon
 		-->

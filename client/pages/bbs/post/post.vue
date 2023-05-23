@@ -177,8 +177,11 @@
 				this.type = options.type;
 			}
 
-			if (options.subject_name) {
-				this.subjects.push(options.subject_name);
+			if (options.fid && options.fname) {
+				this.forum = {
+					id: options.fid,
+					name: options.fname
+				}
 			}
 
 			this.preCreate();
@@ -425,8 +428,6 @@
 				Rest.post(Api.URL('bbs', 'topic_create_pre')).then(res => {
 					if (res.code != 0) {
 						if (res.code == 'require_mobile') {
-							// Util.navigateBack();
-							// Util.openLink('/pages/user/login/login?type=mobile&tip=发帖');
 							uni.redirectTo({
 								url: '/pages/user/login/login?type=mobile&tip=发帖'
 							})

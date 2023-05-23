@@ -132,6 +132,20 @@ const state_data = {
 		
 			return types;
 		},
+		
+		/**
+		 * 选中的商品 - 数量 - 购买
+		 */
+		getCheckBuyGoodsCounts(state) {
+			let counts = [];
+			state.cart.forEach((item, index) => {
+				if (item.check_buy == 1) {
+					counts.push(item.count);
+				}
+			})
+		
+			return counts;
+		},
 
 		/**
 		 * 选中的商品 - 管理

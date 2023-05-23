@@ -367,22 +367,24 @@ function setNoticeRedDot() {
 
 /**
  * 设置购物车角标
+ * 当购物车作为TAB页面使用时，需要放开
+ * index 表示 tab 的位置，需按实际情况修改
  */
-// function updateCartBadge(count) {
-// 	if (count > 0) {
-// 		uni.setTabBarBadge({
-// 			index: 2,
-// 			text: '' + count,
-// 			fail(e) {
-// 				console.log(e);
-// 			}
-// 		})
-// 	} else {
-// 		uni.removeTabBarBadge({
-// 			index: 2
-// 		})
-// 	}
-// }
+function updateCartBadge(count) {
+	// if (count > 0) {
+	// 	uni.setTabBarBadge({
+	// 		index: 2,
+	// 		text: '' + count,
+	// 		fail(e) {
+	// 			console.log(e);
+	// 		}
+	// 	})
+	// } else {
+	// 	uni.removeTabBarBadge({
+	// 		index: 2
+	// 	})
+	// }
+}
 
 /**
  * 保存 购物车
@@ -414,7 +416,9 @@ module.exports = {
 	getPopAd,
 
 	setNoticeRedDot,
-	
+
+	updateCartBadge,
+
 	saveCart,
-	loadCart, 
+	loadCart,
 };

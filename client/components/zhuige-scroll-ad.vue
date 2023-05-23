@@ -6,17 +6,23 @@
 	<view class="zhuige-scroll-ad-box" :class="boxClass"
 		:style="background ? 'background: url(' + background + ') no-repeat center; background-size: cover;' : ''">
 		<view class="zhuige-block-head">
-			<view>{{title}}</view>
-			<view v-if="timedown" class="time-down">
-				<view class="_view">1天</view>
-				<text class="_text">:</text>
-				<view class="_view">00</view>
-				<text class="_text">:</text>
-				<view class="_view">30</view>
-				<text class="_text">:</text>
-				<view class="_view">29</view>
+			<view class="zhuige-block-side">
+				<view>{{title}}</view>
+
+				<view v-if="sec_left>0" class="time-down">
+					<template v-if="ct_day!='00'">
+						<view class="_view" style="font-weight: 600;">{{ct_day}}天</view>
+						<text class="_text">:</text>
+					</template>
+					<view class="_view">{{ct_hour}}</view>
+					<text class="_text">:</text>
+					<view class="_view">{{ct_minute}}</view>
+					<text class="_text">:</text>
+					<view class="_view">{{ct_second}}</view>
+				</view>
 			</view>
 			<view>滑动查看</view>
+
 		</view>
 		<!-- 圈子推荐 class 增加 zhuige-scroll-coterie -->
 		<!-- 自定义滚动广告 大商品 首页用; 基础不变，在 zhuige-scroll-ad 后增加 zhuige-scroll-goods -->
@@ -72,20 +78,63 @@
 				default: ''
 			},
 			timedown: {
-				type: String,
-				default: ''
+				type: Number,
+				default: 0
 			}
 		},
 
 		data() {
-			return {
+			// 倒计时器
+			this.ct_handler = undefined;
 
+			return {
+				sec_left: 0,
 			};
+		},
+
+		computed: {
+			ct_day() {
+				return (this.sec_left > 0) ? this.lto2(parseInt(this.sec_left / 86400)) : 0;
+			},
+
+			ct_hour() {
+				return (this.sec_left > 0) ? this.lto2(parseInt((this.sec_left % 86400) / 3600)) : 0;
+			},
+
+			ct_minute() {
+				return (this.sec_left > 0) ? this.lto2(parseInt((this.sec_left % 3600) / 60)) : 0;
+			},
+
+			ct_second() {
+				return (this.sec_left > 0) ? this.lto2(this.sec_left % 60) : 0;
+			},
+		},
+
+		mounted() {
+			if (this.timedown) {
+				this.sec_left = this.timedown;
+				this.ct_handler = setInterval(() => {
+					this.sec_left--;
+				}, 1000)
+			}
+		},
+
+		beforeDestroy() {
+			if (this.ct_handler) {
+				clearInterval(this.ct_handler);
+			}
 		},
 
 		methods: {
 			openLink(link) {
 				Util.openLink(link);
+			},
+
+			/**
+			 * 小于10补0
+			 */
+			lto2(value) {
+				return (value < 10) ? ('0' + value) : value;
 			},
 		}
 	}
@@ -156,7 +205,9 @@
 		border-radius: 0 0 12rpx 12rpx;
 	}
 
-	.title-info, .subtitle-info, .price-info  {
+	.title-info,
+	.subtitle-info,
+	.price-info {
 		color: #FFFFFF;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -178,7 +229,6 @@
 		line-height: 1.4em;
 	}
 
-
 	/* --- 小商品 --- */
 	.zhuige-scroll-goods-mini {}
 
@@ -196,7 +246,8 @@
 		padding-top: 20rpx;
 	}
 
-	.zhuige-scroll-goods-mini .title-info, .zhuige-scroll-goods-mini .subtitle-info {
+	.zhuige-scroll-goods-mini .title-info,
+	.zhuige-scroll-goods-mini .subtitle-info {
 		color: #010101;
 		padding: 0;
 	}
@@ -223,21 +274,27 @@
 	.zhuige-scroll-coterie .zhuige-scroll-ad-cover {
 		height: 240rpx;
 	}
-	
+
 	.zhuige-topic-scroll .zhuige-scroll-ad-block {
-		width: 42%!important;
+		width: 42% !important;
 	}
+
 	.zhuige-topic-scroll .zhuige-scroll-ad-block .cover-text {
 		display: none;
 	}
-	
+
+	.zhuige-block-side {
+		display: flex;
+		align-items: center;
+	}
+
 	.time-down {
 		display: flex;
 		align-items: center;
 		flex-wrap: nowrap;
 		padding-left: 20rpx;
 	}
-	
+
 	.time-down ._view,
 	.time-down ._text,
 	.time-down ._view:nth-child(1) {
@@ -250,7 +307,7 @@
 		font-size: 22rpx;
 		font-weight: 3;
 	}
-	
+
 	.time-down ._text {
 		background: none;
 		color: #FFFFFF;

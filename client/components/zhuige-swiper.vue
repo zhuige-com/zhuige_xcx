@@ -31,7 +31,7 @@
 				previous-margin 和 next-margin 为轮播图间距默认0，如果需要调整，只能在页面修改参数，或者通过后台传参
 			-->
 			<swiper-item class="zhuige-swiper-item" v-for="(item, index) in items" :key="index">
-				<view class="zhuige-swiper-block" @click="openLink(item.link)">
+				<view class="zhuige-swiper-block" @click="clickItem(index)">
 					<view class="zhuige-swiper-title" v-if="item.title">{{item.title}}</view>
 					<image class="zhuige-swiper-cover" mode="aspectFill" :src="item.image"></image>
 				</view>
@@ -72,8 +72,21 @@
 		},
 
 		methods: {
-			openLink(link) {
-				Util.openLink(link);
+			clickItem(index) {
+				console.log(this.items[index].link)
+				if (this.items[index].link) {
+					Util.openLink(this.items[index].link);
+				} else {
+					let urls = [];
+					this.items.forEach(image => {
+						urls.push(image.image);
+					});
+
+					uni.previewImage({
+						current: index,
+						urls: urls,
+					})
+				}
 			}
 		}
 	}
@@ -154,8 +167,6 @@
 	.zhuige-space-swiper .zhuige-dots-left .wx-swiper-dots.wx-swiper-dots-horizontal {
 		padding-left: 50rpx;
 	}
-
-
 
 	/* 高轮播图 无标题 直角图 */
 	.zhuige-height-swiper {

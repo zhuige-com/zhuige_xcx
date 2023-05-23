@@ -421,11 +421,6 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			];
 		}
 
-		// $weixin_ad = ZhuiGe_Xcx::option_value('bbs_detail_weixin_ad');
-		// if ($weixin_ad && $weixin_ad['switch']) {
-		// 	$topic['weixin_ad'] = $weixin_ad['code'];
-		// }
-
 		// 热门推荐
 		$topic_ad_imgs = ZhuiGe_Xcx::option_value('topic_ad_imgs');
 		if ($topic_ad_imgs && $topic_ad_imgs['switch']) {

@@ -322,11 +322,6 @@
 	.zhuige-mine-login-user-info view:nth-child(2) {
 		display: flex;
 		align-items: center;
-		/* height: 48rpx;
-		line-height: 48rpx;
-		padding: 0 30rpx;
-		border-radius: 48rpx;
-		border: 1rpx solid #EEEEEE; */
 	}
 
 	.zhuige-mine-login-user-info view:nth-child(2) image {
@@ -388,7 +383,6 @@
 		font-weight: 400;
 		font-size: 26rpx;
 	}
-
 
 	.zhuige-mine-copyinfo {
 		padding: 40rpx;

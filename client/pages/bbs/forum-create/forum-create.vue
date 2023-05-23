@@ -101,10 +101,8 @@
 			Rest.post(Api.URL('bbs', 'setting_forum_create_pre'), {}, true).then(res => {
 				if (res.code != 0) {
 					if (res.code == 'require_mobile') {
-						// Util.navigateBack();
-						// Util.openLink('/pages/user/login/login?type=mobile&tip=建圈');
 						uni.redirectTo({
-							url:'/pages/user/login/login?type=mobile&tip=建圈'
+							url: '/pages/user/login/login?type=mobile&tip=建圈'
 						})
 					} else {
 						Alert.error(res.message);
@@ -210,8 +208,6 @@
 					Alert.toast('提交成功，请耐心等待审核')
 
 					setTimeout(() => {
-						// Util.navigateBack();
-						// Util.openLink('/pages/tabs/forum/forum');
 						uni.redirectTo({
 							url: '/pages/tabs/forum/forum'
 						})

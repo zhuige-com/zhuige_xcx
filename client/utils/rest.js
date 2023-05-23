@@ -133,14 +133,14 @@ function upload(url, path, data = {}) {
 /**
  * get请求
  */
-function get(url, data = {}, redirect=false) {
+function get(url, data = {}, redirect = false) {
 	return request(url, data, 'GET', redirect);
 }
 
 /**
  * post请求
  */
-function post(url, data = {}, redirect=false) {
+function post(url, data = {}, redirect = false) {
 	return request(url, data, 'POST', redirect);
 }
 

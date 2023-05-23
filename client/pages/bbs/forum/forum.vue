@@ -3,6 +3,7 @@
 		<uni-nav-bar leftIcon="back" @clickLeft="clickBack" :title="title" :fixed="true" :statusBar="true"
 			:opacity="nav_opacity" :placeholder="false">
 		</uni-nav-bar>
+		
 		<!-- #ifndef MP-BAIDU -->
 		<view v-if="nav_opacity<0.01" class="zhuige-nav-back" :style="{top: statusBarHeight + 'px'}">
 			<uni-icons type="back" size="24" color="#FFFFFF"></uni-icons>
@@ -357,7 +358,7 @@
 			 * 点击发布
 			 */
 			clickPost() {
-				Util.openLink('/pages/bbs/post/post?type=image');
+				Util.openLink('/pages/bbs/post/post?type=image&fid=' + this.forum.id + '&fname=' + this.forum.name);
 			},
 
 			/**

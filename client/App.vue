@@ -1,6 +1,6 @@
 <script>
 	/*
-	 * 追格小程序 v1.6.2
+	 * 追格小程序 v1.7.0
 	 * 作者: 追格
 	 * 文档: https://www.zhuige.com/docs/zg.html
 	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
@@ -12,6 +12,7 @@
 	import Util from '@/utils/util';
 	import Api from '@/utils/api';
 	import Rest from '@/utils/rest';
+	import store from '@/store/index.js'
 
 	export default {
 		globalData: {
@@ -35,6 +36,12 @@
 			}, err => {
 				console.log(err)
 			});
+			
+			let cart = Util.loadCart();
+			if (!cart) {
+				cart = [];
+			}
+			store.commit('cartSet', cart);
 		},
 
 		onShow() {
