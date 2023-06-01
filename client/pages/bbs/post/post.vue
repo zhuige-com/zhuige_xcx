@@ -367,9 +367,11 @@
 			 * 发帖
 			 */
 			clickCreate() {
+				let content = this.content.replace(/\r\n/g, '<br/>').replace(/\n/g, '<br/>').replace(/\s/g, ' ');
+				
 				let params = {
 					type: this.type,
-					content: this.content,
+					content: Util.htmlEncode(content),
 					latitude: this.latitude,
 					longitude: this.longitude,
 					marker: this.marker,

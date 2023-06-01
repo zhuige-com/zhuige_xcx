@@ -63,6 +63,16 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 					)
 				);
 			}
+
+			if ($notify_count == 0 && ZhuiGe_Xcx_Addon::is_active('zhuige-message')) {
+				$table_message = $wpdb->prefix . 'zhuige_xcx_message';
+				$notify_count = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT COUNT(`id`) FROM `$table_message` WHERE `to_id`=%d AND `isread`='0'",
+						$my_user_id
+					)
+				);
+			}
 		}
 		$data['notify_count'] = (int)$notify_count;
 

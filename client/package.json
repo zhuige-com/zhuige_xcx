@@ -13,7 +13,7 @@
     "displayName": "追格基于WordPress开发的圈子社区论坛、资讯、知识付费、积分商城小程序",
     "repository": "https://gitee.com/zhuige_com/zhuige_xcx",
     "engines": {
-        "HBuilderX": "^3.4.3"
+        "HBuilderX": "^3.5.0"
     },
     "dcloudext": {
         "sale": {
