@@ -1,5 +1,12 @@
 <template>
 	<view class="content">
+		<uni-nav-bar leftIcon="back" @clickLeft="clickBack" :title="title" :fixed="true" :statusBar="true" :opacity="nav_opacity" :placeholder="false">
+		</uni-nav-bar>
+		
+		<view v-if="nav_opacity<0.01" class="zhuige-nav-back" :style="{top: statusBarHeight + 'px'}">
+			<uni-icons type="back" size="24" color="#FFFFFF"></uni-icons>
+		</view>
+		
 		<!-- 话题头部信息，当通过搜索进入list时，该模块不显示 -->
 		<view v-if="subject" class="zhuige-topic-header">
 			<view class="zhuige-topic-bg">
@@ -67,11 +74,10 @@
 
 	export default {
 		data() {
-			this.title = '列表';
-
 			this.subject_id = undefined;
 
 			return {
+				title: '列表',
 				subject: undefined,
 
 				topics: [],
@@ -81,6 +87,9 @@
 				// #ifdef MP-WEIXIN
 				traffic_list: undefined,
 				// #endif
+				
+				nav_opacity: 0,
+				statusBarHeight: 0,
 			}
 		},
 
@@ -102,6 +111,8 @@
 			if (options.subject_id) {
 				this.subject_id = options.subject_id;
 			}
+			
+			this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
 
 			this.loadTopics(true);
 
@@ -120,6 +131,21 @@
 
 		onPullDownRefresh() {
 			this.loadTopics(true);
+		},
+		
+		onPageScroll(e) {
+			this.nav_opacity = (e.scrollTop > 255 ? 255 : e.scrollTop) / 255;
+			if (e.scrollTop > 20) {
+				uni.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: '#ffffff',
+				})
+			} else {
+				uni.setNavigationBarColor({
+					frontColor: '#ffffff',
+					backgroundColor: '#ffffff'
+				})
+			}
 		},
 
 		onShareAppMessage() {
@@ -161,6 +187,13 @@
 				}
 			},
 			// ------- event end ---------
+			
+			/**
+			 * 返回上一页
+			 */
+			clickBack() {
+				Util.navigateBack();
+			},
 
 			/**
 			 * 点击打开链接
@@ -210,6 +243,13 @@
 <style>
 	page {
 		background: #f5f5f5;
+	}
+	
+	.zhuige-nav-back {
+		position: fixed;
+		top: 0;
+		padding: 0 20rpx;
+		z-index: 99;
 	}
 
 	.zhuige-social-list {

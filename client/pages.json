@@ -154,7 +154,8 @@
 			}, {
 				"path": "home/home",
 				"style": {
-					"navigationBarTitleText": "个人主页",
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
 					"enablePullDownRefresh": true
 				}
 			}, {
@@ -166,7 +167,6 @@
 			}, {
 				"path": "login/login",
 				"style": {
-					"navigationBarTitleText": "登录",
 					"navigationStyle": "custom",
 					"navigationBarTextStyle": "white",
 					"enablePullDownRefresh": false
@@ -196,7 +196,6 @@
 			}, {
 				"path": "forum/forum",
 				"style": {
-					"navigationBarTitleText": "圈子",
 					"navigationStyle": "custom",
 					"navigationBarTextStyle": "white",
 					"enablePullDownRefresh": true
@@ -204,7 +203,8 @@
 			}, {
 				"path": "list/list",
 				"style": {
-					"navigationBarTitleText": "列表",
+					"navigationStyle": "custom",
+					"navigationBarTextStyle": "white",
 					"enablePullDownRefresh": true
 				}
 			}, {

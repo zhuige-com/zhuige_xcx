@@ -1145,7 +1145,6 @@
 		padding: 30rpx 30rpx 0rpx;
 		background: #FFFFFF;
 		border-radius: 12rpx 12rpx 0 0;
-		/* margin-bottom: -64rpx; */
 	}
 
 	.zhuige-pop-textarea>view:nth-child(1) {

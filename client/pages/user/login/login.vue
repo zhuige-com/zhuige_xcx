@@ -236,18 +236,39 @@
 			 * 获取手机号
 			 */
 			getPhoneNumber(e) {
-				Rest.post(Api.URL('user', 'set_mobile'), {
-					encrypted_data: e.detail.encryptedData,
-					iv: e.detail.iv,
-					code: this.code,
+				if (e.detail.errMsg != 'getPhoneNumber:ok') {
+					Alert.toast(e.detail.errMsg)
+					return;
+				}
+				
+				// Rest.post(Api.URL('user', 'set_mobile'), {
+				// 	encrypted_data: e.detail.encryptedData,
+				// 	iv: e.detail.iv,
+				// 	code: this.code,
+				// }).then(res => {
+				// 	Alert.toast(res.message)
+
+				// 	// 更新本地缓存的信息
+				// 	let user = Auth.getUser();
+				// 	user.mobile = res.data.mobile;
+				// 	Auth.setUser(user);
+
+				// 	uni.$emit('zhuige_event_user_mobile', {
+				// 		mobile: res.data.mobile
+				// 	});
+				// 	Util.navigateBack();
+				// })
+				
+				Rest.post(Api.URL('user', 'set_mobile2'), {
+					code: e.detail.code
 				}).then(res => {
 					Alert.toast(res.message)
-
+				
 					// 更新本地缓存的信息
 					let user = Auth.getUser();
 					user.mobile = res.data.mobile;
 					Auth.setUser(user);
-
+				
 					uni.$emit('zhuige_event_user_mobile', {
 						mobile: res.data.mobile
 					});

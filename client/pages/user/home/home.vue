@@ -1,63 +1,49 @@
 <template>
 	<view class="content">
-		<!-- 顶部大图 -->
-		<view v-if="user" class="zhuige-home-bg">
-			<image mode="aspectFill" :src="user.cover"></image>
+		<uni-nav-bar  leftIcon="back" @clickLeft="clickBack" title="个人主页" :fixed="true" :statusBar="true" :opacity="nav_opacity" :placeholder="false">
+		</uni-nav-bar>
+		
+		<view v-if="nav_opacity<0.01" class="zhuige-nav-back" :style="{top: statusBarHeight + 'px'}">
+			<uni-icons type="back" size="24" color="#FFFFFF"></uni-icons>
 		</view>
 
-		<!-- 用户信息 -->
-		<view v-if="user" class="zhuige-user-card">
-			<view class="zhuige-block">
+		<!-- 顶部大图 -->
+		<view v-if="user" class="zhuige-home-bg">
+			<!-- 用户信息 -->
+			<view v-if="user" class="zhuige-user-card">
 				<view class="zhuige-user-title">
 					<!-- 头像及认证 -->
 					<view class="zhuige-user-info-block">
 						<view>
 							<image mode="aspectFill" :src="user.avatar"></image>
 						</view>
+					</view>
+
+					<view v-if="stat" class="zhuige-user-count">
+						<view @click="openLink('/pages/user/friend/friend?user_id=' + user.user_id + '&tab=follow')">
+							<view>{{stat.follow_count}}</view>
+							<text>关注</text>
+						</view>
+						<view @click="openLink('/pages/user/friend/friend?user_id=' + user.user_id + '&tab=fans')">
+							<view>{{stat.fans_count}}</view>
+							<text>粉丝</text>
+						</view>
 						<view>
-							<text>{{user.nickname}}</text>
-							<image v-if="user.vip && user.vip.status==1" mode="aspectFit" :src="user.vip.icon"></image>
+							<view>{{stat.forum_count}}</view>
+							<text>圈子</text>
+						</view>
+						<view>
+							<view>{{stat.likeme_count}}</view>
+							<text>获赞</text>
 						</view>
 					</view>
-					<!-- 操作相关 -->
-					<view class="zhuige-user-info-btn">
-						<!-- 分享先隐藏 -->
-						<!-- <button open-type="share">
-							<uni-icons type="redo-filled" size="24"></uni-icons>
-						</button> -->
-
-						<!-- 新增私信 -->
-						<view v-if="btn_message"
-							@click="openLink('/pages/message/detail/detail?user_id=' + user.user_id)">
-							<uni-icons type="chatboxes-filled" color="#010101" size="24"></uni-icons>
-						</view>
-
-						<template v-if="!user.is_me">
-							<template v-if="user.is_follow">
-								<view class="follow active" @click="clickFollowUser">{{user.is_fans?'互关':'已关注'}}</view>
-							</template>
-							<view v-else @click="clickFollowUser" class="follow">+关注</view>
-						</template>
-					</view>
 				</view>
-				<view v-if="stat" class="zhuige-user-count">
-					<view @click="openLink('/pages/user/friend/friend?user_id=' + user.user_id + '&tab=follow')">
-						<text>关注</text>
-						<view>{{stat.follow_count}}</view>
-					</view>
-					<view @click="openLink('/pages/user/friend/friend?user_id=' + user.user_id + '&tab=fans')">
-						<text>粉丝</text>
-						<view>{{stat.fans_count}}</view>
-					</view>
-					<view>
-						<text>圈子</text>
-						<view>{{stat.forum_count}}</view>
-					</view>
-					<view>
-						<text>获赞</text>
-						<view>{{stat.likeme_count}}</view>
-					</view>
+
+				<view class="zhuige-user-info-block-text">
+					<text>{{user.nickname}}</text>
+					<image v-if="user.vip && user.vip.status==1" mode="aspectFit" :src="user.vip.icon"></image>
 				</view>
+
 				<view v-if="user" class="zhuige-user-line">
 					<image mode="aspectFill" src="/static/pen.png"></image>
 					<text>签名：</text>
@@ -68,7 +54,30 @@
 					<text>认证：</text>
 					<text>{{user.certify.name}}</text>
 				</view>
+
+				<!-- 操作相关 -->
+				<view class="zhuige-user-info-btn">
+					<template v-if="!user.is_me">
+						<template v-if="user.is_follow">
+							<view class="follow active" @click="clickFollowUser">{{user.is_fans?'互关':'已关注'}}</view>
+						</template>
+						<view v-else @click="clickFollowUser" class="follow">+关注</view>
+					</template>
+
+					<!-- 新增私信 -->
+					<view v-if="btn_message" @click="openLink('/pages/message/detail/detail?user_id=' + user.user_id)">
+						<text>私信</text>
+					</view>
+					<!-- 分享先隐藏 -->
+					<!-- <button open-type="share">
+						<uni-icons type="redo-filled" size="24"></uni-icons>
+					</button> -->
+
+				</view>
 			</view>
+
+			<view class="zhuige-home-cover"></view>
+			<image class="zhuige-hover-bgimg" mode="aspectFill" :src="user.cover"></image>
 		</view>
 
 		<!-- 推荐 -->
@@ -267,6 +276,9 @@
 
 				// 是否显示私信按钮
 				btn_message: false,
+				
+				nav_opacity: 0,
+				statusBarHeight: 0,
 			}
 		},
 
@@ -287,6 +299,8 @@
 			if (options.tab) {
 				this.cur_tab = options.tab;
 			}
+			
+			this.statusBarHeight = uni.getSystemInfoSync().statusBarHeight;
 
 			this.refresh();
 
@@ -313,6 +327,21 @@
 
 		onPullDownRefresh() {
 			this.refresh();
+		},
+		
+		onPageScroll(e) {
+			this.nav_opacity = (e.scrollTop > 255 ? 255 : e.scrollTop) / 255;
+			if (e.scrollTop > 20) {
+				uni.setNavigationBarColor({
+					frontColor: '#000000',
+					backgroundColor: '#ffffff',
+				})
+			} else {
+				uni.setNavigationBarColor({
+					frontColor: '#ffffff',
+					backgroundColor: '#ffffff'
+				})
+			}
 		},
 
 		onShareAppMessage() {
@@ -362,6 +391,13 @@
 				}
 			},
 			// ------- event end ---------
+			
+			/**
+			 * 返回上一页
+			 */
+			clickBack() {
+				Util.navigateBack();
+			},
 
 			/**
 			 * 刷新
@@ -518,56 +554,69 @@
 	page {
 		background: #f5f5f5;
 	}
+	
+	.zhuige-nav-back {
+		position: fixed;
+		top: 0;
+		padding: 0 20rpx;
+		z-index: 99;
+	}
 
 	.zhuige-home-bg {
-		height: 400rpx;
 		width: 100%;
 		position: relative;
+		overflow: hidden;
+		padding-bottom: 60rpx;
 	}
 
-	.zhuige-home-bg image {
+	.zhuige-home-bg .zhuige-home-cover {
+		position: absolute;
+		z-index: 3;
+		height: 820rpx;
+		top: 40rpx;
+		width: 100%;
+		background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.5));
+	}
+
+	.zhuige-home-bg image.zhuige-hover-bgimg {
 		height: 100%;
 		width: 100%;
-	}
-
-	.zhuige-home-bg view {
 		position: absolute;
 		z-index: 2;
-		height: 560rpx;
-		width: 100%;
-		background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7));
+		top: 0;
 	}
 
 	.zhuige-user-card {
-		padding: 0 20rpx;
-		margin-top: -100rpx;
-		position: relative;
-		z-index: 3;
+		padding: 240rpx 30rpx 20rpx;
+		position: inherit;
+		z-index: 5;
+		width: 92%;
+		color: #FFFFFF;
 	}
 
 	.zhuige-user-title {
 		display: flex;
 		align-items: center;
-		justify-content: space-between;
 		position: relative;
 		padding: 10rpx;
 	}
 
 	.zhuige-user-info-block {
-		margin-top: -100rpx;
 		position: relative;
 		z-index: 6;
-		padding-bottom: 20rpx;
+		display: inherit;
 	}
 
 	.zhuige-user-info-block view:nth-child(1) {
 		position: relative;
+		display: inherit;
 	}
 
 	.zhuige-user-info-block view:nth-child(1) image:nth-child(1) {
 		height: 128rpx;
 		width: 128rpx;
 		border-radius: 50%;
+		border: 8rpx solid rgba(255, 255, 255, 0.7)
 	}
 
 	.zhuige-user-info-block view:nth-child(1) image:nth-child(2) {
@@ -579,36 +628,10 @@
 		bottom: 20rpx;
 	}
 
-	.zhuige-user-info-block view:nth-child(2) {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		line-height: 1.4em;
-		max-width: 380rpx;
-		flex-wrap: nowrap;
-	}
-
-	.zhuige-user-info-block view:nth-child(2) text {
-		font-size: 36rpx;
-		font-weight: 600;
-		height: 1.4em;
-		line-height: 1.4em;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
-	}
-
-	.zhuige-user-info-block view:nth-child(2) image {
-		height: 28rpx;
-		width: 56rpx;
-		min-width: 56rpx;
-		margin-left: 12rpx;
-	}
-
 	.zhuige-user-info-btn {
 		display: flex;
 		align-items: center;
-		margin-bottom: 20rpx;
+		padding: 20rpx 0;
 	}
 
 	.zhuige-user-info-btn view,
@@ -616,11 +639,17 @@
 		height: 80rpx;
 		line-height: 80rpx;
 		text-align: center;
-		width: 80rpx;
+		width: 180rpx;
 		padding: 0;
 		border-radius: 40rpx;
-		background: #f5f5f5;
+		background: #F3F2F3;
 		margin-left: 12rpx;
+		font-size: 28rpx;
+		font-weight: 400;
+	}
+
+	.zhuige-user-info-btn view text {
+		color: #333333;
 	}
 
 	.zhuige-user-info-btn button::after {
@@ -628,45 +657,46 @@
 	}
 
 	.zhuige-user-info-btn view.follow {
-		width: 160rpx;
-		font-size: 28rpx;
-		font-weight: 400;
-		background: #010101;
+		background: #363B50;
 		color: #ffffff;
+		width: 320rpx;
 	}
 
 	.zhuige-user-info-btn view.active {
-		background: #f5f5f5;
-		color: #999999;
+		background: #363B50;
+		color: #ffffff;
 	}
 
 	.zhuige-user-count {
-		border-top: 1rpx solid #EEEEEE;
-		padding: 30rpx 10rpx;
 		display: flex;
 		align-items: center;
+		width: 70%;
 	}
 
 	.zhuige-user-count>view {
 		width: 25%;
 		display: flex;
-		align-items: baseline;
+		align-items: center;
+		text-align: center;
+		flex-wrap: wrap;
 	}
 
 	.zhuige-user-count>view text {
 		font-size: 26rpx;
 		font-weight: 300;
+		display: block;
+		width: 100%;
 	}
 
 	.zhuige-user-count>view view {
 		font-size: 46rpx;
 		font-weight: 600;
-		margin-left: 4rpx;
+		line-height: 1em;
+		width: 100%;
 	}
 
 	.zhuige-user-line {
-		padding: 30rpx 10rpx;
-		border-top: 1rpx solid #EEEEEE;
+		padding: 10rpx;
 		display: flex;
 		align-items: center;
 	}
@@ -683,13 +713,51 @@
 		margin-left: 4rpx;
 	}
 
-	.zhuige-user-market,
-	.zhuige-home-list,
-	.zhuige-home-tab {
-		padding: 0 20rpx;
+	.zhuige-home-tab .zhuige-block {
+		margin-bottom: 0;
+		border-radius: 24rpx 24rpx 0 0;
+	}
+
+	.zhuige-home-tab .zhuige-tab {
+		border-bottom: 1rpx solid #DDDDDD !important;
+		padding-bottom: 20rpx !important;
 	}
 
 	.zhuige-user-market {
 		padding-bottom: 20rpx;
+	}
+
+	.zhuige-user-info-block-text {
+		display: flex;
+		align-items: center;
+		flex-wrap: nowrap;
+		padding: 10rpx;
+	}
+
+	.zhuige-user-info-block-text text {
+		font-size: 36rpx;
+		font-weight: 600;
+		height: 1.4em;
+		line-height: 1.4em;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	.zhuige-user-info-block-text image {
+		height: 28rpx;
+		width: 56rpx;
+		min-width: 56rpx;
+		margin-left: 12rpx;
+	}
+
+	.zhuige-home-tab {
+		z-index: 19;
+		position: relative;
+		margin-top: -40rpx;
+	}
+
+	.zhuige-home-list .zhuige-block {
+		padding: 20rpx 40rpx !important;
 	}
 </style>

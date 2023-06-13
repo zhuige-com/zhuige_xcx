@@ -23,6 +23,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			'set_info' => ['callback' => 'set_info', 'auth' => 'login'],
 			'init_info' => ['callback' => 'init_info', 'auth' => 'login'],
 			'set_mobile' => ['callback' => 'set_mobile', 'auth' => 'login'],
+			'set_mobile2' => ['callback' => 'set_mobile2', 'auth' => 'login'],
 
 			'like' => ['callback' => 'user_like', 'auth' => 'login'],
 			'favorite' => ['callback' => 'user_favorite', 'auth' => 'login'],
@@ -1382,6 +1383,51 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 		update_user_meta($user_id, 'zhuige_xcx_user_mobile', $mobile);
 
+
+		return $this->success(['mobile' => $mobile]);
+	}
+
+	/**
+	 * 设置手机号2
+	 */
+	public function set_mobile2($request)
+	{
+		$user_id = get_current_user_id();
+
+		$code = $this->param($request, 'code', '');
+		if (empty($code)) {
+			return $this->error('缺少参数');
+		}
+
+		$os = $this->param($request, 'os', '');
+		if ($os != 'wx') {
+			return $this->error('暂不支持此平台');
+		}
+
+		$wx_session = ZhuiGe_Xcx::get_wx_token();
+		if (!$wx_session) {
+			return $this->error('获取不到token');
+		}
+
+		$access_token = $wx_session['access_token'];
+		$api = 'https://api.weixin.qq.com/wxa/business/getuserphonenumber?access_token=' . $access_token;
+		$res = wp_remote_post($api, ['body' => wp_json_encode(['code' => $code]),]);
+		if (is_wp_error($res)) {
+			return $this->error($res->get_error_message());
+		}
+
+		$content = wp_remote_retrieve_body($res);
+		if (empty($content)) {
+			return $this->error('获取不到手机号');
+		}
+
+		$data = json_decode($content, true);
+		if ($data['errcode'] != 0 || $data['errmsg'] != 'ok') {
+			return $this->error($data['errmsg']);
+		}
+
+		$mobile = $data['phone_info']['phoneNumber'];
+		update_user_meta($user_id, 'zhuige_xcx_user_mobile', $mobile);
 
 		return $this->success(['mobile' => $mobile]);
 	}

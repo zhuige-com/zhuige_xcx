@@ -4,11 +4,9 @@
 			:opacity="nav_opacity" :placeholder="false">
 		</uni-nav-bar>
 		
-		<!-- #ifndef MP-BAIDU -->
 		<view v-if="nav_opacity<0.01" class="zhuige-nav-back" :style="{top: statusBarHeight + 'px'}">
 			<uni-icons type="back" size="24" color="#FFFFFF"></uni-icons>
 		</view>
-		<!-- #endif -->
 
 		<!-- 圈子头部背景 -->
 		<view v-if="forum" class="zhuige-topic-header">
