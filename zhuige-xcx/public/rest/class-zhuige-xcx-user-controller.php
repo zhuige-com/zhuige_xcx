@@ -343,7 +343,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		$avatar = $this->param($request, 'avatar', '');
-		if (!empty($avatar)) {
+		if (!empty($avatar) && $avatar != '/static/avatar.jpg') {
 			update_user_meta($user_id, 'zhuige_xcx_user_avatar', $avatar);
 		}
 
