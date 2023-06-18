@@ -334,7 +334,12 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (empty($nickname)) {
 			return $this->error('昵称不可为空');
 		}
-		update_user_meta($user_id, 'nickname', $nickname);
+		wp_update_user([
+			'ID' => $user_id,
+			'nickname' => $nickname,
+			'user_nicename' => $nickname,
+			'display_name' => $nickname,
+		]);
 		update_user_meta($user_id, 'zhuige_xcx_user_sign', $sign);
 
 		$cover = $this->param($request, 'cover', '');
@@ -372,7 +377,12 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (empty($nickname)) {
 			return $this->error('昵称不可为空');
 		}
-		update_user_meta($user_id, 'nickname', $nickname);
+		wp_update_user([
+			'ID' => $user_id,
+			'nickname' => $nickname,
+			'user_nicename' => $nickname,
+			'display_name' => $nickname,
+		]);
 
 		$avatar = $this->param($request, 'avatar', '');
 		if (!empty($avatar)) {
