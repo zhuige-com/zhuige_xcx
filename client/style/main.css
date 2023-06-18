@@ -566,27 +566,27 @@ page {
 
 .zhuige-topic-header {
 	overflow: hidden;
-	height: 360rpx;
+	height: 480rpx;
 	position: relative;
 }
 
 .zhuige-topic-bg {
 	overflow: hidden;
-	height: 360rpx;
+	height: 480rpx;
 	position: relative;
 }
 
 .zhuige-topic-mask {
 	position: absolute;
 	width: 100%;
-	height: 360rpx;
+	height: 480rpx;
 	-webkit-backdrop-filter: blur(7px);
 	backdrop-filter: blur(7px);
 	z-index: -1;
 }
 
 .zhuige-topic-bg image {
-	height: 420rpx;
+	height: 620rpx;
 	width: 106%;
 	margin-left: -2%;
 	margin-top: -20rpx;
@@ -607,7 +607,7 @@ page {
 .zhuige-topic-header .zhuige-classify-block {
 	position: relative;
 	z-index: 3;
-	margin: -260rpx 0 0 30rpx;
+	margin: -300rpx 0 0 30rpx;
 }
 
 .zhuige-topic-header .zhuige-classify-text view,

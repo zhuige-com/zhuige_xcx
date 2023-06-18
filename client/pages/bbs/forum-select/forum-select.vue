@@ -74,7 +74,7 @@
 		onShareAppMessage() {
 			return {
 				title: '选择圈子-' + getApp().globalData.appName,
-				path: Util.addShareSource('pages/bbs/forum-select/forum-select')
+				path: Util.addShareSource('pages/bbs/forum-select/forum-select?n=n')
 			};
 		},
 

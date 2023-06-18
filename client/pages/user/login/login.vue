@@ -108,7 +108,7 @@
 		onShareAppMessage() {
 			return {
 				title: getApp().globalData.appName,
-				path: Util.addShareSource('pages/tabs/index/index')
+				path: Util.addShareSource('pages/tabs/index/index?n=n')
 			};
 		},
 

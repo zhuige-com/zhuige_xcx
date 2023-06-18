@@ -92,8 +92,12 @@ if (!defined('ZHUIGE_XCX_PLUGINS_MY')) {
                     <!-- 结构块-->
                     <?php
                     $filePath = ZHUIGE_XCX_ADDONS_DIR . 'cache_version.json';
-                    $version_content = file_get_contents($filePath);
-                    $versions = json_decode($version_content, true);
+                    if (file_exists($filePath)) {
+						$version_content = file_get_contents($filePath);
+						$versions = json_decode($version_content, true);
+					} else {
+						$versions = [];
+					}
 
                     foreach ($addons as $addon) {
                         if ($addon == '.' || $addon == '..' || !is_dir(ZHUIGE_XCX_ADDONS_DIR . $addon)) {

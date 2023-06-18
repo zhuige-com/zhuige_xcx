@@ -331,7 +331,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			return $this->error('请勿发布敏感信息');
 		}
 
-		if (!$nickname) {
+		if (empty($nickname)) {
 			return $this->error('昵称不可为空');
 		}
 		update_user_meta($user_id, 'nickname', $nickname);
@@ -368,6 +368,11 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (!$this->msg_sec_check($nickname, $os)) {
 			return $this->error('请勿发布敏感信息');
 		}
+
+		if (empty($nickname)) {
+			return $this->error('昵称不可为空');
+		}
+		update_user_meta($user_id, 'nickname', $nickname);
 
 		$avatar = $this->param($request, 'avatar', '');
 		if (!empty($avatar)) {
