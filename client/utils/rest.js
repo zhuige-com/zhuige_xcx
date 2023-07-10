@@ -1,4 +1,5 @@
 const Auth = require("./auth.js");
+const Constant = require('./constants.js');
 
 /**
  * request封装
@@ -30,7 +31,12 @@ function request(url, data = {}, method = "GET", redirect) {
 			method: method,
 			success(res) {
 				if (res.statusCode == 500 && res.data.code == 'user_not_login') {
+					let source = uni.getStorageSync(Constant.ZHUIGE_SOURCE_USER_ID);
 					uni.clearStorageSync();
+					if (source) {
+						uni.setStorageSync(Constant.ZHUIGE_SOURCE_USER_ID, source);
+					}
+					
 					if (redirect) {
 						uni.redirectTo({
 							url: '/pages/user/login/login',
@@ -49,7 +55,12 @@ function request(url, data = {}, method = "GET", redirect) {
 				}
 
 				if (res.data.code == 'user_not_login') {
+					let source = uni.getStorageSync(Constant.ZHUIGE_SOURCE_USER_ID);
 					uni.clearStorageSync();
+					if (source) {
+						uni.setStorageSync(Constant.ZHUIGE_SOURCE_USER_ID, source);
+					}
+					
 					if (redirect) {
 						uni.redirectTo({
 							url: '/pages/user/login/login',
