@@ -399,7 +399,7 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 					$topic_id
 				)
 			);
-			$topic['is_comment'] = ($post_favorite_id ? 1 : 0);
+			$topic['is_comment'] = ($post_comment_id ? 1 : 0);
 		} else {
 			$topic['is_comment'] = 0;
 		}
