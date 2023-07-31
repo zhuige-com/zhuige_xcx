@@ -458,6 +458,6 @@ function zhuige_xcx_bbs_create_custom_post_type()
     ));
 }
 
-ZhuiGe_Xcx::$post_types[] = ['id' => 'zhuige_bbs_forum', 'name' => '圈子', 'link' => '/pages/bbs/forum/forum'];
+// ZhuiGe_Xcx::$post_types[] = ['id' => 'zhuige_bbs_forum', 'name' => '圈子', 'link' => '/pages/bbs/forum/forum'];
 ZhuiGe_Xcx::$post_types[] = ['id' => 'zhuige_bbs_topic', 'name' => '帖子', 'link' => '/pages/bbs/detail/detail'];
 add_action('init', 'zhuige_xcx_bbs_create_custom_post_type');
