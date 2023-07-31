@@ -1,6 +1,6 @@
 {
     "id": "zhuige-xcx",
-    "name": "追格小程序",
+    "name": "追格基于WordPress开发的圈子社区论坛、资讯、知识付费、积分商城小程序",
     "version": "1.8.0",
     "description": "追格小程序是一个积木式小程序搭建框架，代码免费开源不加密且支持二开。",
     "keywords": [
@@ -16,24 +16,10 @@
         "HBuilderX": "^3.5.0"
     },
     "dcloudext": {
-        "sale": {
-            "regular": {
-                "price": "0.00"
-            },
-            "sourcecode": {
-                "price": "0.00"
-            }
-        },
-        "contact": {
-            "qq": ""
-        },
-        "declaration": {
-            "ads": "无",
-            "data": "无",
-            "permissions": "无"
-        },
-        "npmurl": "",
-        "type": "uniapp-template-project"
+        "category": [
+            "uni-app前端模板",
+            "uni-app前端项目模板"
+        ]
     },
     "uni_modules": {
         "platforms": {
