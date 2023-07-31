@@ -87,8 +87,6 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$rec_list_limit = ZhuiGe_Xcx::option_value('rec_list_limit');
 			if (empty($rec_list_limit)) {
 				$rec_list_limit = 'zhuige_bbs_topic';
-			} else {
-				$rec_list_limit[] = 'zhuige_bbs_forum';
 			}
 			$args['post_type'] = $rec_list_limit;
 		} else {
@@ -382,6 +380,8 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		$search_list_limit = ZhuiGe_Xcx::option_value('search_list_limit');
 		if (empty($search_list_limit)) {
 			$search_list_limit = 'zhuige_bbs_topic';
+		} else {
+			$search_list_limit[] = 'zhuige_bbs_forum';
 		}
 		$args['post_type'] = $search_list_limit;
 
