@@ -51,7 +51,12 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			}
 		}
 
-		return $this->success();
+		$data = [];
+
+		$data['at_switch'] = (ZhuiGe_Xcx_Addon::is_active('zhuige-at_users') ? 1 : 0);
+		$data['score_switch'] = (ZhuiGe_Xcx_Addon::is_active('zhuige-topic_score') ? 1 : 0);
+
+		return $this->success($data);
 	}
 
 	/**
@@ -141,36 +146,30 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		// 选择的版块
 		update_post_meta($post_id, 'zhuige_bbs_forum_id', $forum_id);
 
-		// 选择的话题
-		// global $wpdb;
-		// $subjects = $this->param($request, 'subjects', '');
-		// if (!empty($subjects)) {
-		// 	$subjects = explode('-0-', $subjects);
-		// 	if (is_array($subjects)) {
-		// 		$table_posts = $wpdb->prefix . 'posts';
-		// 		$subject_ids = [];
-		// 		foreach ($subjects as $subject) {
-		// 			$subject_id = $wpdb->get_var($wpdb->prepare("SELECT `id` FROM $table_posts WHERE `post_title`=%s", $subject));
-		// 			if ($subject_id) {
-		// 				$subject_ids[] = $subject_id;
-		// 			} else {
-		// 				$subject_id = wp_insert_post(['post_title' => $subject, 'post_content' => $subject, 'post_type' => 'zhuige_bbs_subject']);
-		// 				$subject_ids[] = $subject_id;
-		// 			}
-		// 		}
-
-		// 		update_post_meta($post_id, 'zhuige_bbs_subject_ids', $subject_ids);
-		// 	}
-		// }
-
-		//标签
+		// 标签 - 选择的话题
 		$subjects = $this->param($request, 'subjects', '');
 		if (!empty($subjects)) {
 			$subjects = explode('-0-', $subjects);
 			wp_set_post_terms($post_id, $subjects, 'zhuige_bbs_topic_tag');
 		}
 
-		//添加积分
+		// @ 的人 - 待帖子通过审核后，再通知 @ 的人
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-at_users')) {
+			$at_list = $this->param($request, 'at_list', '');
+			if (!empty($at_list)) {
+				update_post_meta($post_id, 'zhuige_bbs_topic_at_list', $at_list);
+			}
+		}
+
+		// 帖子积分 - 开启积分阅读全文
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-topic_score')) {
+			$score = $this->param_int($request, 'score', 0);
+			if ($score > 0) {
+				update_post_meta($post_id, 'zhuige_bbs_topic_score', $score);
+			}
+		}
+
+		// 添加积分
 		if (function_exists('zhuige_xcx_add_user_score_by_task')) {
 			zhuige_xcx_add_user_score_by_task('topic_add', 'topic,' . $post_id);
 		}
@@ -595,7 +594,12 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		foreach ($result as $post) {
 			if ($post->post_type == 'zhuige_bbs_topic') {
 				$item = zhuige_bbs_topic_format($post);
-				$item['comments'] = zhuige_xcx_get_comments($post->ID, 0, 1);
+				
+				$bbs_list_comment = ZhuiGe_Xcx::option_value('bbs_list_comment');
+				if ($bbs_list_comment && isset($bbs_list_comment['switch']) && $bbs_list_comment['switch']) {
+					$item['comments'] = zhuige_xcx_get_comments($post->ID, 0, $bbs_list_comment['count']);
+				}
+				
 				$topics[] = $item;
 			} else {
 				$topics[] = $post;

@@ -293,7 +293,7 @@
 
 				// 评论
 				comment_content: '',
-				// 评论框 底部举例
+				// 评论框 底部距离
 				comment_bottom: 0,
 
 				// 举报功能

@@ -455,13 +455,31 @@ CSF::createSection($prefix, array(
             'options'     => $zhuige_xcx_post_types,
         ),
 
+
         array(
-            'id'    => 'rec_home_comment',
-            'type'  => 'switcher',
-            'title' => '开启/停用',
-            'label' => '是否在列表显示评论',
-            'default' => '1'
+            'id'     => 'bbs_list_comment',
+            'type'   => 'fieldset',
+            'title'  => '列表中评论',
+            'fields' => array(
+                array(
+                    'id'    => 'switch',
+                    'type'  => 'switcher',
+                    'title' => '开启/停用',
+                    'label' => '是否在列表显示',
+                    'default' => '1'
+                ),
+
+                array(
+                    'id'      => 'count',
+                    'type'    => 'number',
+                    'title'   => '数量',
+                    'unit'    => '条',
+                    'default' => '1',
+                    'dependency' => array('switch', '==', '1'),
+                ),
+            )
         ),
+
 
         array(
             'id'      => 'rec_home_thumb',

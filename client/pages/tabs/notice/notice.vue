@@ -3,7 +3,7 @@
 		<template v-if="is_login">
 			<!-- 清理提示 -->
 			<view class="zhuige-none-tips" @click="clickClear"
-				v-if="system_count>0 || like_count>0 || favorite_count>0 || comment_count>0 || follow_count>0 || ait_count>0">
+				v-if="system_count>0 || like_count>0 || favorite_count>0 || comment_count>0 || follow_count>0 || at_count>0">
 				<text>清理未读消息</text>
 			</view>
 
@@ -83,24 +83,6 @@
 							<uni-icons type="right" color="#BBBBBB" size="16"></uni-icons>
 						</view>
 					</view>
-					<view v-if="ait_msg" @click="clickType('ait')" class="zhuige-message-line">
-						<view class="zhuige-message-info">
-							<view class="zhuige-message-icon">
-								<text>@</text>
-							</view>
-							<view class="zhuige-message-text">
-								<view>
-									<text>@我的</text>
-									<text v-if="ait_count>0">{{ait_count}}</text>
-								</view>
-								<view v-if="ait_count>0">你有{{ait_count}}条消息未读</view>
-								<view v-else>没有消息就是好消息</view>
-							</view>
-						</view>
-						<view class="zhuige-message-act">
-							<uni-icons type="right" color="#BBBBBB" size="16"></uni-icons>
-						</view>
-					</view>
 
 					<!-- 新增私信入口 -->
 					<view v-if="message" @click="clickType('message')" class="zhuige-message-line">
@@ -140,6 +122,45 @@
 							<uni-icons type="right" color="#BBBBBB" size="16"></uni-icons>
 						</view>
 					</view>
+					
+					<!-- <view class="zhuige-message-line">
+						<view class="zhuige-message-info">
+							<view class="zhuige-message-icon">
+								<uni-icons type="paperplane-filled" color="#010101" size="24"></uni-icons>
+							</view>
+							<view class="zhuige-message-text">
+								<view>
+									<text>@我的</text>
+									<text>12</text>
+								</view>
+								<view>你有12条消息未读</view>
+								<view>没有消息就是好消息</view>
+							</view>
+						</view>
+						<view class="zhuige-message-act">
+							<uni-icons type="right" color="#BBBBBB" size="16"></uni-icons>
+						</view>
+					</view> -->
+					
+					<view v-if="at_msg" @click="clickType('ait')" class="zhuige-message-line">
+						<view class="zhuige-message-info">
+							<view class="zhuige-message-icon">
+								<uni-icons type="paperplane-filled" color="#010101" size="24"></uni-icons>
+							</view>
+							<view class="zhuige-message-text">
+								<view>
+									<text>@我的</text>
+									<text v-if="at_count>0">{{at_count}}</text>
+								</view>
+								<view v-if="at_count>0">你有{{at_count}}条消息未读</view>
+								<view v-else>没有消息就是好消息</view>
+							</view>
+						</view>
+						<view class="zhuige-message-act">
+							<uni-icons type="right" color="#BBBBBB" size="16"></uni-icons>
+						</view>
+					</view>
+					
 				</view>
 			</view>
 		</template>
@@ -173,7 +194,7 @@
 		data() {
 			return {
 				is_login: false,
-				ait_msg: false,
+				at_msg: false,
 
 				sys_msg: 0,
 				system_count: 0,
@@ -182,7 +203,7 @@
 				favorite_count: 0,
 				comment_count: 0,
 				follow_count: 0,
-				ait_count: 0,
+				at_count: 0,
 				
 				message: 0,
 				message_count: 0,
@@ -235,6 +256,8 @@
 					Util.openLink('/pages/sys_notice/list/list');
 				} else if (type == 'message') {
 					Util.openLink('/pages/message/list/list');
+				} else if (type == 'ait') {
+					Util.openLink('/pages/user/atmsg/atmsg');
 				} else {
 					Util.openLink('/pages/base/notice_list/notice_list?type=' + type);
 				}
@@ -261,20 +284,20 @@
 						this.favorite_count = res.data.favorite_count;
 						this.comment_count = res.data.comment_count;
 						this.follow_count = res.data.follow_count;
-						this.ait_count = res.data.ait_count;
+						this.at_count = res.data.at_count;
 						
 						this.sys_msg = res.data.sys_msg;
 						this.system_count = res.data.system_count;
 
-						if (res.data.ait_msg) {
-							this.ait_msg = res.data.ait_msg;
+						if (res.data.at_msg) {
+							this.at_msg = res.data.at_msg;
 						}
 						
 						this.message = res.data.message;
 						this.message_count = res.data.message_count;
 
 						if (this.system_count > 0 || this.like_count > 0 || this.favorite_count > 0 || this
-							.comment_count > 0 || this.follow_count > 0 || this.ait_count > 0) {
+							.comment_count > 0 || this.follow_count > 0 || this.at_count > 0) {
 							getApp().globalData.noticeRedDot = 1;
 						} else {
 							getApp().globalData.noticeRedDot = 0;

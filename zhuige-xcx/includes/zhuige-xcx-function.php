@@ -622,11 +622,12 @@ if (!function_exists('zhuige_xcx_get_comments')) {
         $where = "comment_post_ID=$post_id";
 
         $my_user_id = get_current_user_id();
-        if ($my_user_id) {
-            $where = $where . " AND (comment_approved=1 OR user_id=$my_user_id)";
-        } else {
-            $where = $where . " AND comment_approved=1";
-        }
+        // if ($my_user_id) {
+        //     $where = $where . " AND (comment_approved=1 OR user_id=$my_user_id)";
+        // } else {
+        //     $where = $where . " AND comment_approved=1";
+        // }
+        $where = $where . " AND comment_approved=1";
 
         $limit = '';
         if ($offset !== null) {

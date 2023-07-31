@@ -44,7 +44,6 @@ class ZhuiGe_Xcx_Activator
          * comment - 评论
          * follow - 关注
          * reply - 回复
-         * ait - 发帖@
          * system - 系统通知
          */
         $table_notify = $wpdb->prefix . 'zhuige_xcx_notify';

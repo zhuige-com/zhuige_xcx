@@ -87,6 +87,8 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			$rec_list_limit = ZhuiGe_Xcx::option_value('rec_list_limit');
 			if (empty($rec_list_limit)) {
 				$rec_list_limit = 'zhuige_bbs_topic';
+			} else {
+				$rec_list_limit[] = 'zhuige_bbs_forum';
 			}
 			$args['post_type'] = $rec_list_limit;
 		} else {
@@ -439,6 +441,24 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['author'] = zhuige_xcx_author_info($post->post_author);
 				$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
 				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_bbs_forum') {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+
+				$forum = [
+					'id' => $post->ID,
+					'post_type' => $post->post_type,
+					'post_type_name' => $post_type_info['name'],
+					'link' => $post_type_info['link'],
+					'title' => $post->post_title,
+				];
+		
+				$options = get_post_meta($post->ID, 'zhuige-bbs-forum-option', true);
+				$forum['logo'] = ZhuiGe_Xcx::option_image_url($options['logo'], 'placeholder.jpg');
+		
+				$forum['user_count'] = zhuige_bbs_forum_user_count($post->ID);
+				$forum['post_count'] = zhuige_bbs_forum_topic_count($post->ID);
+				
+				$topics[] = $forum;
 			} else {
 				$post_type_info = $this->get_post_type_info($post->post_type);
 
@@ -892,6 +912,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 	 */
 	private function get_post_type_info($post_type)
 	{
+		if ($post_type == 'zhuige_bbs_forum') {
+			return ['id' => 'zhuige_bbs_forum', 'name' => '圈子', 'link' => '/pages/bbs/forum/forum'];
+		}
+
 		foreach (ZhuiGe_Xcx::$post_types as $item) {
 			if ($item['id'] == $post_type) {
 				return $item;

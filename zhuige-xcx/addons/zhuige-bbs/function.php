@@ -76,8 +76,9 @@ if (!function_exists('zhuige_bbs_topic_format')) {
 		// 位置信息
 		$item['location'] = $options['location'];
 
-		if (ZhuiGe_Xcx::option_value('rec_home_comment')) {
-			$item['comments'] = zhuige_xcx_get_comments($post->ID, 0, 1);
+		$bbs_list_comment = ZhuiGe_Xcx::option_value('bbs_list_comment');
+		if ($bbs_list_comment && isset($bbs_list_comment['switch']) && $bbs_list_comment['switch']) {
+			$item['comments'] = zhuige_xcx_get_comments($post->ID, 0, $bbs_list_comment['count']);
 		}
 
 		return $item;

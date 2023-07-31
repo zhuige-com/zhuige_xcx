@@ -153,6 +153,28 @@ class ZhuiGe_Xcx_Public
 				]);
 			}
 		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-at_users')) {
+			// 通知 @ 的人
+			if ($result === '1') {
+				$at_list = get_post_meta($post->ID, 'zhuige_bbs_topic_at_list', true);
+				if (is_string($at_list)) {
+					$at_user_ids = explode(',', $at_list);
+					if (is_array($at_user_ids)) {
+						foreach ($at_user_ids as $at_user_id) {
+							$table_at_users_notify = $wpdb->prefix . 'zhuige_xcx_at_users_notify';
+							$wpdb->insert($table_at_users_notify, [
+								'from_id' => $post->post_author,
+								'to_id' => $at_user_id,
+								'topic_id' => $post->ID,
+								'isread' => '0',
+								'createtime' => time()
+							]);
+						}
+					}
+				}
+			}
+		}
 	}
 
 	public function transition_comment_status($new_status, $old_status, $comment)

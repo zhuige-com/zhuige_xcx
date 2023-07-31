@@ -34,6 +34,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			'my_follows' => 'my_follows',
 			'my_friends' => ['callback' => 'my_friends', 'auth' => 'login'],
 			'my_fans' => 'my_fans',
+			'search' => 'search',
 
 			'my_statistics' => 'my_statistics',
 			'home' => 'home',
@@ -930,6 +931,85 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 	}
 
 	/**
+	 * 用户搜索
+	 */
+	public function search($request)
+	{
+		$offset = $this->param_int($request, 'offset', 0);
+		$search = $this->param($request, 'search', '');
+		if (empty($search)) {
+			return $this->success([
+				'users' => [],
+				'more' => 'nomore'
+			]);
+		}
+
+		$my_user_id = get_current_user_id();
+		$per_page_count = 10;
+
+		$users = get_users([
+			'meta_key' => 'nickname',
+			'meta_value' => $search,
+			'meta_compare' => 'LIKE',
+			'offset' => $offset,
+			'number' => $per_page_count,
+			'fields' => ['ID']
+		]);
+
+		global $wpdb;
+		$table_follow_user = $wpdb->prefix . 'zhuige_xcx_follow_user';
+
+		$data = [];
+		foreach ($users as &$user) {
+			$item = [
+				'user_id' => $user->ID,
+				'nickname' => get_user_meta($user->ID, 'nickname', true),
+				'avatar' => ZhuiGe_Xcx::user_avatar($user->ID),
+				'post_count' => zhuige_xcx_user_post_count($user->ID),
+				'fans_count' => zhuige_xcx_user_fans_count($user->ID),
+			];
+
+			if (function_exists('zhuige_xcx_certify_is_certify')) {
+				$item['certify'] = zhuige_xcx_certify_is_certify($user->ID);
+			}
+
+			if (function_exists('zhuige_xcx_vip_is_vip')) {
+				$item['vip'] = zhuige_xcx_vip_is_vip($user->ID);
+			}
+
+			if ($my_user_id) {
+				$follow_user = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT id FROM `$table_follow_user` WHERE `user_id`=%d AND `follow_user_id`=%d",
+						$my_user_id,
+						$user->ID
+					)
+				);
+				$item['is_follow'] = ($follow_user ? 1 : 0);
+
+				$follow_user = $wpdb->get_var(
+					$wpdb->prepare(
+						"SELECT id FROM `$table_follow_user` WHERE `user_id`=%d AND `follow_user_id`=%d",
+						$user->ID,
+						$my_user_id
+					)
+				);
+				$item['is_fans'] = ($follow_user ? 1 : 0);
+			} else {
+				$item['is_follow'] = 0;
+				$item['is_fans'] = 0;
+			}
+
+			$data[] = $item;
+		}
+
+		$result['users'] = $data;
+		$result['more'] = (count($data) == $per_page_count ? 'more' : 'nomore');
+
+		return $this->success($result);
+	}
+
+	/**
 	 * 我的小站
 	 */
 	public function home($request)
@@ -1195,12 +1275,17 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			)
 		);
 
-		$data['ait_count'] = (int)$wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT COUNT(`id`) FROM `$table_notify` WHERE (`type`='reply' OR `type`='ait') AND `to_id`=%d AND `post_status`='publish' AND `isread`=0",
-				$my_user_id
-			)
-		);
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-at_users')) {
+			$table_at_users_notify = $wpdb->prefix . 'zhuige_xcx_at_users_notify';
+			$data['at_count'] = (int)$wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT COUNT(`id`) FROM `$table_at_users_notify` WHERE `to_id`=%d AND `isread`='0'",
+					$my_user_id
+				)
+			);
+		} else {
+			$data['at_count'] = 0;
+		}
 
 		return $data;
 	}
@@ -1248,10 +1333,11 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			// 		'certify' => ['status' => 0]
 			// 	];
 			// } else {
+			// get_user_meta($from_id, 'zhuige_xcx_user_avatar', true)
 			$notify['from'] = [
 				'user_id' => $from_id,
 				'nickname' => get_user_meta($from_id, 'nickname', true),
-				'avatar' => get_user_meta($from_id, 'zhuige_xcx_user_avatar', true),
+				'avatar' => ZhuiGe_Xcx::user_avatar($from_id),
 			];
 			// }
 
@@ -1322,7 +1408,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		$data = $this->_notify_count($my_user_id);
 
 		$data['sys_msg'] = ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice') ? 1 : 0;
-		$data['ait_msg'] = 0;
+		$data['at_msg'] = ZhuiGe_Xcx_Addon::is_active('zhuige-at_users') ? 1 : 0;
 		$data['message'] = ZhuiGe_Xcx_Addon::is_active('zhuige-message') ? 1 : 0;
 
 		return $this->success($data);
@@ -1347,6 +1433,11 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-message')) {
 			$table_message = $wpdb->prefix . 'zhuige_xcx_message';
 			$wpdb->update($table_message, ['isread' => '1'], ['isread' => '0', 'to_id' => $my_user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-at_users')) {
+			$table_at_users_notify = $wpdb->prefix . 'zhuige_xcx_at_users_notify';
+			$wpdb->update($table_at_users_notify, ['isread' => '1'], ['isread' => '0', 'to_id' => $my_user_id]);
 		}
 
 		return $this->success();

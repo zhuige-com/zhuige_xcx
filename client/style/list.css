@@ -313,7 +313,7 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 
 .left-side .zhugie-info-text,
 .right-side .zhugie-info-text {
-	margin-left: 20rpx;
+	margin-left: 30rpx;
 	width: 430rpx;
 	flex: 1;
 }
@@ -331,6 +331,7 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 .zhuige-social-list .zhuige-block {
 	padding: 20rpx;
 }
+
 
 .zhuige-social-list-head {
 	height: 2em;
@@ -463,6 +464,32 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	font-size: 30rpx;
 }
 
+.zhuige-social-pay {
+	background: #f3f1f5;
+	border-radius: 16rpx;
+	padding: 30rpx 20rpx 50rpx;
+	text-align: center;
+}
+.zhuige-social-pay view {
+	font-size: 28rpx;
+	font-weight: 400;
+	color: #333333;
+	line-height: 80rpx;
+}
+.zhuige-social-pay view text {
+	display: block;
+	color: #FFFFFF;
+	font-size: 28prx;
+	font-weight: 400;
+	background-color: #ff6146;
+	width: 72%;
+	margin: 0 auto;
+	text-align: center;
+	height: 80rpx;
+	line-height: 80rpx;
+	border-radius: 80rpx;
+}
+
 .zhuige-social-top {
 	font-size: 22rpx;
 	padding: 6rpx 20rpx;
@@ -569,6 +596,8 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 .zhuige-social-simple-reply view text:nth-child(2) {
 	font-weight: 400;
 }
+
+
 
 /*自定义组件相关*/
 .zhuige-act-timeline-sub {

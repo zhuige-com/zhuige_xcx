@@ -116,27 +116,25 @@ class ZhuiGe_Xcx_Admin
     }
 
     public function handle_external_redirects()
-    {
-        if (empty($_GET['page'])) {
-            return;
-        }
+    {		
+		$page = isset($_GET['page']) ? $_GET['page'] : '';
 
-        if ('zhuige_xcx_plus_setup' === $_GET['page']) {
+        if ('zhuige_xcx_plus_setup' === $page) {
             wp_redirect('https://www.zhuige.com/docs/zg.html');
             die;
         }
 
-        if ('zhuige_xcx_plus_qa' === $_GET['page']) {
+        if ('zhuige_xcx_plus_qa' === $page) {
             wp_redirect('https://www.zhuige.com/docs/zg/208.html');
             die;
         }
 
-        if ('zhuige_xcx_plus_path' === $_GET['page']) {
+        if ('zhuige_xcx_plus_path' === $page) {
             wp_redirect('https://www.zhuige.com/docs/zg/209.html');
             die;
         }
 
-        if ('zhuige_xcx_plus_new_user' === $_GET['page']) {
+        if ('zhuige_xcx_plus_new_user' === $page) {
             wp_redirect('https://www.zhuige.com/docs/zg/213.html');
             die;
         }

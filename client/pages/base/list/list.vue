@@ -310,6 +310,21 @@
 							</view>
 							<!-- 投票模块 end -->
 						</template>
+						<template v-else-if="topic.post_type=='zhuige_bbs_forum'">
+							<view class="zhugie-info-block left-side">
+								<view class="zhugie-info-image">
+									<image mode="aspectFill" :src="topic.logo" />
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{topic.title}}</view>
+									<view>
+										<text>{{topic.user_count}}成员</text>
+										<text style="padding: 0 12rpx;">/</text>
+										<text>{{topic.post_count}}作品</text>
+									</view>
+								</view>
+							</view>
+						</template>
 						<template v-else>
 							<view class="zhugie-info-block left-side">
 								<view class="zhugie-info-image">
@@ -502,5 +517,8 @@
 <style>
 	page {
 		background-color: #F5F5F5;
+	}
+	.zhuige-mini-custom {
+		padding-top: 20rpx;
 	}
 </style>

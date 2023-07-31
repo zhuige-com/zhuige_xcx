@@ -94,30 +94,30 @@
 			</view>
 		</view>
 
-		<!-- 选择行 -->
-		<!-- <view class="zhuige-post-box">
+		<!-- 选择行 @ 好友 -->
+		<view v-if="at_switch==1" class="zhuige-post-box">
 			<view class="zhuige-block">
 				<view class="zhuige-post-line">
 					<view>@ 好友：</view>
-					<view>
-						<view>已选0个好友</view>
+					<view @click="clickAtList">
+						<view>已选{{atlist.length}}个好友</view>
 						<uni-icons type="right" color="#BBBBBB" size="16"></uni-icons>
 					</view>
 				</view>
 			</view>
-		</view> -->
+		</view>
 
-		<!-- 选择行 -->
-		<!-- <view class="zhuige-post-box">
+		<!-- 选择行 积分数 -->
+		<view v-if="score_switch==1" class="zhuige-post-box">
 			<view class="zhuige-block">
 				<view class="zhuige-post-line">
 					<view>积分数：</view>
 					<view>
-						<input type="text" placeholder="如：88，填写即开启积分阅读全文" />
+						<input type="number" v-model="score" placeholder="如：88，填写即开启积分阅读全文" />
 					</view>
 				</view>
 			</view>
-		</view> -->
+		</view>
 
 		<!-- 底部大按钮 -->
 		<view @click="clickCreate" class="zhuige-base-button">
@@ -150,6 +150,11 @@
 				type: 'image',
 
 				content: '',
+				
+				// 是否开启帖子积分功能
+				score_switch: 0,
+				// 积分值
+				score: 0,
 
 				//图片
 				images: [],
@@ -162,6 +167,11 @@
 
 				// 选择的话题
 				subjects: [],
+				
+				// 是否启用 @ 好友的功能
+				at_switch: 0,
+				// 选择的好友
+				atlist: [],
 
 				longitude: '',
 				latitude: '',
@@ -187,11 +197,13 @@
 			this.preCreate();
 
 			uni.$on('subjectChange', this.onSubjectChange);
+			uni.$on('atlistChange', this.onAtlistChange);
 			uni.$on('forumChange', this.onForumChange);
 		},
 
 		onUnload() {
 			uni.$off('forumChange', this.onForumChange);
+			uni.$off('atlistChange', this.onAtlistChange);
 			uni.$off('subjectChange', this.onSubjectChange);
 		},
 
@@ -319,7 +331,14 @@
 			onSubjectChange(data) {
 				this.subjects = data;
 			},
-
+			
+			/**
+			 * 选择 @ 的用户
+			 */
+			onAtlistChange(data) {
+				this.atlist = data;
+			},
+			
 			/**
 			 * 选择板块
 			 */
@@ -362,6 +381,13 @@
 			clickSubject() {
 				Util.openLink('/pages/bbs/subject/subject?subjects=' + this.subjects.join('-0-'));
 			},
+			
+			/**
+			 * 选择 @ 好友
+			 */
+			clickAtList() {
+				Util.openLink('/pages/user/atlist/atlist');
+			},
 
 			/**
 			 * 发帖
@@ -376,6 +402,7 @@
 					longitude: this.longitude,
 					marker: this.marker,
 					address: this.address,
+					score: this.score,
 				};
 
 				if (!this.forum) {
@@ -383,6 +410,10 @@
 					return;
 				}
 				params.forum_id = this.forum.id;
+				
+				if (this.atlist.length>0) {
+					params.at_list = this.atlist.join(',');
+				}
 
 				if (this.type == 'image') {
 					params.images = JSON.stringify(this.images);
@@ -439,7 +470,12 @@
 								Util.navigateBack();
 							}, 1500)
 						}
+						
+						return;
 					}
+					
+					this.at_switch = res.data.at_switch;
+					this.score_switch = res.data.score_switch;
 				}, err => {
 					console.log(err)
 				});

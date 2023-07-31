@@ -33,8 +33,10 @@
 							</view>
 						</view>
 						<view class="zhuige-social-opt" @click.stop="clickFollowUser(user.user_id)">
-							<view v-if="user.is_follow && user.is_fans">已互关</view>
-							<view v-else>已关注</view>
+							<view v-if="user.is_follow==1 && user.is_fans==1">已互关</view>
+							<view v-else-if="user.is_follow==1 && user.is_fans==0">已关注</view>
+							<view v-else-if="user.is_follow==0 && user.is_fans==1" class="active">回关</view>
+							<view v-else class="active">+关注</view>
 						</view>
 					</view>
 				</template>
@@ -73,7 +75,9 @@
 							</view>
 						</view>
 						<view class="zhuige-social-opt" @click.stop="clickFollowUser(user.user_id)">
-							<view v-if="user.is_follow && user.is_fans">互关</view>
+							<view v-if="user.is_follow==1 && user.is_fans==1">已互关</view>
+							<view v-else-if="user.is_follow==1 && user.is_fans==0">已关注</view>
+							<view v-else-if="user.is_follow==0 && user.is_fans==1" class="active">回关</view>
 							<view v-else class="active">+关注</view>
 						</view>
 					</view>
@@ -216,7 +220,21 @@
 			 * 关注用户事件
 			 */
 			onFlollowUser(data) {
-				this.refresh();
+				// this.refresh();
+				
+				for (let i=0; i<this.follows.length; i++) {
+					if (this.follows[i].user_id == data.user_id) {
+						this.follows[i].is_follow = data.is_follow;
+						break;
+					}
+				}
+				
+				for (let i=0; i<this.fans.length; i++) {
+					if (this.fans[i].user_id == data.user_id) {
+						this.fans[i].is_follow = data.is_follow;
+						break;
+					}
+				}
 			},
 
 			/**
