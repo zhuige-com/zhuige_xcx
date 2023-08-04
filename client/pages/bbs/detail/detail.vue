@@ -394,7 +394,7 @@
 		},
 
 		onPullDownRefresh() {
-			this.loadData()();
+			this.loadData();
 		},
 
 		onShareAppMessage() {
