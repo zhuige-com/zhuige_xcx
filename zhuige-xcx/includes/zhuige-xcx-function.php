@@ -543,7 +543,7 @@ if (!function_exists('zhuige_xcx_get_post_excerpt')) {
     function zhuige_xcx_get_post_excerpt($post)
     {
         $content = apply_filters('the_content', $post->post_content);
-        if (mb_strlen($content) < 100) {
+        if (mb_strlen($content) < 50) {
             return wp_strip_all_tags($content);
         }
 

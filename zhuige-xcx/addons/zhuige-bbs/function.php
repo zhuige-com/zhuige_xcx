@@ -10,6 +10,49 @@
  */
 
 /**
+ * 帖子摘要
+ */
+if (!function_exists('zhuige_bbs_topic_excerpt')) {
+	function zhuige_bbs_topic_excerpt($post, $maxlen = 50)
+	{
+		$content = str_replace("<br />", "\n", $post->post_content);
+		$lines = explode("\n", $content);
+		$excerpt = '';
+		$len = 0;
+		$cnt = 0;
+		$suffix = false;
+		foreach ($lines as $line) {
+			$line = wp_strip_all_tags(apply_filters('the_content', $line));
+			$line_len = mb_strlen($line);
+			if (($len + $line_len) > $maxlen) {
+				$line = wp_trim_words($line, $maxlen - $len, '...');
+				$suffix = true;
+			}
+
+			if ($excerpt != '') {
+				$excerpt = $excerpt . "\n";
+			}
+			$excerpt = $excerpt . $line;
+
+			$len = $len + $line_len;
+			if ($len > $maxlen) {
+				return $excerpt;
+			}
+
+			$cnt = $cnt + 1;
+			if ($cnt >= 3) {
+				if (!$suffix) {
+					$excerpt = $excerpt . "\n...";
+				}
+				return $excerpt;
+			}
+		}
+
+		return $excerpt;
+	}
+}
+
+/**
  * 帖子格式化
  */
 if (!function_exists('zhuige_bbs_topic_format')) {
@@ -17,18 +60,54 @@ if (!function_exists('zhuige_bbs_topic_format')) {
 	{
 		$item = [
 			'id' => $post->ID,
-			'excerpt' => zhuige_xcx_get_post_excerpt($post),
+			'excerpt' => zhuige_bbs_topic_excerpt($post),
 			'comment_count' => $post->comment_count
 		];
 
-		$options = get_post_meta($post->ID, 'zhuige-bbs-topic-option', true);
-		if ($options['type'] == 'image') {
-			$item['images'] = $options['images'];
-		} else if ($options['type'] == 'video') {
-			$item['video'] = $options['video'];
-			$item['video_cover'] = $options['video_cover'];
+		$limit = 'free';
+
+		// 帖子积分 - 开启积分阅读全文
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-topic_score')) {
+			$limit = get_post_meta($post->ID, 'zhuige_bbs_topic_limit', true);
+			if (empty($limit)) {
+				$limit = 'free';
+			}
 		}
 
+		global $wpdb;
+		if ($limit == 'score') {
+			$my_user_id = get_current_user_id();
+			if ($my_user_id) {
+				$table_post_cost_log = $wpdb->prefix . 'zhuige_xcx_post_cost_log';
+				$cost_log = $wpdb->get_var($wpdb->prepare("SELECT COUNT(`id`) FROM $table_post_cost_log WHERE `user_id`=%d AND `post_id`=%d", $my_user_id, $post->ID));
+				if ($cost_log) {
+					$limit = 'free';
+				}
+			}
+			
+			if ($limit == 'score') {
+				$score = (int)(get_post_meta($post->ID, 'zhuige_bbs_topic_score', true));
+				if ($score == 0) {
+					$limit = 'free';
+				}
+				$item['score'] = $score;
+			}
+		}
+
+		$options = get_post_meta($post->ID, 'zhuige-bbs-topic-option', true);
+
+		if ($limit == 'free') {
+			// $item['excerpt'] = zhuige_xcx_get_post_excerpt($post);
+
+			if ($options['type'] == 'image') {
+				$item['images'] = $options['images'];
+			} else if ($options['type'] == 'video') {
+				$item['video'] = $options['video'];
+				$item['video_cover'] = $options['video_cover'];
+			}
+		}
+
+		$item['limit'] = $limit; 
 		$item['type'] = $options['type'];
 
 		//获取标签
@@ -76,11 +155,32 @@ if (!function_exists('zhuige_bbs_topic_format')) {
 		// 位置信息
 		$item['location'] = $options['location'];
 
-		$item['comments'] = [];
+		// 评论
+		$comments = [];
 		$bbs_list_comment = ZhuiGe_Xcx::option_value('bbs_list_comment');
 		if ($bbs_list_comment && isset($bbs_list_comment['switch']) && $bbs_list_comment['switch']) {
-			$item['comments'] = zhuige_xcx_get_comments($post->ID, 0, $bbs_list_comment['count']);
+			$comments = zhuige_xcx_get_comments($post->ID, 0, $bbs_list_comment['count']);
 		}
+		$item['comments'] = $comments;
+
+		// @的人
+		$at_users = [];
+		$at_list = get_post_meta($post->ID, 'zhuige_bbs_topic_at_list', true);
+		if (is_string($at_list)) {
+			$at_user_ids = explode(',', $at_list);
+			if (is_array($at_user_ids)) {
+				foreach ($at_user_ids as $at_user_id) {
+					if (empty($at_user_id)) {
+						continue;
+					}
+					$at_users[] = [
+						'user_id' => $at_user_id,
+						'nickname' => get_user_meta($at_user_id, 'nickname', true)
+					];
+				}
+			}
+		}
+		$item['at_users'] = $at_users;
 
 		return $item;
 	}

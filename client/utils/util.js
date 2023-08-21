@@ -90,6 +90,7 @@ function openLink(link) {
 		if (!Auth.getUser()) {
 			links = [
 				'/pages/user/info/info',
+				'/pages/user/atlist/atlist',
 				'/pages/bbs/post/post',
 				'/pages/bbs/forum-create/forum-create',
 				'/pages/contribution/manage/manage',

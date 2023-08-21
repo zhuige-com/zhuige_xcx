@@ -83,6 +83,23 @@
 				<text>{{copyright.text}}</text>
 			</view>
 			<!-- 本小程序商用必须保留前后端代码版权信息（若需去版权请联系微信：jianbing2011） -->
+			
+			<!-- 备案信息 -->
+			<view v-if="beian_icp || beian_ga" class="zhuige-mine-recordinfo">
+				<view @click="openLink(beian_icp.link)">
+					<image v-if="beian_icp.logo" :src="beian_icp.logo"></image>
+					<text>
+						{{beian_icp.sn}}
+					</text>
+				</view>
+				<view @click="openLink(beian_ga.link)">
+					<image v-if="beian_ga.logo" :src="beian_ga.logo"></image>
+					<text>
+						{{beian_ga.sn}}
+					</text>
+				</view>
+			</view>
+			
 		</view>
 
 	</view>
@@ -132,6 +149,9 @@
 				menus: [],
 
 				copyright: undefined,
+				
+				beian_icp: undefined,
+				beian_ga: undefined,
 			}
 		},
 
@@ -239,6 +259,14 @@
 
 					if (res.data.copyright) {
 						this.copyright = res.data.copyright;
+					}
+					
+					if (res.data.beian_icp) {
+						this.beian_icp = res.data.beian_icp;
+					}
+					
+					if (res.data.beian_ga) {
+						this.beian_ga = res.data.beian_ga;
 					}
 				}, err => {
 					console.log(err)
@@ -390,7 +418,7 @@
 	}
 
 	.zhuige-mine-copyinfo view {
-		padding-bottom: 20rpx;
+		margin-bottom: 20rpx;
 	}
 
 	.zhuige-mine-copyinfo image {
@@ -456,5 +484,25 @@
 
 	.zhuige-dots-left .wx-swiper-dots.wx-swiper-dots-horizontal {
 		bottom: 20rpx !important;
+	}
+	.zhuige-mine-recordinfo, .zhuige-mine-recordinfo view {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: 32rpx;
+		line-height: 32rpx;
+	}
+	.zhuige-mine-recordinfo > view:nth-child(1) {
+		margin-right: 12rpx;
+	}
+	.zhuige-mine-recordinfo view image {
+		margin: 0 8rpx 0 0;
+		height: 32rpx;
+		width: 32rpx;
+	}
+	.zhuige-mine-recordinfo view text {
+		font-size: 22rpx;
+		font-weight: 300;
+		color: #999999;
 	}
 </style>

@@ -286,25 +286,50 @@ function zhuige_xcx_bbs_create_custom_post_type()
         // 'show_restore' => true,
     ));
 
-    CSF::createSection($zhuige_bbs_topic_option_u, array(
-        'fields' => array(
-
-            array(
-                'id'          => 'zhuige_bbs_forum_id',
-                'type'        => 'select',
-                'title'       => '圈子',
-                'placeholder' => '选择圈子',
-                'chosen'      => true,
-                // 'multiple'    => true,
-                // 'sortable'    => true,
-                'ajax'        => true,
-                'options'     => 'posts',
-                'query_args'  => array(
-                    'post_type'  => 'zhuige_bbs_forum',
-                ),
+    $topic_option_u = [
+        array(
+            'id'          => 'zhuige_bbs_forum_id',
+            'type'        => 'select',
+            'title'       => '圈子',
+            'placeholder' => '选择圈子',
+            'chosen'      => true,
+            // 'multiple'    => true,
+            // 'sortable'    => true,
+            'ajax'        => true,
+            'options'     => 'posts',
+            'query_args'  => array(
+                'post_type'  => 'zhuige_bbs_forum',
             ),
+        ),
+    ];
 
-        )
+    if (ZhuiGe_Xcx_Addon::is_active('zhuige-topic_score')) {
+        $topic_option_u[] = array(
+            'id'          => 'zhuige_bbs_topic_limit',
+            'type'        => 'select',
+            'title'       => '阅读限制',
+            'options'     => array(
+                'free'      => '免费阅读',
+                'score'     => '积分兑换后可阅读'
+            ),
+            'default' => 'free'
+        );
+
+        $topic_option_u[] = array(
+            'id'       => 'zhuige_bbs_topic_score',
+            'type'     => 'spinner',
+            'title'    => '积分',
+            'subtitle' => 'max:99999999 | min:0 | step:1',
+            'max'      => 99999999,
+            'min'      => 0,
+            'step'     => 1,
+            'default'  => 10,
+            'dependency' => array('zhuige_bbs_topic_limit', '==', 'score'),
+        );
+    }
+
+    CSF::createSection($zhuige_bbs_topic_option_u, array(
+        'fields' => $topic_option_u
     ));
 
     //追格圈子-帖子属性

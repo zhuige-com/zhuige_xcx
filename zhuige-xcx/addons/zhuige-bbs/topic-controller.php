@@ -165,6 +165,7 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-topic_score')) {
 			$score = $this->param_int($request, 'score', 0);
 			if ($score > 0) {
+				update_post_meta($post_id, 'zhuige_bbs_topic_limit', 'score');
 				update_post_meta($post_id, 'zhuige_bbs_topic_score', $score);
 			}
 		}
@@ -218,21 +219,24 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		//添加文章浏览记录
 		global $wpdb;
-		$table_post_view = $wpdb->prefix . 'zhuige_xcx_post_view';
-		$post_view_id = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT `id` FROM `$table_post_view` WHERE `user_id`=%d AND `post_id`=%d",
-				$my_user_id,
-				$topic_id
-			)
-		);
-		if (!$post_view_id) {
-			$wpdb->insert($table_post_view, [
-				'user_id' => $my_user_id,
-				'post_id' => $topic_id,
-				'post_status' => 'publish',
-				'time' => time()
-			]);
+
+		if ($my_user_id) {
+			$table_post_view = $wpdb->prefix . 'zhuige_xcx_post_view';
+			$post_view_id = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT `id` FROM `$table_post_view` WHERE `user_id`=%d AND `post_id`=%d",
+					$my_user_id,
+					$topic_id
+				)
+			);
+			if (!$post_view_id) {
+				$wpdb->insert($table_post_view, [
+					'user_id' => $my_user_id,
+					'post_id' => $topic_id,
+					'post_status' => 'publish',
+					'time' => time()
+				]);
+			}
 		}
 
 		// 文章浏览数
@@ -244,18 +248,54 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		$topic = [
 			'id' => $post->ID,
 			'title' => $post->post_title,
-			'content' => apply_filters('the_content', $post->post_content),
+			// 'content' => apply_filters('the_content', $post->post_content),
 			'comment_count' => $post->comment_count,
 		];
 
-		$options = get_post_meta($post->ID, 'zhuige-bbs-topic-option', true);
-		if ($options['type'] == 'image') {
-			$topic['images'] = $options['images'];
-		} else if ($options['type'] == 'video') {
-			$topic['video'] = $options['video'];
-			$topic['video_cover'] = $options['video_cover'];
+		$limit = 'free';
+
+		// 帖子积分 - 开启积分阅读全文
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-topic_score')) {
+			$limit = get_post_meta($post->ID, 'zhuige_bbs_topic_limit', true);
+			if (empty($limit)) {
+				$limit = 'free';
+			}
 		}
 
+		if ($limit == 'score') {
+			if ($my_user_id) {
+				$table_post_cost_log = $wpdb->prefix . 'zhuige_xcx_post_cost_log';
+				$cost_log = $wpdb->get_var($wpdb->prepare("SELECT COUNT(`id`) FROM $table_post_cost_log WHERE `user_id`=%d AND `post_id`=%d", $my_user_id, $topic_id));
+				if ($cost_log) {
+					$limit = 'free';
+				}
+			}
+			
+			if ($limit == 'score') {
+				$score = (int)(get_post_meta($post->ID, 'zhuige_bbs_topic_score', true));
+				if ($score == 0) {
+					$limit = 'free';
+				}
+				$topic['score'] = $score;
+			}
+		}
+
+		$options = get_post_meta($post->ID, 'zhuige-bbs-topic-option', true);
+		
+		if ($limit == 'free') {
+			$topic['content'] = apply_filters('the_content', $post->post_content);
+			
+			if ($options['type'] == 'image') {
+				$topic['images'] = $options['images'];
+			} else if ($options['type'] == 'video') {
+				$topic['video'] = $options['video'];
+				$topic['video_cover'] = $options['video_cover'];
+			}
+		} else {
+			$topic['content'] = zhuige_bbs_topic_excerpt($post);
+		}
+
+		$topic['limit'] = $limit;
 		$topic['type'] = $options['type'];
 
 		//获取标签
@@ -283,16 +323,22 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (function_exists('zhuige_xcx_vip_is_vip')) {
 			$author['vip'] = zhuige_xcx_vip_is_vip($user_id);
 		}
+
 		// “我”是否关注了作者
-		$table_follow_user = $wpdb->prefix . 'zhuige_xcx_follow_user';
-		$follow_user_id_exist = $wpdb->get_var(
-			$wpdb->prepare(
-				"SELECT id FROM `$table_follow_user` WHERE user_id=%d AND follow_user_id=%d",
-				$my_user_id,
-				$user_id
-			)
-		);
-		$author['is_follow'] = ($follow_user_id_exist ? 1 : 0);
+		if ($my_user_id) {
+			$table_follow_user = $wpdb->prefix . 'zhuige_xcx_follow_user';
+			$follow_user_id_exist = $wpdb->get_var(
+				$wpdb->prepare(
+					"SELECT id FROM `$table_follow_user` WHERE user_id=%d AND follow_user_id=%d",
+					$my_user_id,
+					$user_id
+				)
+			);
+			$author['is_follow'] = ($follow_user_id_exist ? 1 : 0);
+		} else {
+			$author['is_follow'] = 0;
+		}
+
 		$topic['author'] = $author;
 
 		// 所属圈子
@@ -459,6 +505,25 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		// 评论是否要求手机号
 		$topic['comment_switch'] = ZhuiGe_Xcx::option_value('comment_switch') ? 1 : 0;
 		$topic['comment_require_mobile'] = ZhuiGe_Xcx::option_value('comment_mobile_switch') ? 1 : 0;
+
+		// @的人
+		$at_users = [];
+		$at_list = get_post_meta($topic_id, 'zhuige_bbs_topic_at_list', true);
+		if (is_string($at_list)) {
+			$at_user_ids = explode(',', $at_list);
+			if (is_array($at_user_ids)) {
+				foreach ($at_user_ids as $at_user_id) {
+					if (empty($at_user_id)) {
+						continue;
+					}
+					$at_users[] = [
+						'user_id' => $at_user_id,
+						'nickname' => get_user_meta($at_user_id, 'nickname', true)
+					];
+				}
+			}
+		}
+		$topic['at_users'] = $at_users;
 
 		$data = ['topic' => $topic, 'poster' => $poster];
 

@@ -49,7 +49,8 @@
 					</view>
 				</view>
 				<view class="zhuige-reply-body">
-					<text v-if="reply.reply">@{{reply.reply.nickname}}</text>
+					<text v-if="reply.reply" class="zhuige-social-rp-at"
+						@click="openLink('/pages/user/home/home?user_id=' + reply.reply.id)">@{{reply.reply.nickname}}</text>
 					{{reply.content}}
 				</view>
 			</view>

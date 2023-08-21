@@ -30,12 +30,19 @@
 			</view>
 		</view>
 
-		<!-- 话题 + 正文 -->
+		<!-- 话题 + @用户 + 正文 -->
 		<view class="zhuige-social-cont">
 			<!-- 正文 -->
 			<template v-if="topic && topic.subjects.length>0" class="zhuige-social-cont">
 				<text v-for="(subject, subjectIndex) in topic.subjects" :key="subjectIndex" class="zhuige-social-tag"
 					@click="openLink('/pages/bbs/list/list?subject_id=' + subject.id + '&title=' + subject.name)">#{{subject.name}}</text>
+			</template>
+
+			<!-- @用户 -->
+			<template v-if="topic.at_users && topic.at_users.length>0">
+				<text v-for="(user, index) in topic.at_users" :key="index"
+					@click="openLink('/pages/user/home/home?user_id=' + user.user_id)"
+					class="zhuige-social-rp-at">@{{user.nickname}}</text>
 			</template>
 
 			<!-- 正文信息 -->
@@ -46,7 +53,7 @@
 		</view>
 
 		<!-- 图片信息 -->
-		<template v-if="topic">
+		<template v-if="topic && topic.limit=='free'">
 			<view v-if="topic.type=='image'" class="zhuige-social-img">
 				<view v-if="topic.images.length==1" class="zhugie-img one-img">
 					<view class="img-box" v-for="(image, imageIndex) in topic.images" :key="imageIndex">
@@ -79,6 +86,14 @@
 			</view>
 		</template>
 
+		<!-- 正文隐藏内容 -->
+		<view v-if="topic && topic.limit=='score'" class="zhuige-social-pay" @click="clickDetail">
+			<view>隐藏内容，支付积分阅读全文</view>
+			<view>
+				<text>立即支付{{topic.score}}积分</text>
+			</view>
+		</view>
+
 		<!-- 地址信息 -->
 		<view v-if="topic.location && topic.location.marker" @click="clickDetail" class="zhuige-social-address">
 			<view>
@@ -106,10 +121,13 @@
 		</view>
 
 		<!-- 帖子回复信息 -->
-		<view v-if="topic && topic.comments.length>0" @click="clickDetail" class="zhuige-social-simple-reply">
+		<view v-if="topic && topic.comments && topic.comments.length>0" @click="clickDetail"
+			class="zhuige-social-simple-reply">
 			<view v-for="(comment, index) in topic.comments" :key="index">
-				<text>{{comment.user.nickname}}</text>
-				<text>：<template v-if="comment.reply">@{{comment.reply.nickname}}</template> {{comment.content}}</text>
+				<text>{{comment.user.nickname}}：</text>
+				<text v-if="comment.reply" class="zhuige-social-rp-at" 
+					@click="openLink('/pages/user/home/home?user_id=' + comment.reply.id)">@{{comment.reply.nickname}}</text>
+				<text>{{comment.content}}</text>
 			</view>
 		</view>
 	</view>

@@ -154,7 +154,7 @@
 				// 是否开启帖子积分功能
 				score_switch: 0,
 				// 积分值
-				score: 0,
+				score: '',
 
 				//图片
 				images: [],
@@ -386,7 +386,7 @@
 			 * 选择 @ 好友
 			 */
 			clickAtList() {
-				Util.openLink('/pages/user/atlist/atlist');
+				Util.openLink('/pages/user/atlist/atlist?atlist=' + this.atlist.join(','));
 			},
 
 			/**

@@ -455,9 +455,9 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 	padding: 10rpx 0;
 	overflow: hidden;
 	/* 多行省略号 */
-	display: -webkit-box;
+	/* display: -webkit-box;
 	-webkit-box-orient: vertical;
-	-webkit-line-clamp: 3;
+	-webkit-line-clamp: 3; */
 	/* 多行省略号 */
 	line-height: 1.8em;
 	text-overflow: ellipsis;
@@ -596,7 +596,10 @@ zhuige-reply:nth-child(1) .zhuige-reply-block {
 .zhuige-social-simple-reply view text:nth-child(2) {
 	font-weight: 400;
 }
-
+.zhuige-social-rp-at {
+	color: #1d9ffc;
+	margin-right: 8rpx;
+}
 
 
 /*自定义组件相关*/

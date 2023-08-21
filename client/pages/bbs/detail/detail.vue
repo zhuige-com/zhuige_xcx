@@ -63,7 +63,23 @@
 
 				<!-- 主内容区 -->
 				<view class="zhuige-detail-cont">
-					<mp-html :content="topic.content" />
+					<!-- @用户 -->
+					<template v-if="topic.at_users && topic.at_users.length>0">
+						<text v-for="(user, index) in topic.at_users" :key="index"
+							@click="openLink('/pages/user/home/home?user_id=' + user.user_id)"
+							class="zhuige-social-rp-at">@{{user.nickname}}</text>
+					</template>
+					
+					<mp-html v-if="topic.limit=='free'" :content="topic.content" />
+					<text v-else>{{topic.content}}</text>
+				</view>
+
+				<!-- 正文隐藏内容 -->
+				<view v-if="topic.limit=='score'" class="zhuige-social-pay">
+					<view>隐藏内容，支付积分阅读全文</view>
+					<view @click="clickExchange">
+						<text>立即支付{{topic.score}}积分</text>
+					</view>
 				</view>
 
 				<!-- 话题 -->
@@ -526,6 +542,36 @@
 				}, err => {
 					console.log(err)
 				});
+			},
+			
+			/**
+			 * 点击 积分交换帖子
+			 */
+			clickExchange() {
+				uni.showModal({
+					title: '提示',
+					content: '确认使用' + this.topic.score + '积分阅读',
+					success: (res) => {
+						if (!res.confirm) {
+							return;
+						}
+				
+						Rest.post(Api.URL('topic_score', 'exchange'), {
+							post_id: this.topic_id
+						}).then(res => {
+							if (res.code != 0) {
+								Alert.toast(res.message);
+								return;
+							} 
+							
+							this.loadData();
+						}, err => {
+							console.log(err)
+						});
+					}
+				});
+				
+				
 			},
 
 			/**

@@ -118,6 +118,67 @@ CSF::createSection($prefix, array(
             'subtitle' => '使用七牛/阿里/腾讯OSS的需要开启',
             'default' => ''
         ),
+
+        array(
+            'id'     => 'beian_icp',
+            'type'   => 'fieldset',
+            'title'  => 'ICP备案',
+            'fields' => array(
+                array(
+                    'id'    => 'sn',
+                    'type'  => 'text',
+                    'title' => '备案号',
+                ),
+                array(
+                    'id'    => 'link',
+                    'type'  => 'text',
+                    'title' => '链接',
+                ),
+                array(
+                    'id'      => 'logo',
+                    'type'    => 'media',
+                    'title'   => 'LOGO',
+                    'library' => 'image',
+                ),
+                array(
+                    'id'    => 'switch',
+                    'type'  => 'switcher',
+                    'title' => '是否显示',
+                    'default' => ''
+                ),
+            ),
+        ),
+
+        array(
+            'id'     => 'beian_ga',
+            'type'   => 'fieldset',
+            'title'  => '公安备案',
+            'fields' => array(
+                array(
+                    'id'    => 'sn',
+                    'type'  => 'text',
+                    'title' => '备案号',
+                ),
+                array(
+                    'id'    => 'link',
+                    'type'  => 'text',
+                    'title' => '链接',
+                ),
+                array(
+                    'id'      => 'logo',
+                    'type'    => 'media',
+                    'title'   => 'LOGO',
+                    'library' => 'image',
+                ),
+                array(
+                    'id'    => 'switch',
+                    'type'  => 'switcher',
+                    'title' => '是否显示',
+                    'default' => ''
+                ),
+            ),
+        ),
+
     )
 ));
 

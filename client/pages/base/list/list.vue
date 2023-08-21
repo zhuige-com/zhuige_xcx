@@ -214,7 +214,7 @@
 						<!-- 投票 -->
 						<template v-else-if="topic.post_type=='zhuige_vote'">
 							<!-- 用户信息 -->
-							<view class="zhuige-social-poster-blcok">
+							<view class="zhuige-social-poster-blcok" @click="openLink('/pages/user/home/home?user_id=' + topic.author.user_id)">
 								<view class="zhuige-social-poster">
 									<view class="zhuige-social-poster-avatar">
 										<image mode="aspectFill" :src="topic.author.avatar"></image>
@@ -463,7 +463,7 @@
 			/**
 			 * 点击打开链接
 			 */
-			clickLink(link) {
+			openLink(link) {
 				Util.openLink(link);
 			},
 

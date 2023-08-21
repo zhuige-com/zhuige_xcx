@@ -73,7 +73,6 @@
 
 		methods: {
 			clickItem(index) {
-				console.log(this.items[index].link)
 				if (this.items[index].link) {
 					Util.openLink(this.items[index].link);
 				} else {

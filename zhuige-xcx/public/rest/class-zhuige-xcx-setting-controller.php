@@ -567,7 +567,7 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		$data['menus'] = $this->_get_mine_menu($my_user_id);
 
 		$copyright = ZhuiGe_Xcx::option_value('copyright');
-		if ($copyright['switch']) {
+		if ($copyright && $copyright['switch']) {
 			if (empty($copyright['text'])) {
 				$copyright['text'] = '本小程序基于追格（zhuige.com）搭建';
 			}
@@ -576,6 +576,32 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		} else {
 			$data['copyright'] = ['text' => '本小程序基于追格（zhuige.com）搭建'];
 		}
+
+		// 备案信息
+		$beian_icp = ZhuiGe_Xcx::option_value('beian_icp');
+		if ($beian_icp && $beian_icp['switch']) {
+			$icp = [
+				'sn' => $beian_icp['sn'],
+				'link' => $beian_icp['link'],
+			];
+			if ($beian_icp['logo'] && $beian_icp['logo']['url']) {
+				$icp['logo'] = $beian_icp['logo']['url'];
+			}
+			$data['beian_icp'] = $icp;
+		}
+
+		$beian_ga = ZhuiGe_Xcx::option_value('beian_ga');
+		if ($beian_ga && $beian_ga['switch']) {
+			$ga = [
+				'sn' => $beian_ga['sn'],
+				'link' => $beian_ga['link'],
+			];
+			if ($beian_ga['logo'] && $beian_ga['logo']['url']) {
+				$ga['logo'] = $beian_ga['logo']['url'];
+			}
+			$data['beian_ga'] = $ga;
+		}
+
 
 		return $this->success($data);
 	}
