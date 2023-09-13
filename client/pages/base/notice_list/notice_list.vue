@@ -38,6 +38,8 @@
 			</template>
 
 		</view>
+		
+		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -56,8 +58,14 @@
 	import Rest from '@/utils/rest';
 
 	import ZhuigeNodata from "@/components/zhuige-nodata";
+	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
+		components: {
+			ZhuigeNodata,
+			ZhuigePrivacy
+		},
+		
 		data() {
 			return {
 				type: '',
@@ -71,10 +79,6 @@
 				follow_count: 0,
 				ait_count: 0,
 			};
-		},
-
-		components: {
-			ZhuigeNodata
 		},
 
 		onLoad(options) {

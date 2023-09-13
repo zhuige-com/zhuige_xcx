@@ -215,6 +215,7 @@
 
 		<uni-load-more v-if="posts && posts.length>0" :status="loadMore"></uni-load-more>
 
+		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -237,8 +238,17 @@
 	import ZhuigeScrollAd from "@/components/zhuige-scroll-ad";
 	import ZhuigeTab from "@/components/zhuige-tab";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
+	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
+		components: {
+			ZhuigeTopic,
+			ZhuigeScrollAd,
+			ZhuigeTab,
+			ZhuigeNodata,
+			ZhuigePrivacy
+		},
+		
 		data() {
 			this.user_id = undefined;
 
@@ -280,13 +290,6 @@
 				nav_opacity: 0,
 				statusBarHeight: 0,
 			}
-		},
-
-		components: {
-			ZhuigeTopic,
-			ZhuigeScrollAd,
-			ZhuigeTab,
-			ZhuigeNodata
 		},
 
 		onLoad(options) {

@@ -86,13 +86,13 @@
 			
 			<!-- 备案信息 -->
 			<view v-if="beian_icp || beian_ga" class="zhuige-mine-recordinfo">
-				<view @click="openLink(beian_icp.link)">
+				<view v-if="beian_icp" @click="openLink(beian_icp.link)">
 					<image v-if="beian_icp.logo" :src="beian_icp.logo"></image>
 					<text>
 						{{beian_icp.sn}}
 					</text>
 				</view>
-				<view @click="openLink(beian_ga.link)">
+				<view v-if="beian_ga" @click="openLink(beian_ga.link)">
 					<image v-if="beian_ga.logo" :src="beian_ga.logo"></image>
 					<text>
 						{{beian_ga.sn}}
@@ -102,6 +102,7 @@
 			
 		</view>
 
+		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -123,8 +124,15 @@
 
 	import ZhuigeIcons from "@/components/zhuige-icons";
 	import ZhuigeSwiper from "@/components/zhuige-swiper";
+	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
+		components: {
+			ZhuigeIcons,
+			ZhuigeSwiper,
+			ZhuigePrivacy
+		},
+		
 		data() {
 			return {
 				isLogin: false,
@@ -153,11 +161,6 @@
 				beian_icp: undefined,
 				beian_ga: undefined,
 			}
-		},
-
-		components: {
-			ZhuigeIcons,
-			ZhuigeSwiper,
 		},
 
 		onLoad(options) {
@@ -501,8 +504,8 @@
 		width: 32rpx;
 	}
 	.zhuige-mine-recordinfo view text {
-		font-size: 22rpx;
-		font-weight: 300;
+		font-size: 24rpx;
+		font-weight: 400;
 		color: #999999;
 	}
 </style>

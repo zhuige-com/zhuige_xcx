@@ -650,7 +650,9 @@
 				</view>
 			</view>
 		</view>
+				
 
+		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -677,8 +679,20 @@
 	import ZhuigeScrollAd from "@/components/zhuige-scroll-ad";
 	import ZhuigeTab from "@/components/zhuige-tab";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
+	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
+		components: {
+			ZhuigeTopic,
+			ZhuigeSwiper,
+			ZhuigeIcons,
+			ZhuigeUserList,
+			ZhuigeScrollAd,
+			ZhuigeTab,
+			ZhuigeNodata,
+			ZhuigePrivacy
+		},
+		
 		data() {
 			this.loginReload = false;
 
@@ -749,16 +763,6 @@
 
 				style: '',
 			}
-		},
-
-		components: {
-			ZhuigeTopic,
-			ZhuigeSwiper,
-			ZhuigeIcons,
-			ZhuigeUserList,
-			ZhuigeScrollAd,
-			ZhuigeTab,
-			ZhuigeNodata
 		},
 
 		onLoad(options) {

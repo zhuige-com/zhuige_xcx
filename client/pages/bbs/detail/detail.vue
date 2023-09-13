@@ -256,6 +256,8 @@
 				</view>
 			</view>
 		</uni-popup>
+		
+		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -279,8 +281,18 @@
 	import ZhuigeReply from "@/components/zhuige-reply";
 	import ZhuigeSwiper from "@/components/zhuige-swiper";
 	import ZhuigeScrollAd from "@/components/zhuige-scroll-ad";
+	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
+		components: {
+			lPainter,
+			ZhuigeTopic,
+			ZhuigeReply,
+			ZhuigeSwiper,
+			ZhuigeScrollAd,
+			ZhuigePrivacy
+		},
+		
 		data() {
 			this.topic_id = undefined;
 
@@ -323,14 +335,6 @@
 				//登录后 重新加载
 				loginReload: false,
 			}
-		},
-
-		components: {
-			lPainter,
-			ZhuigeTopic,
-			ZhuigeReply,
-			ZhuigeSwiper,
-			ZhuigeScrollAd
 		},
 
 		computed: {

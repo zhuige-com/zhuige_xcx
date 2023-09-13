@@ -131,6 +131,8 @@
 		<view v-if="forum && forum.ad_menu && forum.ad_menu.length>0" class="zhuige-coterie-menu">
 			<view v-for="(item, index) in forum.ad_menu" :key="index" @click="openLink(item.link)">{{item.title}}</view>
 		</view>
+		
+		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -154,8 +156,18 @@
 	import ZhuigeScrollAd from "@/components/zhuige-scroll-ad";
 	import ZhuigeTab from "@/components/zhuige-tab";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
+	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
+		components: {
+			ZhuigeTopic,
+			ZhuigeScrollUser,
+			ZhuigeScrollAd,
+			ZhuigeTab,
+			ZhuigeNodata,
+			ZhuigePrivacy
+		},
+		
 		data() {
 			this.forum_id = undefined;
 
@@ -188,14 +200,6 @@
 
 				return '圈子';
 			}
-		},
-
-		components: {
-			ZhuigeTopic,
-			ZhuigeScrollUser,
-			ZhuigeScrollAd,
-			ZhuigeTab,
-			ZhuigeNodata
 		},
 
 		onLoad(options) {

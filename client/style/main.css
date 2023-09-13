@@ -1591,3 +1591,17 @@ uni-swiper .uni-swiper-dot-active {
 	font-weight: 400;
 	color: #999999;
 }
+
+/* 弹框遮罩 */
+.zhugie-pop-cover {
+	position: fixed;
+	height: 100%;
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: rgba(0, 0, 0, .6);
+	z-index: 998;
+	top: 0;
+	left: 0;
+}

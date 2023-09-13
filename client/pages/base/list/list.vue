@@ -344,6 +344,8 @@
 		</view>
 
 		<uni-load-more v-if="topics && topics.length>0" :status="loadMore"></uni-load-more>
+		
+		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -364,8 +366,15 @@
 
 	import ZhuigeTopic from "@/components/zhuige-topic";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
+	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
+		components: {
+			ZhuigeTopic,
+			ZhuigeNodata,
+			ZhuigePrivacy
+		},
+		
 		data() {
 			this.title = '列表';
 
@@ -377,11 +386,6 @@
 				loadMore: 'more',
 				loaded: false,
 			}
-		},
-
-		components: {
-			ZhuigeTopic,
-			ZhuigeNodata
 		},
 
 		onLoad(options) {
