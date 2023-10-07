@@ -174,7 +174,7 @@ const state_data = {
 				}
 			})
 
-			return amount;
+			return parseFloat(amount.toFixed(2));
 		},
 	},
 
