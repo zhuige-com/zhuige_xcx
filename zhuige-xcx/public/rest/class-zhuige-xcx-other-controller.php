@@ -19,6 +19,10 @@ class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
 			'upload' => 'upload',
 			'upload2' => 'upload2',
 			'uploadv' => 'uploadv',
+
+			'wx_notify' => ['callback' => 'wx_notify', 'method' => 'GET, POST'],
+
+			'test' => ['callback' => 'test', 'method' => 'GET']
 		];
 	}
 
@@ -116,6 +120,57 @@ class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
 		];
 
 		return $this->success($data);
+	}
+
+	/**
+	 * 微信通知
+	 */
+	public function wx_notify($request)
+	{
+		$method = isset($_SERVER['REQUEST_METHOD']) ? $_SERVER['REQUEST_METHOD'] : '';
+		if ($method === 'GET') { // 微信通知验证
+			$signature = isset($_GET["signature"]) ? $_GET["signature"] : '';
+			$timestamp = isset($_GET["timestamp"]) ? $_GET["timestamp"] : '';
+			$nonce = isset($_GET["nonce"]) ? $_GET["nonce"] : '';
+			$echostr = isset($_GET["echostr"]) ? $_GET["echostr"] : '';
+			if (empty($signature) || empty($timestamp) || empty($nonce) || empty($echostr)) {
+				echo '';
+			}
+
+			$token = 'zhuige-com-hello-word';
+			$tmpArr = array($token, $timestamp, $nonce);
+			sort($tmpArr, SORT_STRING);
+			$tmpStr = implode($tmpArr);
+			$tmpStr = sha1($tmpStr);
+
+			if ($tmpStr == $signature) {
+				echo $echostr;
+			}
+		} else if ($method === 'POST') { // 微信通知
+			// $body = file_get_contents('php://input');
+			// file_put_contents('000_wx_notify_get.txt', json_encode($_GET) . PHP_EOL, FILE_APPEND);
+			// file_put_contents('000_wx_notify_post.txt', json_encode($_POST) . PHP_EOL, FILE_APPEND);
+			// file_put_contents('000_wx_notify_body.txt', $body . PHP_EOL, FILE_APPEND);
+
+			// 请在此处添加收到微信用户信息变更后的处理
+			
+			echo 'success';
+		}
+	}
+
+	/**
+	 * 测试
+	 */
+	public function test () 
+	{
+		// require_once ZHUIGE_XCX_BASE_DIR . 'includes/wxcrypt/wxBizMsgCrypt.php';
+
+		// $token = 'zhuige-com-hello-word';
+		// $encodingAesKey = 'QrBZqElfGmFJm9p7gWRnpSswYGDoKmGu3DAN8FTRWbG';
+		// $appId = 'wxe501b4f59afa1e19';
+		// $pc = new WXBizMsgCrypt($token, $encodingAesKey, $appId);
+
+		// echo json_encode($pc);
 	}
 
 	/**

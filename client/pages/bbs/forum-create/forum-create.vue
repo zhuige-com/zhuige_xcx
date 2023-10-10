@@ -307,7 +307,7 @@
 	}
 
 	.zhuige-creat-opt {
-		padding: 30rpx 30rpx 60rpx;
+		padding: 30rpx 30rpx 160rpx;
 	}
 
 	.zhuige-creat-tips {

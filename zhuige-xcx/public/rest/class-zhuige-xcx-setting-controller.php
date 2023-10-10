@@ -20,6 +20,7 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 			'home' => 'get_home',
 			'create' => 'get_create',
 			'login' => 'get_login',
+			'logout' => 'get_logout',
 			'search' => 'get_search',
 			'mine' => 'get_mine',
 			'about' => 'get_about',
@@ -519,6 +520,19 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		if ($login_yszc) {
 			$data['yszc'] = '/pages/base/page/page?page_id=' . $login_yszc;
 		}
+
+		return $this->success($data);
+	}
+
+	/**
+	 * 注销页 配置
+	 */
+	public function get_logout($request)
+	{
+		$data = [];
+
+		// 奖项说明
+		$data['explain'] = apply_filters('the_content', ZhuiGe_Xcx::option_value('logout_explain'));
 
 		return $this->success($data);
 	}

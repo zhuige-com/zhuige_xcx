@@ -177,6 +177,12 @@
 					"navigationBarTitleText": "完善资料",
 					"enablePullDownRefresh": false
 				}
+			}, {
+				"path": "logout/logout",
+				"style": {
+					"navigationBarTitleText": "账号注销",
+                    "enablePullDownRefresh": false
+				}
 			}]
 		},
 		{

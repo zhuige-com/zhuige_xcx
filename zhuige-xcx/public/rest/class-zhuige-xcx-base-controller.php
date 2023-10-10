@@ -27,8 +27,8 @@ class ZhuiGe_Xcx_Base_Controller extends WP_REST_Controller
 				$callback = $value['callback'];
 
 				$methods = WP_REST_Server::CREATABLE;
-				if (isset($value['method']) && $value['method'] == 'get') {
-					$methods = WP_REST_Server::READABLE;
+				if (isset($value['method']) && $value['method']) {
+					$methods = $value['method'];
 				}
 
 				if (isset($value['auth']) && $value['auth'] == 'login') {

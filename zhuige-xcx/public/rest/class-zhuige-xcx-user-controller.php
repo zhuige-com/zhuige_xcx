@@ -18,6 +18,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		$this->routes = [
 			'test_login' => 'test_login',
 			'login' => 'user_login',
+			'logout' => ['callback' => 'user_logout', 'auth' => 'login'],
 
 			'get_info' => ['callback' => 'get_info', 'auth' => 'login'],
 			'set_info' => ['callback' => 'set_info', 'auth' => 'login'],
@@ -168,6 +169,97 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		return $this->success($user);
+	}
+
+	/**
+	 * 用户注销
+	 */
+	public function user_logout($request)
+	{
+		$user_id = get_current_user_id();
+
+		$res = wp_delete_user($user_id);
+		if (!$res) {
+			return $this->error('请稍后再试~');
+		}
+
+		global $wpdb;
+
+		$wpdb->delete($wpdb->prefix . 'comments', ['user_id' => $user_id]);
+
+		$wpdb->delete($wpdb->prefix . 'zhuige_xcx_follow_user', ['user_id' => $user_id]);
+		$wpdb->delete($wpdb->prefix . 'zhuige_xcx_follow_user', ['follow_user_id' => $user_id]);
+
+		$wpdb->delete($wpdb->prefix . 'zhuige_xcx_notify', ['from_id' => $user_id]);
+		$wpdb->delete($wpdb->prefix . 'zhuige_xcx_notify', ['to_id' => $user_id]);
+
+		$wpdb->delete($wpdb->prefix . 'zhuige_xcx_post_favorite', ['user_id' => $user_id]);
+
+		$wpdb->delete($wpdb->prefix . 'zhuige_xcx_post_like', ['user_id' => $user_id]);
+
+		$wpdb->delete($wpdb->prefix . 'zhuige_xcx_post_view', ['user_id' => $user_id]);
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-activity')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_activity_log', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-bbs')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_bbs_forum_users', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-certify')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_user_certify', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-cms')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_post_cost_log', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-column')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_column_cost_log', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-lottery')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_lottery_log', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-message')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_message', ['from_id' => $user_id]);
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_message', ['to_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-report')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_report', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-score')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_score_order', ['user_id' => $user_id]);
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_score_bills', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_system_notice_notify', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-topic_score')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_post_cost_log', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-vip')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_user_vip_log', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-vote')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_vote_log', ['user_id' => $user_id]);
+		}
+
+		if (ZhuiGe_Xcx_Addon::is_active('zhuige-wpmall')) {
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_wpmall_user_order', ['user_id' => $user_id]);
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_wpmall_goods_comment', ['user_id' => $user_id]);
+			$wpdb->delete($wpdb->prefix . 'zhuige_xcx_wpmall_user_coupon', ['user_id' => $user_id]);
+		}
+
+		return $this->success();
 	}
 
 	/**

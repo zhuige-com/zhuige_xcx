@@ -802,6 +802,24 @@ CSF::createSection($prefix, array(
 ));
 
 //
+// 注销页面
+//
+CSF::createSection($prefix, array(
+    'parent' => 'global',
+    'title' => '注销页面',
+    'icon'  => 'fas fa-map-marker',
+    'fields' => array(
+
+        array(
+            'id'    => 'logout_explain',
+            'type'  => 'wp_editor',
+            'title' => '注销说明',
+        ),
+
+    )
+));
+
+//
 // 搜索页
 //
 CSF::createSection($prefix, array(
