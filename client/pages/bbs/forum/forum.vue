@@ -121,7 +121,11 @@
 
 			<uni-load-more v-if="topics && topics.length>0" :status="loadMore"></uni-load-more>
 		</view>
-
+		
+		<!-- 浮动管理 -->
+		<view v-if="forum && forum.is_owner==1" @click="clickAdmin" class="zhuige-coterie-config">
+			<text>管理</text>
+		</view>
 		<!-- 浮动发布 -->
 		<view @click="clickPost" class="zhuige-coterie-post">
 			<uni-icons type="plusempty" color="#FFFFFF" size="28"></uni-icons>
@@ -131,8 +135,6 @@
 		<view v-if="forum && forum.ad_menu && forum.ad_menu.length>0" class="zhuige-coterie-menu">
 			<view v-for="(item, index) in forum.ad_menu" :key="index" @click="openLink(item.link)">{{item.title}}</view>
 		</view>
-		
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -156,7 +158,6 @@
 	import ZhuigeScrollAd from "@/components/zhuige-scroll-ad";
 	import ZhuigeTab from "@/components/zhuige-tab";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
@@ -164,8 +165,7 @@
 			ZhuigeScrollUser,
 			ZhuigeScrollAd,
 			ZhuigeTab,
-			ZhuigeNodata,
-			ZhuigePrivacy
+			ZhuigeNodata
 		},
 		
 		data() {
@@ -355,6 +355,13 @@
 					console.log(err)
 				});
 			},
+			
+			/**
+			 * 点击管理
+			 */
+			clickAdmin() {
+				Util.openLink('/pages/bbs_admin/list/list');
+			},
 
 			/**
 			 * 点击发布
@@ -519,6 +526,22 @@
 		border-radius: 80rpx;
 		text-align: center;
 		background: #010101;
+	}
+	.zhuige-coterie-config {
+		position: fixed;
+		right: 30rpx;
+		bottom: 380rpx;
+		height: 80rpx;
+		line-height: 80rpx;
+		width: 80rpx;
+		border-radius: 80rpx;
+		text-align: center;
+		background: #010101;
+	}
+	.zhuige-coterie-config text {
+		font-size: 24rpx;
+		font-weight: 400;
+		color: #FFFFFF;
 	}
 
 	.zhuige-coterie-menu {

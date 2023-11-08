@@ -101,8 +101,6 @@
 			</view>
 			
 		</view>
-
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -124,13 +122,11 @@
 
 	import ZhuigeIcons from "@/components/zhuige-icons";
 	import ZhuigeSwiper from "@/components/zhuige-swiper";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
 			ZhuigeIcons,
-			ZhuigeSwiper,
-			ZhuigePrivacy
+			ZhuigeSwiper
 		},
 		
 		data() {

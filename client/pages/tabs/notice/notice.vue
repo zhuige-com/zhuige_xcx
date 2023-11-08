@@ -169,8 +169,6 @@
 				<zhuige-nodata :buttons="true"></zhuige-nodata>
 			</view>
 		</template>
-		
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -191,12 +189,10 @@
 	import Rest from '@/utils/rest';
 
 	import ZhuigeNodata from "@/components/zhuige-nodata";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
-			ZhuigeNodata,
-			ZhuigePrivacy
+			ZhuigeNodata
 		},
 		
 		data() {

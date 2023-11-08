@@ -400,7 +400,8 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		$args = [
 			'posts_per_page' => -1,
-			'orderby' => 'date',
+			'orderby' => 'meta_value_num',
+			'meta_key' => 'zhuige_bbs_forum_weigh',
 			'post_type' => ['zhuige_bbs_forum'],
 			'tax_query' => array(
 				array(
@@ -458,8 +459,15 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 				)
 			);
 			$forum['is_follow'] = ($follow_forum_id_exist ? 1 : 0);
+
+			if (ZhuiGe_Xcx_Addon::is_active('zhuige-bbs_admin')) {
+				$forum['is_owner'] = ($my_user_id == $post->post_author) ? 1 : 0;
+			} else {
+				$forum['is_owner'] = 0;
+			}
 		} else {
 			$forum['is_follow'] = 0;
+			$forum['is_owner'] = 0;
 		}
 
 		// 圈子成员
@@ -566,10 +574,12 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		// 微信广告
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-traffic')) {
-			$traffic_forum_list = ZhuiGe_Xcx::option_value('traffic_forum_list');
-			if ($traffic_forum_list && $traffic_forum_list['switch']) {
-				unset($traffic_forum_list['switch']);
-				$data['traffic_list'] = $traffic_forum_list;
+			if (!function_exists('zhuige_xcx_vip_is_traffic') || zhuige_xcx_vip_is_traffic($my_user_id)) {
+				$traffic_forum_list = ZhuiGe_Xcx::option_value('traffic_forum_list');
+				if ($traffic_forum_list && $traffic_forum_list['switch']) {
+					unset($traffic_forum_list['switch']);
+					$data['traffic_list'] = $traffic_forum_list;
+				}
 			}
 		}
 

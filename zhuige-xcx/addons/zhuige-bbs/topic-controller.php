@@ -532,14 +532,16 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		// 微信广告
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-traffic')) {
-			$traffic_topic_detail = ZhuiGe_Xcx::option_value('traffic_topic_detail');
-			if ($traffic_topic_detail) {
-				if ($traffic_topic_detail['switch_ysh']) {
-					$data['traffic_ad'] = $traffic_topic_detail['ad_ysh'];
-				}
+			if (!function_exists('zhuige_xcx_vip_is_traffic') || zhuige_xcx_vip_is_traffic($my_user_id)) {
+				$traffic_topic_detail = ZhuiGe_Xcx::option_value('traffic_topic_detail');
+				if ($traffic_topic_detail) {
+					if ($traffic_topic_detail['switch_ysh']) {
+						$data['traffic_ad'] = $traffic_topic_detail['ad_ysh'];
+					}
 
-				if ($traffic_topic_detail['switch_chp']) {
-					$data['traffic_chp'] = $traffic_topic_detail['ad_chp'];
+					if ($traffic_topic_detail['switch_chp']) {
+						$data['traffic_chp'] = $traffic_topic_detail['ad_chp'];
+					}
 				}
 			}
 		}
@@ -619,10 +621,12 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 
 			// 微信广告
 			if (ZhuiGe_Xcx_Addon::is_active('zhuige-traffic')) {
-				$traffic_subject_list = ZhuiGe_Xcx::option_value('traffic_subject_list');
-				if ($traffic_subject_list && $traffic_subject_list['switch']) {
-					unset($traffic_subject_list['switch']);
-					$data['traffic_list'] = $traffic_subject_list;
+				if (!function_exists('zhuige_xcx_vip_is_traffic') || zhuige_xcx_vip_is_traffic($my_user_id)) {
+					$traffic_subject_list = ZhuiGe_Xcx::option_value('traffic_subject_list');
+					if ($traffic_subject_list && $traffic_subject_list['switch']) {
+						unset($traffic_subject_list['switch']);
+						$data['traffic_list'] = $traffic_subject_list;
+					}
 				}
 			}
 		}
@@ -638,6 +642,42 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		$offset = $this->param_int($request, 'offset', 0);
 		$forum_id = $this->param_int($request, 'forum_id', 0);
 
+		// -- 圈子内置顶的帖子 start --
+		$sticky_topics = [];
+
+		global $wpdb;
+		$table_postmeta = $wpdb->prefix . 'postmeta';
+		if ($offset == 0) {
+			$post_ids_a = $wpdb->get_col("SELECT `post_id` FROM `$table_postmeta` WHERE `meta_key`='zhuige_bbs_forum_id' AND `meta_value`='$forum_id'");
+			$post_ids_b = $wpdb->get_col("SELECT `post_id` FROM `$table_postmeta` WHERE `meta_key`='zhuige_bbs_forum_sticky' AND `meta_value`='1'");
+			$post_ids = array_unique(array_intersect($post_ids_a, $post_ids_b));
+	
+			if (!empty($post_ids)) {
+				$args = [
+					'posts_per_page' => -1,
+					'orderby' => 'date',
+					'post_type' => 'zhuige_bbs_topic',
+					'ignore_sticky_posts' => 1,
+					'post__in' => $post_ids
+				];
+	
+				$query = new WP_Query();
+				$result = $query->query($args);
+				foreach ($result as $post) {
+					$item = zhuige_bbs_topic_format($post);
+					
+					// $bbs_list_comment = ZhuiGe_Xcx::option_value('bbs_list_comment');
+					// if ($bbs_list_comment && isset($bbs_list_comment['switch']) && $bbs_list_comment['switch']) {
+					// 	$item['comments'] = zhuige_xcx_get_comments($post->ID, 0, $bbs_list_comment['count']);
+					// }
+					
+					$item['stick'] = 1;
+					$sticky_topics[] = $item;
+				}
+			}
+		}
+		// -- 圈子内置顶的帖子 end --
+
 		$args = [
 			'posts_per_page' => ZhuiGe_Xcx::POSTS_PER_PAGE,
 			'offset' => $offset,
@@ -652,27 +692,30 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 				]
 			]
 		];
+		if (!empty($post_ids)) {
+			$args['post__not_in'] = $post_ids;
+		}
 
 		$query = new WP_Query();
 		$result = $query->query($args);
 		$topics = [];
 		foreach ($result as $post) {
-			if ($post->post_type == 'zhuige_bbs_topic') {
+			// if ($post->post_type == 'zhuige_bbs_topic') {
 				$item = zhuige_bbs_topic_format($post);
 				
-				$bbs_list_comment = ZhuiGe_Xcx::option_value('bbs_list_comment');
-				if ($bbs_list_comment && isset($bbs_list_comment['switch']) && $bbs_list_comment['switch']) {
-					$item['comments'] = zhuige_xcx_get_comments($post->ID, 0, $bbs_list_comment['count']);
-				}
+				// $bbs_list_comment = ZhuiGe_Xcx::option_value('bbs_list_comment');
+				// if ($bbs_list_comment && isset($bbs_list_comment['switch']) && $bbs_list_comment['switch']) {
+				// 	$item['comments'] = zhuige_xcx_get_comments($post->ID, 0, $bbs_list_comment['count']);
+				// }
 				
 				$topics[] = $item;
-			} else {
-				$topics[] = $post;
-			}
+			// } else {
+			// 	$topics[] = $post;
+			// }
 		}
 
 		return $this->success([
-			'topics' => $topics,
+			'topics' => array_merge($sticky_topics, $topics),
 			'more' => (count($result) >= ZhuiGe_Xcx::POSTS_PER_PAGE ? 'more' : 'nomore')
 		]);
 	}

@@ -44,8 +44,6 @@
 			</view>
 
 		</view>
-
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -66,13 +64,11 @@
 
 	import ZhuigeSwiper from "@/components/zhuige-swiper";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
 			ZhuigeSwiper,
-			ZhuigeNodata,
-			ZhuigePrivacy
+			ZhuigeNodata
 		},
 		
 		data() {

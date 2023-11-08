@@ -41,6 +41,26 @@ function zhuige_xcx_bbs_create_custom_post_type()
     register_post_type('zhuige_bbs_forum', $zhuige_bbs_forum_args);
 
     //追格圈子-圈子属性
+    $zhuige_bbs_forum_option_u = 'zhuige-bbs-forum-option-u';
+    CSF::createMetabox($zhuige_bbs_forum_option_u, array(
+        'title'        => '追格圈子-圈子设置',
+        'post_type'    => 'zhuige_bbs_forum',
+        'data_type'    => 'unserialize',
+        // 'show_restore' => true,
+    ));
+    CSF::createSection($zhuige_bbs_forum_option_u, array(
+        'fields' => [
+            array(
+                'id'        => 'zhuige_bbs_forum_weigh',
+                'type'      => 'number',
+                'title'     => '权重',
+                'subtitle'  => '数值越大越靠前',
+                'default'   => '0'
+            ),
+        ]
+    ));
+
+
     $zhuige_bbs_forum_option = 'zhuige-bbs-forum-option';
     CSF::createMetabox($zhuige_bbs_forum_option, array(
         'title'        => '追格圈子-圈子设置',
@@ -300,6 +320,20 @@ function zhuige_xcx_bbs_create_custom_post_type()
             'query_args'  => array(
                 'post_type'  => 'zhuige_bbs_forum',
             ),
+        ),
+
+        array(
+            'id'    => 'zhuige_bbs_home_sticky',
+            'type'  => 'switcher',
+            'title' => '在首页置顶',
+            'default' => ''
+        ),
+
+        array(
+            'id'    => 'zhuige_bbs_forum_sticky',
+            'type'  => 'switcher',
+            'title' => '在圈子置顶',
+            'default' => ''
         ),
     ];
 

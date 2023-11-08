@@ -7,14 +7,17 @@
 					<textarea v-model="content" placeholder="想说你就多说点..." maxlength="140"></textarea>
 				</view>
 				<view class="zhuige-post-plug">
-					<view @click="clickType('image')" :class="{active:type=='image'}">
-						<uni-icons type="image-filled" color="#333333" size="20"></uni-icons>
-						<text>图文</text>
+					<view class="zhuige-post-opt">
+						<view @click="clickType('image')" :class="{active:type=='image'}">
+							<uni-icons type="image-filled" color="#333333" size="20"></uni-icons>
+							<text>图文</text>
+						</view>
+						<view @click="clickType('video')" :class="{active:type=='video'}">
+							<uni-icons type="videocam-filled" color="#333333" size="20"></uni-icons>
+							<text>视频</text>
+						</view>
 					</view>
-					<view @click="clickType('video')" :class="{active:type=='video'}">
-						<uni-icons type="videocam-filled" color="#333333" size="20"></uni-icons>
-						<text>视频</text>
-					</view>
+					<view class="zhuige-post-count">{{content.length}}/140</view>
 				</view>
 			</view>
 		</view>
@@ -123,8 +126,6 @@
 		<view @click="clickCreate" class="zhuige-base-button">
 			<view>确定</view>
 		</view>
-
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -142,12 +143,10 @@
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
 	import Rest from '@/utils/rest';
-	
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
-			ZhuigePrivacy
+			
 		},
 		
 		data() {
@@ -266,6 +265,11 @@
 								Alert.error(err);
 							});
 						}
+					},
+					fail: (res) => {
+						if (res.errMsg && res.errMsg.indexOf('cancel') < 0) {
+							Alert.error(res.errMsg);
+						}
 					}
 				});
 			},
@@ -321,6 +325,11 @@
 						}, err => {
 							Alert.error(err);
 						});
+					},
+					fail: (res) => {
+						if (res.errMsg && res.errMsg.indexOf('cancel') < 0) {
+							Alert.error(res.errMsg);
+						}
 					}
 				});
 			},
@@ -603,15 +612,19 @@
 	.zhuige-post-plug {
 		display: flex;
 		flex-wrap: nowrap;
+		justify-content: space-between;
 		align-items: center;
 	}
-
-	.zhuige-post-plug view {
+	.zhuige-post-opt {
+		display: flex;
+		flex-wrap: nowrap;
+	}
+	.zhuige-post-opt view {
 		display: flex;
 		flex-wrap: nowrap;
 		align-items: center;
 		opacity: 0.5;
-		width: 16.66%;
+		margin-right: 8rpx;
 		line-height: 1.8em;
 	}
 
@@ -630,5 +643,8 @@
 		font-weight: 300;
 		margin-left: 8rpx;
 		white-space: nowrap;
+	}
+	.zhuige-post-count {
+		color: #999;
 	}
 </style>

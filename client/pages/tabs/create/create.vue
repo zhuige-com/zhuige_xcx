@@ -22,8 +22,6 @@
 		</view>
 
 		<view :class="{animation:do_animation}"></view>
-		
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -43,12 +41,10 @@
 	import Rest from '@/utils/rest';
 
 	import ZhuigeIcons from "@/components/zhuige-icons";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
-			ZhuigeIcons,
-			ZhuigePrivacy
+			ZhuigeIcons
 		},
 		
 		data() {

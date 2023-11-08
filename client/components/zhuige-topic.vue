@@ -34,6 +34,7 @@
 		<view class="zhuige-social-cont">
 			<!-- 正文 -->
 			<template v-if="topic && topic.subjects.length>0" class="zhuige-social-cont">
+				<text v-if="topic.stick" class="zhuige-social-top">置顶</text>
 				<text v-for="(subject, subjectIndex) in topic.subjects" :key="subjectIndex" class="zhuige-social-tag"
 					@click="openLink('/pages/bbs/list/list?subject_id=' + subject.id + '&title=' + subject.name)">#{{subject.name}}</text>
 			</template>
@@ -47,7 +48,6 @@
 
 			<!-- 正文信息 -->
 			<template v-if="topic && topic.excerpt" class="zhuige-social-cont">
-				<text v-if="topic.stick" class="zhuige-social-top">置顶</text>
 				<text @click="clickDetail">{{topic.excerpt}}</text>
 			</template>
 		</view>

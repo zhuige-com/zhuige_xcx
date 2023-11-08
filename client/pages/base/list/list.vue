@@ -27,7 +27,7 @@
 									<!-- 活动报名状态-->
 									<view class="zhuige-act-btn"
 										:class="topic.is_end?'act-end':(topic.my_enroll?'act-enroll':'')">
-										{{topic.is_end?'已结束':(topic.my_enroll?'已报名':'立即报名')}}
+										{{topic.is_end?'已结束':(topic.my_enroll?'已报名':( '立即报名' + (topic.cost>0?'(￥'+topic.cost+')':'') ))}}
 									</view>
 								</view>
 							</view>
@@ -344,8 +344,6 @@
 		</view>
 
 		<uni-load-more v-if="topics && topics.length>0" :status="loadMore"></uni-load-more>
-		
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -366,13 +364,11 @@
 
 	import ZhuigeTopic from "@/components/zhuige-topic";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
 			ZhuigeTopic,
-			ZhuigeNodata,
-			ZhuigePrivacy
+			ZhuigeNodata
 		},
 		
 		data() {

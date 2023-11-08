@@ -73,8 +73,6 @@
 		<view class="zhuige-base-button">
 			<view @click="clickOK">确定</view>
 		</view>
-
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -92,12 +90,10 @@
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
 	import Rest from '@/utils/rest';
-	
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
-			ZhuigePrivacy
+			
 		},
 		
 		data() {

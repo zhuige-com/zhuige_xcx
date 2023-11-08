@@ -13,8 +13,6 @@
 
 			<uni-load-more v-if="comments && comments.length>0" :status="loadMore"></uni-load-more>
 		</view>
-		
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -35,13 +33,11 @@
 
 	import ZhuigeReply from "@/components/zhuige-reply";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
 			ZhuigeReply,
-			ZhuigeNodata,
-			ZhuigePrivacy
+			ZhuigeNodata
 		},
 		
 		data() {

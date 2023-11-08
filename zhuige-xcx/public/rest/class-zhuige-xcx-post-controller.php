@@ -75,6 +75,36 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 	{
 		$offset = $this->param_int($request, 'offset', 0);
 
+		// -- 圈子内置顶的帖子 start --
+		$sticky_topics = [];
+
+		global $wpdb;
+		$table_postmeta = $wpdb->prefix . 'postmeta';
+
+		if ($offset == 0) {
+			$post_ids = $wpdb->get_col("SELECT `post_id` FROM `$table_postmeta` WHERE `meta_key`='zhuige_bbs_home_sticky' AND `meta_value`='1'");
+	
+			if (!empty($post_ids)) {
+				$args = [
+					'posts_per_page' => -1,
+					'orderby' => 'date',
+					'post_type' => 'zhuige_bbs_topic',
+					'ignore_sticky_posts' => 1,
+					'post__in' => $post_ids
+				];
+	
+				$query = new WP_Query();
+				$result = $query->query($args);
+				foreach ($result as $post) {
+					$item = zhuige_bbs_topic_format($post);
+					$item['post_type'] = 'zhuige_bbs_topic';
+					$item['stick'] = 1;
+					$sticky_topics[] = $item;
+				}
+			}
+		}
+		// -- 圈子内置顶的帖子 end --
+
 		$args = [
 			'posts_per_page' => ZhuiGe_Xcx::POSTS_PER_PAGE,
 			'offset' => $offset,
@@ -170,7 +200,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		return $this->success([
-			'topics' => $topics,
+			'topics' => array_merge($sticky_topics, $topics) ,
 			'more' => (count($result) >= ZhuiGe_Xcx::POSTS_PER_PAGE ? 'more' : 'nomore')
 		]);
 	}

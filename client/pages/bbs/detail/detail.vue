@@ -256,8 +256,6 @@
 				</view>
 			</view>
 		</uni-popup>
-		
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -281,7 +279,6 @@
 	import ZhuigeReply from "@/components/zhuige-reply";
 	import ZhuigeSwiper from "@/components/zhuige-swiper";
 	import ZhuigeScrollAd from "@/components/zhuige-scroll-ad";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
@@ -289,8 +286,7 @@
 			ZhuigeTopic,
 			ZhuigeReply,
 			ZhuigeSwiper,
-			ZhuigeScrollAd,
-			ZhuigePrivacy
+			ZhuigeScrollAd
 		},
 		
 		data() {

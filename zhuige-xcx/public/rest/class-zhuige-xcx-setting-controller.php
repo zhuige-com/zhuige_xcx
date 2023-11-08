@@ -216,18 +216,20 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 			}
 		}
 
-
 		// 微信广告
+		$my_user_id = get_current_user_id();
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-traffic')) {
-			$traffic_index = ZhuiGe_Xcx::option_value('traffic_index');
-			if ($traffic_index && $traffic_index['switch_chp']) {
-				$data['traffic_chp'] = $traffic_index['ad_chp'];
-			}
+			if (!function_exists('zhuige_xcx_vip_is_traffic') || zhuige_xcx_vip_is_traffic($my_user_id)) {
+				$traffic_index = ZhuiGe_Xcx::option_value('traffic_index');
+				if ($traffic_index && $traffic_index['switch_chp']) {
+					$data['traffic_chp'] = $traffic_index['ad_chp'];
+				}
 
-			$traffic_index_list = ZhuiGe_Xcx::option_value('traffic_index_list');
-			if ($traffic_index_list && $traffic_index_list['switch']) {
-				unset($traffic_index_list['switch']);
-				$data['traffic_list'] = $traffic_index_list;
+				$traffic_index_list = ZhuiGe_Xcx::option_value('traffic_index_list');
+				if ($traffic_index_list && $traffic_index_list['switch']) {
+					unset($traffic_index_list['switch']);
+					$data['traffic_list'] = $traffic_index_list;
+				}
 			}
 		}
 
@@ -237,7 +239,6 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 		if ($rec_user && $rec_user['switch']) {
 			$users = [];
 			global $wpdb;
-			$my_user_id = get_current_user_id();
 			$table_follow_user = $wpdb->prefix . 'zhuige_xcx_follow_user';
 			foreach ($rec_user['users'] as $user_id) {
 				$user = [

@@ -85,8 +85,6 @@
 		<view @click="clickSubmit()" class="zhuige-base-button">
 			<view>提交</view>
 		</view>
-
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -105,12 +103,10 @@
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
 	import Rest from '@/utils/rest';
-	
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
-			ZhuigePrivacy
+			
 		},
 		
 		data() {
@@ -210,6 +206,11 @@
 						}, err => {
 							Alert.error(err);
 						});
+					},
+					fail: (res) => {
+						if (res.errMsg && res.errMsg.indexOf('cancel') < 0) {
+							Alert.error(res.errMsg);
+						}
 					}
 				});
 			},
@@ -228,6 +229,11 @@
 						}, err => {
 							Alert.error(err);
 						});
+					},
+					fail: (res) => {
+						if (res.errMsg && res.errMsg.indexOf('cancel') < 0) {
+							Alert.error(res.errMsg);
+						}
 					}
 				});
 			},
@@ -261,6 +267,11 @@
 						}, err => {
 							Alert.error(err);
 						});
+					},
+					fail: (res) => {
+						if (res.errMsg && res.errMsg.indexOf('cancel') < 0) {
+							Alert.error(res.errMsg);
+						}
 					}
 				});
 			},
@@ -279,6 +290,11 @@
 						}, err => {
 							Alert.error(err);
 						});
+					},
+					fail: (res) => {
+						if (res.errMsg && res.errMsg.indexOf('cancel') < 0) {
+							Alert.error(res.errMsg);
+						}
 					}
 				});
 			},

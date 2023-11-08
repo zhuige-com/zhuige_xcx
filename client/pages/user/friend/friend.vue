@@ -90,8 +90,6 @@
 			<uni-load-more v-if="cur_tab=='fans' && fans.length>0" :status="loadMoreFan"></uni-load-more>
 
 		</view>
-		
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -112,13 +110,11 @@
 
 	import ZhuigeTab from "@/components/zhuige-tab";
 	import ZhuigeNodata from "@/components/zhuige-nodata";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
 			ZhuigeTab,
-			ZhuigeNodata,
-			ZhuigePrivacy
+			ZhuigeNodata
 		},
 		
 		data() {

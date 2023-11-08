@@ -9,8 +9,6 @@
 				<mp-html :content="post.content" />
 			</view>
 		</view>
-		
-		<zhuige-privacy></zhuige-privacy>
 	</view>
 </template>
 
@@ -30,12 +28,10 @@
 	import Rest from '@/utils/rest';
 
 	import ZhuigeTab from "@/components/zhuige-tab";
-	import ZhuigePrivacy from "@/components/zhuige-privacy";
 
 	export default {
 		components: {
-			ZhuigeTab,
-			ZhuigePrivacy
+			ZhuigeTab
 		},
 		
 		data() {
