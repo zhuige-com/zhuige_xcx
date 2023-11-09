@@ -276,6 +276,8 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 		$options['notice'] = $brief;
 		update_post_meta($post_id, 'zhuige-bbs-forum-option', $options);
 
+		update_post_meta($post_id, 'zhuige_bbs_forum_weigh', 0);
+
 		return $this->success();
 	}
 
