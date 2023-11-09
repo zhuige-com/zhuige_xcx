@@ -562,6 +562,19 @@ CSF::createSection($prefix, array(
     'fields' => array(
 
         array(
+            'type'    => 'notice',
+            'style'   => 'info',
+            'content' => '因用到选择图片、选择位置等API，需要在微信后台隐私协议中添加相关声明。
+                            隐私协议设置方式：<a href="https://www.zhuige.com/news/1916.html" target="_blank">https://www.zhuige.com/news/1916.html</a>',
+        ),
+
+        array(
+            'type'    => 'notice',
+            'style'   => 'info',
+            'content' => '发帖页设置方法，可参考：<a href="https://www.zhuige.com/bbs/606.html" target="_blank">https://www.zhuige.com/bbs/606.html</a>',
+        ),
+
+        array(
             'id'     => 'create_items',
             'type'   => 'group',
             'title'  => '导航项',
