@@ -264,10 +264,14 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		if ($limit == 'score') {
 			if ($my_user_id) {
-				$table_post_cost_log = $wpdb->prefix . 'zhuige_xcx_post_cost_log';
-				$cost_log = $wpdb->get_var($wpdb->prepare("SELECT COUNT(`id`) FROM $table_post_cost_log WHERE `user_id`=%d AND `post_id`=%d", $my_user_id, $topic_id));
-				if ($cost_log) {
+				if ($my_user_id == $post->post_author) {
 					$limit = 'free';
+				} else {
+					$table_post_cost_log = $wpdb->prefix . 'zhuige_xcx_post_cost_log';
+					$cost_log = $wpdb->get_var($wpdb->prepare("SELECT COUNT(`id`) FROM $table_post_cost_log WHERE `user_id`=%d AND `post_id`=%d", $my_user_id, $topic_id));
+					if ($cost_log) {
+						$limit = 'free';
+					}
 				}
 			}
 			
