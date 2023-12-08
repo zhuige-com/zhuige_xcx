@@ -310,10 +310,6 @@
 
 <style>
 	.content {
-		position: fixed;
-		height: 100%;
-		width: 100%;
-		overflow-y: scroll;
 		padding-bottom: 180rpx;
 	}
 

@@ -13,6 +13,10 @@
 					<image class="image" mode="aspectFill" :src="item.image"></image>
 					<text class="text">{{item.title}}</text>
 				</view>
+				<view v-else-if="item.type && item.type=='score'" :key="index" class="view" @click="clickScore()">
+					<image class="image" mode="aspectFill" :src="item.image"></image>
+					<text class="text">{{item.title}}</text>
+				</view>
 				<template v-else-if="item.type && item.type=='contact'">
 					<!-- #ifdef MP-WEIXIN -->
 					<button :key="index" open-type="contact" class="button-view">
@@ -34,6 +38,10 @@
 			<scroll-view class="scroll-view" scroll-x="true">
 				<template v-for="(item, index) in items">
 					<view v-if="item.type && item.type=='clear'" :key="index" class="view" @click="clickClear()">
+						<image class="image" mode="aspectFill" :src="item.image"></image>
+						<text class="text">{{item.title}}</text>
+					</view>
+					<view v-else-if="item.type && item.type=='score'" :key="index" class="view" @click="clickScore()">
 						<image class="image" mode="aspectFill" :src="item.image"></image>
 						<text class="text">{{item.title}}</text>
 					</view>
@@ -104,6 +112,19 @@
 
 				});
 			},
+
+			// 打分评价
+			clickScore() {
+				var plugin = requirePlugin("wxacommentplugin");
+				plugin.openComment({
+					success: (res) => {
+						console.log('plugin.openComment success', res)
+					},
+					fail: (res) => {
+						console.log('plugin.openComment fail', res)
+					}
+				})
+			}
 		}
 	}
 </script>

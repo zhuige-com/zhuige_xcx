@@ -98,7 +98,7 @@
 			<template v-if="posts && posts.length>0">
 				<template v-for="(topic, index) in posts">
 					<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :key="index" :topic="topic"
-						:trash="cur_tab=='publish' && user.delete_topic==1" @deleteTopic="onDeleteTopic">
+						:trash="cur_tab=='publish' && user.delete_topic==1" :promotion="btn_promotion && cur_tab=='publish'" @deleteTopic="onDeleteTopic">
 					</zhuige-topic>
 					<view v-else :key="index" class="zhuige-block" :class="topic.post_type" @click="clickPost(topic)">
 						<!-- 投票 -->
@@ -282,6 +282,8 @@
 
 				// 是否显示私信按钮
 				btn_message: false,
+				// 是否显示付费推广按钮
+				btn_promotion: false,
 				
 				nav_opacity: 0,
 				statusBarHeight: 0,
@@ -473,6 +475,10 @@
 					if (res.data.btn_message) {
 						this.btn_message = res.data.btn_message;
 					}
+					
+					if (res.data.btn_promotion) {
+						this.btn_promotion = res.data.btn_promotion;
+					}
 
 					uni.stopPullDownRefresh();
 				}, err => {
@@ -502,23 +508,33 @@
 			 * 删除帖子
 			 */
 			onDeleteTopic(topic) {
-				Rest.post(Api.URL('bbs', 'topic_delete'), {
-					topic_id: topic.id
-				}).then(res => {
-					if (res.code != 0) {
-						Alert.error(res.message);
-						return;
-					}
-
-					let newPosts = [];
-					this.posts.forEach(ele => {
-						if (topic.id != ele.id) {
-							newPosts.push(ele);
+				uni.showModal({
+					title: '提示',
+					content: '真的要删除帖子吗？',
+					success: (res2) => {
+						if (res2.cancel) {
+							return;
 						}
-					})
-					this.posts = newPosts;
-				}, err => {
-					console.log(err)
+				
+						Rest.post(Api.URL('bbs', 'topic_delete'), {
+							topic_id: topic.id
+						}).then(res => {
+							if (res.code != 0) {
+								Alert.error(res.message);
+								return;
+							}
+						
+							let newPosts = [];
+							this.posts.forEach(ele => {
+								if (topic.id != ele.id) {
+									newPosts.push(ele);
+								}
+							})
+							this.posts = newPosts;
+						}, err => {
+							console.log(err)
+						});
+					}
 				});
 			},
 
@@ -526,23 +542,33 @@
 			 * 删除投票
 			 */
 			clickDeleteVote(vote) {
-				Rest.post(Api.URL('vote', 'delete'), {
-					vote_id: vote.id
-				}).then(res => {
-					if (res.code != 0) {
-						Alert.error(res.message);
-						return;
-					}
-
-					let newPosts = [];
-					this.posts.forEach(ele => {
-						if (vote.id != ele.id) {
-							newPosts.push(ele);
+				uni.showModal({
+					title: '提示',
+					content: '真的要删除投票吗？',
+					success: (res2) => {
+						if (res2.cancel) {
+							return;
 						}
-					})
-					this.posts = newPosts;
-				}, err => {
-					console.log(err)
+				
+						Rest.post(Api.URL('vote', 'delete'), {
+							vote_id: vote.id
+						}).then(res => {
+							if (res.code != 0) {
+								Alert.error(res.message);
+								return;
+							}
+						
+							let newPosts = [];
+							this.posts.forEach(ele => {
+								if (vote.id != ele.id) {
+									newPosts.push(ele);
+								}
+							})
+							this.posts = newPosts;
+						}, err => {
+							console.log(err)
+						});
+					}
 				});
 			}
 		}

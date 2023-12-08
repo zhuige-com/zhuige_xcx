@@ -1,0 +1,22 @@
+{
+    "name": "@ 好友（提醒）",
+    "version": "1.0.0",
+    "description": "发帖时可以@好友，即提醒指定用户",
+    "keywords": [
+        "@好友",
+        "提醒用户"
+    ],
+    "help": "https://www.zhuige.com/docs/kzcj.html",
+    "setting": "admin.php?page=zhuige-xcx",
+    "sql": [
+        "zhuige-at_users/sql.php"
+    ],
+    "func": [],
+    "post_type": [],
+    "admin": [],
+    "rest": [
+        "zhuige-at_users/at-users-controller.php"
+    ],
+    "ajax": [],
+    "crud": []
+}

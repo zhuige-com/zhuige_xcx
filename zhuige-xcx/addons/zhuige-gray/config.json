@@ -1,0 +1,19 @@
+{
+    "name": "黑白色样式",
+    "version": "1.0.0",
+    "description": "把小程序首页设置成黑白色",
+    "keywords": [
+        "黑白样式"
+    ],
+    "help": "https://www.zhuige.com/docs/kzcj/234.html",
+    "setting": "admin.php?page=zhuige-xcx#tab=%e9%bb%91%e7%99%bd%e8%89%b2%e6%a0%b7%e5%bc%8f",
+    "sql": [],
+    "func": [],
+    "post_type": [],
+    "admin": [
+        "zhuige-gray/admin.php"
+    ],
+    "rest": [],
+    "ajax": [],
+    "crud": []
+}

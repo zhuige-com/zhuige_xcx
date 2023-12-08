@@ -684,6 +684,7 @@ CSF::createSection($prefix, array(
                             'options'     => array(
                                 'clear'     => '清除缓存',
                                 'contact'   => '在线客服（微信）',
+                                'score'     => '评价打分',
                                 'link'      => '自定义链接',
                             ),
                         ),

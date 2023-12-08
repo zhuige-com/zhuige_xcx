@@ -1,1 +1,33 @@
-{"addon":["zhuige-bbs"],"sql":["zhuige-bbs\/sql.php"],"func":["zhuige-bbs\/function.php"],"post_type":["post-type.php","zhuige-bbs\/post-type.php"],"admin":["zhuige-bbs\/admin.php"],"rest":["zhuige-bbs\/forum-controller.php","zhuige-bbs\/topic-controller.php"],"ajax":[],"crud":[],"user":[]}
+{
+    "addon": [
+        "zhuige-bbs",
+        "zhuige-topic_score",
+        "zhuige-gray",
+        "zhuige-at_users"
+    ],
+    "sql": [
+        "zhuige-bbs\/sql.php",
+        "zhuige-topic_score\/sql.php",
+        "zhuige-at_users\/sql.php"
+    ],
+    "func": [
+        "zhuige-bbs\/function.php"
+    ],
+    "post_type": [
+        "post-type.php",
+        "zhuige-bbs\/post-type.php"
+    ],
+    "admin": [
+        "zhuige-bbs\/admin.php",
+        "zhuige-gray\/admin.php"
+    ],
+    "rest": [
+        "zhuige-bbs\/forum-controller.php",
+        "zhuige-bbs\/topic-controller.php",
+        "zhuige-topic_score\/topic-score-controller.php",
+        "zhuige-at_users\/at-users-controller.php"
+    ],
+    "ajax": [],
+    "crud": [],
+    "user": []
+}

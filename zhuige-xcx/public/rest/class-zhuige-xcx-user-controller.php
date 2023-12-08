@@ -164,8 +164,34 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 			'mobile' => get_user_meta($user_id, 'zhuige_xcx_user_mobile', true)
 		];
 
+		// 新用户注册通知
 		if ($first) {
 			$user['first'] = $first;
+
+			if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
+				$system_new_user = ZhuiGe_Xcx::option_value('system_new_user');
+				if ($system_new_user && $system_new_user['switch'] && $system_new_user['title'] && $system_new_user['content']) {
+					global $wpdb;
+					$table_system_notice = $wpdb->prefix . 'zhuige_xcx_system_notice';
+					$res = $wpdb->insert($table_system_notice, [
+						'title' => $system_new_user['title'],
+						'content' => $system_new_user['content'],
+						'link' => $system_new_user['link'],
+						'createtime' => time()
+					]);
+
+					if ($res) {
+						$notice_id = $wpdb->insert_id;
+						$table_system_notice_notify = $wpdb->prefix . 'zhuige_xcx_system_notice_notify';
+						$wpdb->insert($table_system_notice_notify, [
+							'notice_id' => $notice_id,
+							'user_id' => $user_id,
+							'isread' => '0',
+							'createtime' => time()
+						]);
+					}
+				}
+			}
 		}
 
 		return $this->success($user);
@@ -1261,6 +1287,9 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 
 		// 私信按钮
 		$data['btn_message'] = ZhuiGe_Xcx_Addon::is_active('zhuige-message') ? 1 : 0;
+
+		// 付费推广按钮
+		$data['btn_promotion'] = ZhuiGe_Xcx_Addon::is_active('zhuige-promotion') ? 1 : 0;
 
 		return $this->success($data);
 	}

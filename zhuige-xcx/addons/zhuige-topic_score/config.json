@@ -1,0 +1,21 @@
+{
+    "name": "积分阅读帖子",
+    "version": "1.0.0",
+    "description": "积分购买才能阅读帖子（依赖积分模块）",
+    "keywords": [
+        "积分阅读"
+    ],
+    "help": "https://www.zhuige.com/docs/kzcj.html",
+    "setting": "admin.php?page=zhuige-xcx",
+    "sql": [
+        "zhuige-topic_score/sql.php"
+    ],
+    "func": [],
+    "post_type": [],
+    "admin": [],
+    "rest": [
+        "zhuige-topic_score/topic-score-controller.php"
+    ],
+    "ajax": [],
+    "crud": []
+}

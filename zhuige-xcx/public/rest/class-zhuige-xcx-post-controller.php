@@ -74,34 +74,98 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 	public function get_list_last2($request)
 	{
 		$offset = $this->param_int($request, 'offset', 0);
-
-		// -- 圈子内置顶的帖子 start --
-		$sticky_topics = [];
+		$post_type = $this->param($request, 'post_type', '');
 
 		global $wpdb;
+
+
+		$promotion_topics = [];
+		$promotion_post_ids = [];
+		$table_promotion_log = $wpdb->prefix . 'zhuige_xcx_promotion_log';
+		$promotion_post_ids = $wpdb->get_col(
+			$wpdb->prepare(
+				"SELECT DISTINCT(`post_id`) FROM `$table_promotion_log` WHERE `endtime`>%d AND `status`='finish' ORDER BY `createtime` ASC", time()));
+
+		$sticky_topics = [];
+		$sticky_post_ids = [];
 		$table_postmeta = $wpdb->prefix . 'postmeta';
-
 		$sticky_post_ids = $wpdb->get_col("SELECT `post_id` FROM `$table_postmeta` WHERE `meta_key`='zhuige_bbs_home_sticky' AND `meta_value`='1'");
+		
+		$sticky_count = 0;
+		if (($post_type == 'last' || $post_type == 'any') && $offset == 0) {
+			// -- 推广置顶的帖子 start --
+			if (!empty($promotion_post_ids)) {
+				$args = [
+					'posts_per_page' => -1,
+					'post_type' => ['post', 'zhuige_bbs_topic', 'zhuige_vote'],
+					'ignore_sticky_posts' => 1,
+					'post__in' => $promotion_post_ids,
+					'orderby' => 'post__in',
+				];
 
-		if ($offset == 0 && !empty($sticky_post_ids)) {
-			$args = [
-				'posts_per_page' => -1,
-				'orderby' => 'date',
-				'post_type' => 'zhuige_bbs_topic',
-				'ignore_sticky_posts' => 1,
-				'post__in' => $sticky_post_ids
-			];
-
-			$query = new WP_Query();
-			$result = $query->query($args);
-			foreach ($result as $post) {
-				$item = zhuige_bbs_topic_format($post);
-				$item['post_type'] = 'zhuige_bbs_topic';
-				$item['stick'] = 1;
-				$sticky_topics[] = $item;
+				$query = new WP_Query();
+				$result = $query->query($args);
+				foreach ($result as $post) {
+					if ($post->post_type == 'zhuige_bbs_topic' && function_exists('zhuige_bbs_topic_format')) {
+						$item = zhuige_bbs_topic_format($post);
+						$item['post_type'] = 'zhuige_bbs_topic';
+						$item['stick'] = 1;
+						$promotion_topics[] = $item;
+					} else if ($post->post_type == 'post' && function_exists('zhuige_cms_post_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_cms_post_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$item['stick'] = 1;
+						$promotion_topics[] = $item;
+					} else if ($post->post_type == 'zhuige_vote' && function_exists('zhuige_vote_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_vote_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$item['author'] = zhuige_xcx_author_info($post->post_author);
+						$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
+						$item['stick'] = 1;
+						$promotion_topics[] = $item;
+					}
+				}
 			}
+			// -- 推广置顶的帖子 end --
+
+			// -- 置顶的帖子 start --
+			if (!empty($sticky_post_ids)) {
+				$temp_post_ids = [];
+				foreach ($sticky_post_ids as $spi) {
+					if (!in_array($spi, $promotion_post_ids)) {
+						$temp_post_ids[] = $spi;
+					}
+				}
+				$sticky_post_ids = $temp_post_ids;
+			}
+
+			if (!empty($sticky_post_ids)) {
+				$args = [
+					'posts_per_page' => -1,
+					'orderby' => 'date',
+					'post_type' => 'zhuige_bbs_topic',
+					'ignore_sticky_posts' => 1,
+					'post__in' => $sticky_post_ids
+				];
+
+				$query = new WP_Query();
+				$result = $query->query($args);
+				foreach ($result as $post) {
+					$item = zhuige_bbs_topic_format($post);
+					$item['post_type'] = 'zhuige_bbs_topic';
+					$item['stick'] = 1;
+					$sticky_topics[] = $item;
+				}
+			}
+			// -- 置顶的帖子 end --
 		}
-		// -- 圈子内置顶的帖子 end --
+
 
 		$args = [
 			'posts_per_page' => ZhuiGe_Xcx::POSTS_PER_PAGE,
@@ -110,7 +174,6 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			'ignore_sticky_posts' => 1,
 		];
 
-		$post_type = $this->param($request, 'post_type', '');
 		if ($post_type == 'any' || $post_type == 'last' || $post_type == '') {
 			$rec_list_limit = ZhuiGe_Xcx::option_value('rec_list_limit');
 			if (empty($rec_list_limit)) {
@@ -130,8 +193,14 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		// 过滤置顶的帖子
-		if (!empty($sticky_post_ids)) {
-			$args['post__not_in'] = $sticky_post_ids;
+		if (!empty($promotion_post_ids) || !empty($sticky_post_ids)) {
+			$pandsids = array_merge($promotion_post_ids, $sticky_post_ids);
+			$sticky_count = count($pandsids);
+
+			$args['post__not_in'] = $pandsids;
+			if ($offset > 0) {
+				$args['offset'] = $offset - $sticky_count;
+			}
 		}
 
 		$query = new WP_Query();
@@ -203,7 +272,8 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		return $this->success([
-			'topics' => array_merge($sticky_topics, $topics) ,
+			'sticky_count' => $sticky_count,
+			'topics' => array_merge($promotion_topics, $sticky_topics, $topics) ,
 			'more' => (count($result) >= ZhuiGe_Xcx::POSTS_PER_PAGE ? 'more' : 'nomore')
 		]);
 	}

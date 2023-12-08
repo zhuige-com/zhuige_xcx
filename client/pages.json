@@ -1,5 +1,5 @@
 {
-	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+	"pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages		
 		{
 			"path": "pages/tabs/index/index",
 			"style": {
@@ -178,11 +178,31 @@
 					"enablePullDownRefresh": false
 				}
 			}, {
+				"path": "atlist/atlist",
+				"style": {
+					"navigationBarTitleText": "选择好友",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "atmsg/atmsg",
+				"style": {
+					"navigationBarTitleText": "at 消息",
+					"enablePullDownRefresh": false
+				}
+			}, {
+				"path": "list/list",
+				"style": {
+					"navigationBarTitleText": "用户搜索",
+					"enablePullDownRefresh": false
+				}
+
+			}, {
 				"path": "logout/logout",
 				"style": {
 					"navigationBarTitleText": "账号注销",
-                    "enablePullDownRefresh": false
+					"enablePullDownRefresh": false
 				}
+
 			}]
 		},
 		{

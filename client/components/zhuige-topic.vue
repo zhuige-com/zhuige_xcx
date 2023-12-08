@@ -28,6 +28,10 @@
 			<view v-if="trash" class="zhuige-social-opt social-dell">
 				<uni-icons type="trash" color="#FF6146" size="16" @click="clickTrashTopic(topic)"></uni-icons>
 			</view>
+			
+			<view v-if="promotion" class="zhuige-social-opt social-dell">
+				<uni-icons type="sound" color="#FF6146" size="16" @click="clickPromotion()"></uni-icons>
+			</view>
 		</view>
 
 		<!-- 话题 + @用户 + 正文 -->
@@ -151,6 +155,10 @@
 			trash: {
 				type: Boolean,
 				default: false
+			},
+			promotion: {
+				type: Boolean,
+				default: false
 			}
 		},
 
@@ -185,6 +193,10 @@
 
 			clickTrashTopic(topic) {
 				this.$emit("deleteTopic", topic);
+			},
+			
+			clickPromotion() {
+				Util.openLink('/pages/promotion/pay/pay?id=' + this.topic.id);
 			},
 
 			videoPlay(e) {

@@ -256,13 +256,13 @@
 							<template v-for="(topic, index) in lastTopics">
 
 								<!-- 用户列表推荐 滚动 -->
-								<zhuige-user-list v-if="rec_user && rec_user.position==index" type="scroll"
+								<zhuige-user-list v-if="rec_user && rec_user.position==(index-sticky_count)" type="scroll"
 									:title="rec_user.title" :users="rec_user.users" ext-class="zhuige-user-followed">
 								</zhuige-user-list>
 
 								<!-- #ifdef MP-WEIXIN -->
 								<view class="zhuige-block zhuige-ad-cust"
-									v-if="traffic_list && traffic_list.frequency>0 && (index+1)%traffic_list.frequency==0">
+									v-if="traffic_list && traffic_list.frequency>0 && (index-sticky_count)>0 && ((index-sticky_count)+1)%traffic_list.frequency==0">
 									<view class="zhuige-ad-cust-title">{{traffic_list.title}}</view>
 									<ad-custom :unit-id="traffic_list.ad"></ad-custom>
 									<view class="zhuige-ad-cust-footer">
@@ -272,7 +272,7 @@
 								<!-- #endif -->
 
 								<!-- 新增滑动全宽度自定义广告 用滚动广告组件 输出有效数据即可，展示差异我再用外层容器控制 -->
-								<view v-if="imgs_embed && imgs_embed.position==index" class="zhuige-cust-wide-block">
+								<view v-if="imgs_embed && imgs_embed.position==(index-sticky_count)" class="zhuige-cust-wide-block">
 									<zhuige-scroll-ad boxClass="zhuige-scroll-goods" :title="imgs_embed.title"
 										:items="imgs_embed.items"></zhuige-scroll-ad>
 								</view>
@@ -315,6 +315,7 @@
 												<view class="zhugie-info-title">{{topic.title}}</view>
 												<view class="zhuige-info-post">
 													<view class="zhuige-info-data">
+														<text v-if="topic.stick==1" class="data-top">置顶</text>
 														<text
 															v-if="topic.read_limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
 															class="pay">￥{{topic.cost_price}}</text>
@@ -340,6 +341,7 @@
 												<view class="zhugie-info-text">
 													<view class="zhuige-info-post">
 														<view class="zhuige-info-data">
+															<text v-if="topic.stick==1" class="data-top">置顶</text>
 															<text
 																v-if="topic.read_limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
 																class="pay">￥{{topic.cost_price}}</text>
@@ -361,6 +363,7 @@
 													<view class="zhugie-info-title">{{topic.title}}</view>
 													<view class="zhuige-info-post">
 														<view class="zhuige-info-data">
+															<text v-if="topic.stick==1" class="data-top">置顶</text>
 															<text
 																v-if="topic.read_limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
 																class="pay">￥{{topic.cost_price}}</text>
@@ -404,6 +407,7 @@
 											<view class="zhugie-info-text">
 												<view class="zhuige-info-post">
 													<view class="zhuige-info-data">
+														<text v-if="topic.stick==1" class="data-top">置顶</text>
 														<text
 															v-if="topic.read_limit=='cost' && (!is_ios || (is_ios && topic.cost_ios_switch=='1'))"
 															class="pay">￥{{topic.cost_price}}</text>
@@ -521,6 +525,7 @@
 
 										<!-- 话题 + 正文 -->
 										<view class="zhuige-social-cont">
+											<text v-if="topic.stick" class="zhuige-social-top">置顶</text>
 											<!-- 正文信息 -->
 											<text>{{topic.excerpt}}</text>
 										</view>
@@ -732,6 +737,9 @@
 				tab_switch: 0,
 				// 是否显示list
 				list_switch: 0,
+				
+				// 置顶帖子数量
+				sticky_count: 0,
 
 				// 最新帖子
 				lastTopics: [],
@@ -1033,6 +1041,7 @@
 					offset: refresh ? 0 : this.lastTopics.length,
 					post_type: this.cur_tab
 				}).then(res => {
+					this.sticky_count = res.data.sticky_count;
 					this.lastTopics = refresh ? res.data.topics : this.lastTopics.concat(res.data.topics);
 					this.lastLoadMore = res.data.more;
 					this.lastLoaded = true;

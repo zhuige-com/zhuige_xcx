@@ -7,7 +7,7 @@
 					<view class="zhuige-search-input">
 						<view>
 							<uni-icons type="search" color="#999999" size="18"></uni-icons>
-							<input type="text" v-model="keywords" placeholder="关键词" @confirm="onSearch" />
+							<input type="text" v-model="keywords" placeholder="关键词" confirm-type="search" @confirm="onSearch" />
 							<uni-icons v-if="keywords" @click="clickClear" type="close" color="#999999" size="18">
 							</uni-icons>
 						</view>

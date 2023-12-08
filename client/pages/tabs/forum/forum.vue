@@ -10,7 +10,7 @@
 			<!-- 右侧 -->
 			<scroll-view class="zhuige-classify-side" scroll-top="scrollTop" scroll-y scroll-with-animation>
 				<!-- 轮播 -->
-				<view v-if="cur_tab=='rec'" class="zhuige-classify-swiper">
+				<view v-if="cur_tab=='rec' && slides && slides.length>0" class="zhuige-classify-swiper">
 					<zhuige-swiper type="zhuige-mini-swiper" :items="slides"></zhuige-swiper>
 				</view>
 
