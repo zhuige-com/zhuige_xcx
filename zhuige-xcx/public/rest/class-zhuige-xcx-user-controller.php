@@ -204,6 +204,7 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 	{
 		$user_id = get_current_user_id();
 
+        require_once( ABSPATH.'wp-admin/includes/user.php' );
 		$res = wp_delete_user($user_id);
 		if (!$res) {
 			return $this->error('请稍后再试~');
