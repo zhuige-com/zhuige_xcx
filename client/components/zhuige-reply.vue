@@ -17,14 +17,17 @@
 					<view>{{item.time}}</view>
 				</view>
 			</view>
-			<view @click="clickReply(item.id, 0)">
+			<view v-if="replyicon" @click="clickReply(item.id, 0)">
 				<uni-icons type="chatbubble" color="#999999" size="20"></uni-icons>
 			</view>
 		</view>
 		<view class="zhuige-reply-body">
 			<text v-if="item.reply">@{{item.reply.nickname}}</text>
 			{{item.content}}
-		</view>
+			<view v-if="item.score" style="margin-bottom: 16rpx;">
+				<uni-rate :value="item.score" size="14" :activeColor="'#FF6146'" />
+			</view>
+		</view>		
 		<view class="zhuige-reply-sub">
 			<view v-for="(reply, index) in item.replys" :key="index" class="zhuige-reply-block">
 				<view class="zhuige-reply-header">
@@ -44,7 +47,7 @@
 							<view>{{reply.time}}</view>
 						</view>
 					</view>
-					<view @click="clickReply(item.id, reply.user.user_id)">
+					<view v-if="replyicon" @click="clickReply(item.id, reply.user.user_id)">
 						<uni-icons type="chatbubble" color="#999999" size="20"></uni-icons>
 					</view>
 				</view>
@@ -52,6 +55,10 @@
 					<text v-if="reply.reply" class="zhuige-social-rp-at"
 						@click="openLink('/pages/user/home/home?user_id=' + reply.reply.id)">@{{reply.reply.nickname}}</text>
 					{{reply.content}}
+					<view v-if="item.score" style="margin-bottom: 16rpx;">
+						<uni-rate :value="item.score" size="14" :activeColor="'#FF6146'" />
+					</view>
+					
 				</view>
 			</view>
 		</view>
@@ -65,14 +72,18 @@
 		name: "zhuige-reply",
 
 		props: {
-			prop: {
+			score: {
 				type: String,
-				default: "prop"
+				default: ''
 			},
 			item: {
 				type: Object,
 				default: undefined,
-			}
+			},
+			replyicon: {
+				type: Boolean,
+				default: true
+			},
 		},
 
 		data() {

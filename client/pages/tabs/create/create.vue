@@ -36,6 +36,7 @@
 	 */
 
 	import Util from '@/utils/util';
+	import Auth from '@/utils/auth';
 	import Alert from '@/utils/alert';
 	import Api from '@/utils/api';
 	import Rest from '@/utils/rest';
@@ -104,7 +105,24 @@
 			 * 点击发布
 			 */
 			clickPost(item) {
-				if (item.require_mobile && !Util.checkMobile(item.require_mobile_tip)) {
+				// if (item.require_mobile && !Util.checkMobile(item.require_mobile_tip)) {
+				// 	return;
+				// }
+				
+				if (item.require_login) {
+					this.active = false;
+					this.cache = false;
+					Util.openLink('/pages/user/login/login');
+					return;
+				} else if (item.require_mobile_tip) {
+					this.active = false;
+					this.cache = false;
+					Util.openLink('/pages/user/login/login?type=mobile&tip=' + item.require_mobile_tip);
+					return;
+				} else if (item.require_avatar_tip) {
+					this.active = false;
+					this.cache = false;
+					Util.openLink('/pages/user/verify/verify?tip=' + item.require_avatar_tip);
 					return;
 				}
 

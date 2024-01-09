@@ -40,7 +40,7 @@
 				<view class="zhuige-mine-data-count">
 					<view @click="openLink('/pages/user/home/home?tab=publish')">
 						<text>{{post_count}}</text>
-						<view>作品</view>
+						<view>动态</view>
 					</view>
 					<view @click="openLink('/pages/user/friend/friend?tab=fans')">
 						<text>{{fans_count}}</text>

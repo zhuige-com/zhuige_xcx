@@ -123,25 +123,6 @@
 						</view>
 					</view>
 					
-					<!-- <view class="zhuige-message-line">
-						<view class="zhuige-message-info">
-							<view class="zhuige-message-icon">
-								<uni-icons type="paperplane-filled" color="#010101" size="24"></uni-icons>
-							</view>
-							<view class="zhuige-message-text">
-								<view>
-									<text>@我的</text>
-									<text>12</text>
-								</view>
-								<view>你有12条消息未读</view>
-								<view>没有消息就是好消息</view>
-							</view>
-						</view>
-						<view class="zhuige-message-act">
-							<uni-icons type="right" color="#BBBBBB" size="16"></uni-icons>
-						</view>
-					</view> -->
-					
 					<view v-if="at_msg" @click="clickType('ait')" class="zhuige-message-line">
 						<view class="zhuige-message-info">
 							<view class="zhuige-message-icon">

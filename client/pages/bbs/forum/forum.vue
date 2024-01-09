@@ -29,7 +29,7 @@
 							<view>
 								<text>{{forum.user_count}}成员</text>
 								<text>/</text>
-								<text>{{forum.post_count}}作品</text>
+								<text>{{forum.post_count}}动态</text>
 							</view>
 						</view>
 					</view>

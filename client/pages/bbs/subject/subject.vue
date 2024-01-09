@@ -109,7 +109,7 @@
 
 		onLoad(options) {
 			Util.addShareScore(options.source);
-
+			
 			if (options.subjects) {
 				let subjects = decodeURIComponent(options.subjects);
 				this.subjects = subjects.split('-0-');

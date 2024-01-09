@@ -196,7 +196,7 @@ class ZhuiGe_Xcx
 	{
 		$avatar = get_user_meta($user_id, 'zhuige_xcx_user_avatar', true);
 		if (empty($avatar)) {
-			$avatar = ZHUIGE_XCX_BASE_URL . 'public/images/placeholder.jpg';
+			$avatar = ZHUIGE_XCX_BASE_URL . 'public/images/avatar.jpg';
 		}
 		return $avatar;
 	}

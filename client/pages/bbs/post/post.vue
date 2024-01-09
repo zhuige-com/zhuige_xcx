@@ -58,7 +58,7 @@
 			</view>
 		</view>
 
-		<!-- 选择行 -->
+		<!-- 圈子 -->
 		<view class="zhuige-post-box">
 			<view class="zhuige-block">
 				<view class="zhuige-post-line">
@@ -71,7 +71,7 @@
 			</view>
 		</view>
 
-		<!-- 选择行 -->
+		<!-- 位置 -->
 		<view class="zhuige-post-box">
 			<view class="zhuige-block">
 				<view class="zhuige-post-line">
@@ -84,7 +84,7 @@
 			</view>
 		</view>
 
-		<!-- 选择行 -->
+		<!-- 话题 -->
 		<view class="zhuige-post-box">
 			<view class="zhuige-block">
 				<view class="zhuige-post-line">
@@ -97,7 +97,7 @@
 			</view>
 		</view>
 
-		<!-- 选择行 @ 好友 -->
+		<!-- @ 好友 -->
 		<view v-if="at_switch==1" class="zhuige-post-box">
 			<view class="zhuige-block">
 				<view class="zhuige-post-line">
@@ -110,7 +110,7 @@
 			</view>
 		</view>
 
-		<!-- 选择行 积分数 -->
+		<!-- 积分数 -->
 		<view v-if="score_switch==1" class="zhuige-post-box">
 			<view class="zhuige-block">
 				<view class="zhuige-post-line">
@@ -188,7 +188,7 @@
 
 		onLoad(options) {
 			Util.addShareScore(options.source);
-
+			
 			if (options.type) {
 				this.type = options.type;
 			}
@@ -303,6 +303,11 @@
 						}, err => {
 							Alert.error(err);
 						});
+					},
+					fail: (res) => {
+						if (res.errMsg && res.errMsg.indexOf('cancel') < 0) {
+							Alert.error(res.errMsg);
+						}
 					}
 				});
 			},
@@ -453,6 +458,8 @@
 					if (res.code != 0) {
 						if (res.code == 'require_mobile') {
 							Util.openLink('/pages/user/login/login?type=mobile&tip=发帖');
+						} else if (res.code == 'require_avatar') {
+							Util.openLink('/pages/user/verify/verify?tip=发帖');
 						} else {
 							Alert.error(res.message);
 						}
@@ -479,6 +486,10 @@
 						if (res.code == 'require_mobile') {
 							uni.redirectTo({
 								url: '/pages/user/login/login?type=mobile&tip=发帖'
+							})
+						} else if (res.code == 'require_avatar') {
+							uni.redirectTo({
+								url: '/pages/user/verify/verify?tip=发帖'
 							})
 						} else {
 							Alert.error(res.message);

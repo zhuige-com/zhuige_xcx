@@ -196,4 +196,10 @@
 	page {
 		background-color: #F5F5F5;
 	}
+	.zhuige-search-input view {
+		width: 100%;
+	}
+	.zhuige-search-input view input {
+		width: 90%;
+	}
 </style>

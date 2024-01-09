@@ -25,12 +25,11 @@
 					</view>
 				</view>
 			</view>
-			<view v-if="trash" class="zhuige-social-opt social-dell">
-				<uni-icons type="trash" color="#FF6146" size="16" @click="clickTrashTopic(topic)"></uni-icons>
+			<view v-if="trash" class="zhuige-social-opt social-dell" @click="clickTrashTopic(topic)">
+				删除
 			</view>
-			
-			<view v-if="promotion" class="zhuige-social-opt social-dell">
-				<uni-icons type="sound" color="#FF6146" size="16" @click="clickPromotion()"></uni-icons>
+			<view v-if="promotion" class="zhuige-social-opt social-dell social-ad" @click="clickPromotion()">
+				推广
 			</view>
 		</view>
 
@@ -51,9 +50,9 @@
 			</template>
 
 			<!-- 正文信息 -->
-			<template v-if="topic && topic.excerpt" class="zhuige-social-cont">
-				<text @click="clickDetail">{{topic.excerpt}}</text>
-			</template>
+			<view v-if="topic && topic.excerpt" @click="clickDetail">
+				<text>{{topic.excerpt}}</text>
+			</view>
 		</view>
 
 		<!-- 图片信息 -->
@@ -129,7 +128,7 @@
 			class="zhuige-social-simple-reply">
 			<view v-for="(comment, index) in topic.comments" :key="index">
 				<text>{{comment.user.nickname}}：</text>
-				<text v-if="comment.reply" class="zhuige-social-rp-at" 
+				<text v-if="comment.reply" class="zhuige-social-rp-at"
 					@click="openLink('/pages/user/home/home?user_id=' + comment.reply.id)">@{{comment.reply.nickname}}</text>
 				<text>{{comment.content}}</text>
 			</view>
@@ -194,7 +193,7 @@
 			clickTrashTopic(topic) {
 				this.$emit("deleteTopic", topic);
 			},
-			
+
 			clickPromotion() {
 				Util.openLink('/pages/promotion/pay/pay?id=' + this.topic.id);
 			},

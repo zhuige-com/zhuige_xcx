@@ -63,9 +63,26 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 			return $this->error('缺少参数');
 		}
 
+		$score = $this->param_int($request, 'score', 0);
+
+		global $wpdb;
+
+		// 只允许打一次分
+		if ($score) {
+			// 是否已经评价过
+			$table_comments = $wpdb->prefix . 'comments';
+			$comment_count = $wpdb->get_var(
+				// $wpdb->prepare(
+				"SELECT COUNT(`comment_ID`) FROM `$table_comments` WHERE `comment_post_ID`=$post_id AND `user_id`=$user_id"
+				// )
+			);
+			if ($comment_count) {
+				return $this->error('已经评论过了~');
+			}
+		}
+
 
 		$post = get_post($post_id);
-
 
 		$is_user_vip = false;
 		if (function_exists('zhuige_xcx_vip_is_vip')) {
@@ -87,6 +104,12 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 			} else if ($post->post_type == 'zhuige_vote') {
 				$auth_comment_vote = ZhuiGe_Xcx::option_value('auth_comment_vote');
 				$auth_comment = ($auth_comment_vote == 'all' || ($auth_comment_vote == 'vip' && $is_user_vip));
+			} else if ($post->post_type == 'zhuige_business_card') {
+				$auth_comment_business_card = ZhuiGe_Xcx::option_value('auth_comment_business_card');
+				$auth_comment = ($auth_comment_business_card == 'all' || ($auth_comment_business_card == 'vip' && $is_user_vip));
+			} else if ($post->post_type == 'zhuige_idle_goods') {
+				$auth_comment_idle_shop = ZhuiGe_Xcx::option_value('auth_comment_idle_shop');
+				$auth_comment = ($auth_comment_idle_shop == 'all' || ($auth_comment_idle_shop == 'vip' && $is_user_vip));
 			}
 
 			if (!$auth_comment) {
@@ -94,9 +117,16 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 			}
 		}
 
+		// 评论是否要求头像昵称
+		if (ZhuiGe_Xcx::option_value('comment_avatar_switch')) {
+			if (!zhuige_xcx_is_set_avatar($user_id)) {
+				return $this->error('', 'require_avatar');
+			}
+		}
+
+		// 评论是否要求手机号
 		if (ZhuiGe_Xcx::option_value('comment_mobile_switch')) {
-			$mobile = get_user_meta($user_id, 'zhuige_xcx_user_mobile', true);
-			if (empty($mobile)) {
+			if (!zhuige_xcx_is_set_mobile($user_id)) {
 				return $this->error('', 'require_mobile');
 			}
 		}
@@ -124,8 +154,40 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 			'user_id' => $user_id,
 		]);
 
+		
+		add_comment_meta($comment_id, 'zhuige_xcx_score', $score, true);
+
+		
+		$table_notify = $wpdb->prefix . 'zhuige_xcx_notify';
+
+		// 评论通知
+		if ($comment_approved == 1) {
+			$wpdb->insert($table_notify, [
+				'type' => 'comment',
+				'from_id' => $user_id,
+				'to_id' => $post->post_author,
+				'post_id' => $post_id,
+				'isread' => 0,
+				'time' => time()
+			]);
+		}
+		
+
 		if ($reply_id) {
 			add_comment_meta($comment_id, 'zhuige_xcx_reply_user_id', $reply_id);
+
+			// 评论通知
+			if ($comment_approved == 1) {
+				$parent_comment = get_comment($parent_id);
+				$wpdb->insert($table_notify, [
+					'type' => 'reply',
+					'from_id' => $user_id,
+					'to_id' => $parent_comment->user_id,
+					'post_id' => $post_id,
+					'isread' => 0,
+					'time' => time()
+				]);
+			}
 		}
 
 		//添加积分

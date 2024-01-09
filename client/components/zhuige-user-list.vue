@@ -19,7 +19,7 @@
 						</view>
 						<view class="zhuige-user-name">{{user.nickname}}</view>
 						<view class="zhuige-user-info">
-							<text>作品 {{user.post_count}}</text>/
+							<text>动态 {{user.post_count}}</text>/
 							<text>粉丝 {{user.fans_count}}</text>
 						</view>
 						<view v-if="buttons" class="zhuige-user-opt">
@@ -44,7 +44,7 @@
 					</view>
 					<view class="zhuige-user-name">{{user.nickname}}</view>
 					<view class="zhuige-user-info">
-						<text>作品 {{user.post_count}}</text>/
+						<text>动态 {{user.post_count}}</text>/
 						<text>粉丝 {{user.fans_count}}</text>
 					</view>
 					<view v-if="buttons" class="zhuige-user-opt">

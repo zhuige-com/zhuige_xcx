@@ -101,11 +101,17 @@
 		},
 
 		onLoad(options) {
+			Util.addShareScore(options.source);
+			
 			Rest.post(Api.URL('bbs', 'setting_forum_create_pre'), {}, true).then(res => {
 				if (res.code != 0) {
 					if (res.code == 'require_mobile') {
 						uni.redirectTo({
 							url: '/pages/user/login/login?type=mobile&tip=建圈'
+						})
+					} else if (res.code == 'require_avatar') {
+						uni.redirectTo({
+							url: '/pages/user/verify/verify?tip=建圈'
 						})
 					} else {
 						Alert.error(res.message);
@@ -207,6 +213,8 @@
 					if (res.code != 0) {
 						if (res.code == 'require_mobile') {
 							Util.openLink('/pages/user/login/login?type=mobile&tip=建圈');
+						} else if (res.code == 'require_avatar') {
+							Util.openLink('/pages/user/verify/verify?tip=建圈');
 						} else {
 							Alert.error(res.message);
 						}

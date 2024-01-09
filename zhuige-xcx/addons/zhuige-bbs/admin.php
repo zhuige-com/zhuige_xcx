@@ -28,6 +28,14 @@ CSF::createSection($prefix, array(
     'fields' => array(
 
         array(
+            'id'    => 'bbs_forum_avatar_switch',
+            'type'  => 'switcher',
+            'title' => '开启/停用',
+            'subtitle' => '创建圈子是否要求设置头像昵称',
+            'default' => '0'
+        ),
+
+        array(
             'id'    => 'bbs_forum_mobile_switch',
             'type'  => 'switcher',
             'title' => '开启/停用',
@@ -181,6 +189,14 @@ CSF::createSection($prefix, array(
     'title' => '贴子',
     'icon'  => 'fas fa-map-marker',
     'fields' => array(
+
+        array(
+            'id'    => 'bbs_topic_avatar_switch',
+            'type'  => 'switcher',
+            'title' => '开启/停用',
+            'subtitle' => '发帖是否要求设置头像昵称',
+            'default' => '0'
+        ),
 
         array(
             'id'    => 'bbs_topic_mobile_switch',

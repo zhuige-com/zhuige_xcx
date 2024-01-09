@@ -112,7 +112,7 @@
 							<view>
 								<text>{{topic.forum.user_count}}成员</text>
 								<text>/</text>
-								<text>{{topic.forum.post_count}}作品</text>
+								<text>{{topic.forum.post_count}}动态</text>
 							</view>
 						</view>
 					</view>
@@ -570,8 +570,6 @@
 						});
 					}
 				});
-				
-				
 			},
 
 			/**
@@ -590,17 +588,34 @@
 			clickAllComments() {
 				Util.openLink('/pages/base/comments/comments?post_id=' + this.topic_id);
 			},
+			
+			/**
+			 * 检查评论设置
+			 */
+			checkComment() {
+				if (!this.topic.comment_switch) {
+					Alert.error('评论已关闭');
+					return false;
+				}
+				
+				if (this.topic.comment_require_mobile2) {
+					Util.openLink('/pages/user/login/login?type=mobile&tip=评论');
+					return false;
+				}
+				
+				if (this.topic.comment_require_avatar2) {
+					Util.openLink('/pages/user/verify/verify?tip=评论');
+					return false;
+				}
+				
+				return true;
+			},
 
 			/**
 			 * 点击弹出评论框
 			 */
 			clickComment(comment_id) {
-				if (!this.topic.comment_switch) {
-					Alert.error('评论已关闭');
-					return;
-				}
-
-				if (this.topic.comment_require_mobile && !Util.checkMobile('评论')) {
+				if (!this.checkComment()) {
 					return;
 				}
 
@@ -610,26 +625,30 @@
 			},
 
 			/**
+			 * 点击回复评论
+			 */
+			clickReply(params) {
+				if (!this.checkComment()) {
+					return;
+				}
+				
+				this.comment_id = params.comment_id;
+				this.reply_user_id = params.user_id;
+				this.$refs.popup.open('bottom')
+			},
+			
+			/**
 			 * 评论框获取焦点
 			 */
 			focusCommentTextarea(e) {
 				this.comment_bottom = e.detail.height;
 			},
-
+			
 			/**
 			 * 评论框失去焦点
 			 */
 			blurCommentTextarea(e) {
 				this.comment_bottom = 0;
-			},
-
-			/**
-			 * 点击回复评论
-			 */
-			clickReply(params) {
-				this.comment_id = params.comment_id;
-				this.reply_user_id = params.user_id;
-				this.$refs.popup.open('bottom')
 			},
 
 			/**
@@ -650,6 +669,8 @@
 					if (res.code != 0) {
 						if (res.code == 'require_mobile') {
 							Util.openLink('/pages/user/login/login?type=mobile&tip=评论');
+						} else if (res.code == 'require_avatar') {
+							Util.openLink('/pages/user/verify/verify?tip=评论');
 						} else {
 							Alert.toast(res.message);
 						}
@@ -661,6 +682,7 @@
 					this.comment_id = 0;
 					this.reply_user_id = 0;
 					this.comment_content = '';
+					this.topic.is_comment = 1;
 					this.$refs.popup.close()
 				}, err => {
 					console.log(err);
@@ -717,6 +739,12 @@
 				Rest.post(Api.URL('bbs', 'topic_detail'), {
 					topic_id: this.topic_id
 				}).then(res => {
+					uni.stopPullDownRefresh();
+					
+					if (res.code != 0) {
+						Alert.toast(res.message);
+						return;
+					}
 					this.topic = res.data.topic;
 					this.poster = res.data.poster;
 					this.is_report = res.data.is_report;
@@ -743,8 +771,6 @@
 					// #endif
 
 					this.loadACode();
-
-					uni.stopPullDownRefresh();
 				}, err => {
 					console.log(err)
 				});
@@ -815,6 +841,10 @@
 					return;
 				}
 				// #endif
+				
+				uni.showLoading({
+					title: '海报生成中……'
+				})
 
 				this.isShowPainter = true;
 
@@ -988,6 +1018,8 @@
 					urls: [e]
 				});
 				// #endif
+				
+				uni.hideLoading();
 			},
 
 			/**

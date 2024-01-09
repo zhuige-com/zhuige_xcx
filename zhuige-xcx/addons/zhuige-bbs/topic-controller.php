@@ -44,9 +44,16 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			return $this->error('无发帖权限~');
 		}
 
+		// 发帖是否要求头像昵称
+		if (ZhuiGe_Xcx::option_value('bbs_topic_avatar_switch')) {
+			if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+				return $this->error('', 'require_avatar');
+			}
+		}
+
+		// 发帖是否要求手机号
 		if (ZhuiGe_Xcx::option_value('bbs_topic_mobile_switch')) {
-			$mobile = get_user_meta($my_user_id, 'zhuige_xcx_user_mobile', true);
-			if (empty($mobile)) {
+			if (!zhuige_xcx_is_set_mobile($my_user_id)) {
 				return $this->error('', 'require_mobile');
 			}
 		}
@@ -74,9 +81,16 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			return $this->error('无发帖权限~');
 		}
 
+		// 发帖是否要求头像昵称
+		if (ZhuiGe_Xcx::option_value('bbs_topic_avatar_switch')) {
+			if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+				return $this->error('', 'require_avatar');
+			}
+		}
+
+		// 发帖是否要求手机号
 		if (ZhuiGe_Xcx::option_value('bbs_topic_mobile_switch')) {
-			$mobile = get_user_meta($my_user_id, 'zhuige_xcx_user_mobile', true);
-			if (empty($mobile)) {
+			if (!zhuige_xcx_is_set_mobile($my_user_id)) {
 				return $this->error('', 'require_mobile');
 			}
 		}
@@ -158,9 +172,27 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			$at_list = $this->param($request, 'at_list', '');
 			if (!empty($at_list)) {
 				update_post_meta($post_id, 'zhuige_bbs_topic_at_list', $at_list);
+
+				// 通知@的人
+				if ($status == 'publish') {
+					$at_user_ids = explode(',', $at_list);
+					if (is_array($at_user_ids)) {
+						global $wpdb;
+						$table_at_users_notify = $wpdb->prefix . 'zhuige_xcx_at_users_notify';
+						foreach ($at_list as $at_user_id) {
+							$wpdb->insert($table_at_users_notify, [
+								'from_id' => $my_user_id,
+								'to_id' => $at_user_id,
+								'topic_id' => $post_id,
+								'isread' => '0',
+								'createtime' => time()
+							]);
+						}
+					}
+				}
 			}
 		}
-
+		
 		// 帖子积分 - 开启积分阅读全文
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-topic_score')) {
 			$score = $this->param_int($request, 'score', 0);
@@ -216,6 +248,13 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 		$my_user_id = get_current_user_id();
 
 		$post = get_post($topic_id);
+		if (!$post) {
+			return $this->error('找不到帖子');
+		}
+
+		if ($post->post_status != 'publish' && $post->post_author != $my_user_id) {
+			return $this->error('找不到帖子');
+		}
 
 		//添加文章浏览记录
 		global $wpdb;
@@ -443,7 +482,7 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			$table_comments = $wpdb->prefix . 'comments';
 			$post_comment_id = $wpdb->get_var(
 				$wpdb->prepare(
-					"SELECT COUNT(`comment_ID`) FROM `$table_comments` WHERE `comment_author`=%d AND `comment_post_ID`=%d",
+					"SELECT COUNT(`comment_ID`) FROM `$table_comments` WHERE `user_id`=%d AND `comment_post_ID`=%d AND `comment_approved` IN ('0','1')",
 					$my_user_id,
 					$topic_id
 				)
@@ -506,10 +545,25 @@ class ZhuiGe_Xcx_Bbs_Topic_Controller extends ZhuiGe_Xcx_Base_Controller
 			$poster['thumb'] = ZhuiGe_Xcx::option_image_url($detail_poster['thumb_video'], 'placeholder.jpg');
 		}
 
-		// 评论是否要求手机号
+		// 评论是否开启
 		$topic['comment_switch'] = ZhuiGe_Xcx::option_value('comment_switch') ? 1 : 0;
-		$topic['comment_require_mobile'] = ZhuiGe_Xcx::option_value('comment_mobile_switch') ? 1 : 0;
+		$topic['comment_require_mobile'] = ZhuiGe_Xcx::option_value('comment_mobile_switch') ? 1 : 0; // 升级后删除 2023-12-24
+		if ($topic['comment_switch']) {
+			// 评论是否要求头像昵称
+			if ($my_user_id && ZhuiGe_Xcx::option_value('comment_avatar_switch')) {
+				if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+					$topic['comment_require_avatar2'] = 1;
+				}
+			}
 
+			// 评论是否要求手机号
+			if ($my_user_id && ZhuiGe_Xcx::option_value('comment_mobile_switch')) {
+				if (!zhuige_xcx_is_set_mobile($my_user_id)) {
+					$topic['comment_require_mobile2'] = 1;
+				}
+			}
+		}
+		
 		// @的人
 		$at_users = [];
 		$at_list = get_post_meta($topic_id, 'zhuige_bbs_topic_at_list', true);

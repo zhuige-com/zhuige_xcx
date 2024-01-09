@@ -256,8 +256,9 @@
 							<template v-for="(topic, index) in lastTopics">
 
 								<!-- 用户列表推荐 滚动 -->
-								<zhuige-user-list v-if="rec_user && rec_user.position==(index-sticky_count)" type="scroll"
-									:title="rec_user.title" :users="rec_user.users" ext-class="zhuige-user-followed">
+								<zhuige-user-list v-if="rec_user && rec_user.position==(index-sticky_count)"
+									type="scroll" :title="rec_user.title" :users="rec_user.users"
+									ext-class="zhuige-user-followed">
 								</zhuige-user-list>
 
 								<!-- #ifdef MP-WEIXIN -->
@@ -272,7 +273,8 @@
 								<!-- #endif -->
 
 								<!-- 新增滑动全宽度自定义广告 用滚动广告组件 输出有效数据即可，展示差异我再用外层容器控制 -->
-								<view v-if="imgs_embed && imgs_embed.position==(index-sticky_count)" class="zhuige-cust-wide-block">
+								<view v-if="imgs_embed && imgs_embed.position==(index-sticky_count)"
+									class="zhuige-cust-wide-block">
 									<zhuige-scroll-ad boxClass="zhuige-scroll-goods" :title="imgs_embed.title"
 										:items="imgs_embed.items"></zhuige-scroll-ad>
 								</view>
@@ -307,6 +309,7 @@
 											</view>
 										</view>
 									</template>
+
 									<!-- 文章 -->
 									<template v-else-if="topic.post_type=='post'">
 										<!-- 无图 -->
@@ -420,6 +423,7 @@
 											</view>
 										</view>
 									</template>
+
 									<!-- 课程 -->
 									<template v-else-if="topic.post_type=='zhuige_column'">
 										<view class="zhugie-info-block left-side">
@@ -454,6 +458,7 @@
 											</view>
 										</view>
 									</template>
+
 									<!-- 知识库 -->
 									<template v-else-if="topic.post_type=='zhuige_res'">
 										<view class="zhugie-info-block left-side">
@@ -474,6 +479,7 @@
 											</view>
 										</view>
 									</template>
+
 									<!-- 积分商品 -->
 									<template v-else-if="topic.post_type=='zhuige_goods'">
 										<view class="zhugie-info-block left-side">
@@ -492,10 +498,12 @@
 											</view>
 										</view>
 									</template>
+
 									<!-- 投票 -->
 									<template v-else-if="topic.post_type=='zhuige_vote'">
 										<!-- 用户信息 -->
-										<view class="zhuige-social-poster-blcok" @click="openLink('/pages/user/home/home?user_id=' + topic.author.user_id)">
+										<view class="zhuige-social-poster-blcok"
+											@click="openLink('/pages/user/home/home?user_id=' + topic.author.user_id)">
 											<view class="zhuige-social-poster">
 												<view class="zhuige-social-poster-avatar">
 													<image mode="aspectFill" :src="topic.author.avatar"></image>
@@ -597,6 +605,103 @@
 										</view>
 										<!-- 投票模块 end -->
 									</template>
+
+									<!-- 商家名片 -->
+									<template v-else-if="topic.post_type=='zhuige_business_card'">
+										<view class="zhuige-sp-list-block sp-left">
+											<view class="zhuige-sp-img">
+												<image mode="aspectFill" :src="topic.logo"></image>
+											</view>
+											<view class="zhuige-sp-text">
+												<view class="zhuige-sp-title">
+													<text v-if="topic.stick" class="tag">推广</text>
+													<text>{{topic.title}}</text>
+												</view>
+												<view class="zhuige-sp-info">
+													<text>{{topic.excerpt}}</text>
+												</view>
+												<view class="zhuige-sp-opt">
+													<!-- 评分 -->
+													<view class="zhuige-sp-star">
+														<uni-rate :value="topic.score" size="12" active-color="#ff6146"></uni-rate>
+													</view>
+													<!-- 标签 -->
+													<view class="zhuige-sp-tags">
+														<text v-for="(tag, itag) in topic.tags" :key="itag">{{tag.name}}</text>
+													</view>
+												</view>
+											</view>
+										</view>
+									</template>
+
+									<!-- 闲置物品 -->
+									<template v-else-if="topic.post_type=='zhuige_idle_goods'">
+										<view class="zhuige_idle">
+											<view class="zhuige-social-poster-blcok">
+												<view class="zhuige-social-poster">
+													<view class="zhuige-social-poster-avatar">
+														<image mode="aspectFill" :src="topic.user.avatar"></image>
+													</view>
+													<view class="zhuige-social-poster-info">
+														<view>
+															<text>{{topic.user.nickname}}</text>
+															<image v-if="topic.user.certify && topic.user.certify.status==1" mode="aspectFill"
+																:src="topic.user.certify.icon">
+															</image>
+															<image v-if="topic.user.vip && topic.user.vip.status==1" class="zhuige-social-vip" mode="aspectFill"
+																:src="topic.user.vip.icon">
+															</image>
+														</view>
+														<view>
+															<text>{{topic.time}}</text>
+															<text v-if="topic.user.certify && topic.user.certify.status==1">/</text>
+															<text v-if="topic.user.certify && topic.user.certify.status==1">{{topic.user.certify.name}}</text>
+														</view>
+													</view>
+												</view>
+											</view>
+											<!-- 
+											<view class="zhuige-social-cont">
+												{{topic.excerpt}}
+											</view> -->
+
+											<view class="zhuige-idle-block">
+												<view class="zhuige-idle-block-img">
+													<view v-if="topic.stick" class="mark">推广</view>
+													<image mode="aspectFill" :src="topic.thumb"></image>
+												</view>
+												<view class="zhuige-idle-block-text">{{topic.title}}</view>
+												<view class="zhuige-idle-block-foot">
+													<view class="">
+														<text>￥</text>
+														<text>{{topic.price}}</text>
+													</view>
+													<view>
+														<text v-for="(tag, itag) in topic.tags" :key="itag">{{tag.name}}</text>
+													</view>
+												</view>
+											</view>
+
+											<!-- 产品分类及帖子数据信息 -->
+											<view class="zhuige-social-data">
+												<view>
+													<image mode="aspectFill" src="/static/idle.png"></image>
+													<view>{{topic.cat.name}}</view>
+												</view>
+												<view>
+													<view>
+														<uni-icons type="hand-up-filled" size="18"></uni-icons>
+														<text>{{topic.like_count}}</text>
+													</view>
+													<view>
+														<uni-icons type="chatboxes-filled" size="18"></uni-icons>
+														<text>{{topic.comment_count}}</text>
+													</view>
+												</view>
+											</view>
+										</view>
+									</template>
+
 									<template v-else>
 										<view class="zhugie-info-block left-side">
 											<view class="zhugie-info-image">
@@ -692,7 +797,7 @@
 			ZhuigeTab,
 			ZhuigeNodata
 		},
-		
+
 		data() {
 			this.loginReload = false;
 
@@ -737,7 +842,7 @@
 				tab_switch: 0,
 				// 是否显示list
 				list_switch: 0,
-				
+
 				// 置顶帖子数量
 				sticky_count: 0,
 
@@ -1340,7 +1445,208 @@
 		left: 50%;
 		margin-left: -24rpx;
 	}
+
 	/**
 	 * 弹窗 end
 	 */
+
+	/**
+	 * idle-shops
+	 */
+
+	.zhuige-idle-block {
+		width: 320px;
+		background: #F5F5F5;
+		border-radius: 6px;
+		position: relative;
+		margin-bottom: 20rpx;
+	}
+
+	.zhuige-idle-block-img {
+		width: 100%;
+		height: 280rpx;
+		position: relative;
+	}
+
+	.zhuige-idle-block-img image {
+		height: 100%;
+		width: 100%;
+		border-radius: 6px 6px 0 0;
+	}
+
+	.zhuige-idle-block-img .mark {
+		position: absolute;
+		top: 0;
+		left: 0;
+		height: 56rpx;
+		line-height: 56rpx;
+		padding: 0 24rpx;
+		border-radius: 6px 0 6px 0;
+		font-size: 26rpx;
+		font-weight: 400;
+		color: #FFFFFF;
+		background: #FF4400;
+	}
+
+	.zhuige-idle-block-text {
+		padding: 30rpx 20rpx 10rpx;
+		height: 1em;
+		line-height: 1em;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+
+	.zhuige-idle-block-foot {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-bottom: 10rpx;
+	}
+
+	.zhuige-idle-block-foot>view {
+		display: flex;
+		align-items: center;
+		padding: 0 20rpx;
+	}
+
+	.zhuige-idle-block-foot>view:nth-child(1) text {
+		font-size: 36rpx;
+		font-weight: 600;
+		color: #FF4400;
+	}
+
+	.zhuige-idle-block-foot>view:nth-child(1) text:nth-child(1) {
+		font-size: 26rpx;
+		font-weight: 300;
+	}
+
+	.zhuige-idle-block-foot>view:nth-child(2) text {
+		height: 40rpx;
+		line-height: 40rpx;
+		padding: 0 12rpx;
+		margin-right: 8rpx;
+		border-radius: 6rpx;
+		font-size: 22rpx;
+		border: 1px solid #999999;
+		font-weight: 400;
+		color: #555555;
+	}
+
+	.zhuige-idle-block-foot>view:nth-child(2) text:nth-child(1) {
+		background: #333333;
+		color: #FFFFFF;
+		border: 1px solid #333333;
+	}
+	
+	.zhuige-sp-list-block {
+		display: flex;
+		align-items: center;
+		padding: 6rpx;
+		background: #FFFFFF;
+		border-radius: 12rpx;
+	}
+	
+	.zhuige-sp-list-block:last-of-type {
+		border: none;
+	}
+	
+	
+	.zhuige-sp-title {
+		height: 2em;
+		line-height: 1.4em;
+		display: flex;
+		align-items: center;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		flex-wrap: nowrap;
+	}
+	
+	.zhuige-sp-title text {
+		font-size: 32rpx;
+		font-weight: 500;
+	}
+	
+	.zhuige-sp-title text.tag {
+		font-size: 20rpx;
+		font-weight: 400;
+		color: #FFFFFF;
+		background: #FF6146;
+		margin-right: 8rpx;
+		line-height: 1rem;
+		padding: 1rpx 8rpx;
+		border-radius: 4rpx;
+	}
+	
+	.zhuige-sp-title text.sptitle {
+		width: 100%;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+	
+	
+	.zhuige-sp-info {
+		font-weight: 400;
+		color: #666666;
+		height: 2em;
+		line-height: 2em;
+		text-overflow: ellipsis;
+		overflow: hidden;
+	}
+	
+	.zhuige-sp-tags {
+		display: flex;
+		align-items: center;
+		overflow: hidden;
+	}
+	
+	.zhuige-sp-tags text {
+		height: 36rpx;
+		line-height: 36rpx;
+		font-size: 20rpx;
+		font-weight: 300;
+		background: #f5f5f5;
+		padding: 0 12rpx;
+		margin-left: 8rpx;
+		border-radius: 6rpx;
+		white-space: nowrap;
+	}
+	
+	.sp-left {
+		flex: 0 0 180rpx;
+	}
+	
+	.sp-left .zhuige-sp-img {
+		height: 180rpx;
+		width: 180rpx;
+		position: relative;
+	}
+	
+	.sp-left .zhuige-sp-img image {
+		height: 180rpx;
+		width: 180rpx;
+		border-radius: 6rpx;
+	}
+	
+	.sp-left .zhuige-sp-text {
+		padding-left: 20rpx;
+		width: 100%;
+		overflow: hidden;
+	}
+	
+	.zhuige-sp-opt {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-top: 10rpx;
+	}
+	
+	.zhuige-sp-star {
+		display: flex;
+		align-items: center;
+	}
+	
+	
 </style>

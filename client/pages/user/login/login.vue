@@ -29,14 +29,19 @@
 
 				<view @click="clickWalk" class="zhuige-button">随便逛逛</view>
 
-				<view v-if="type!='mobile' && (yhxy || yszc)" class="zhuige-login-tip">
-					<label @click="clickAgreeLicense">
-						<radio :checked="argeeLicense" color="#ff4400" style="transform:scale(0.7)" />
-						我已阅读并同意
-					</label>
-					<text class="link" v-if="yhxy" @click="openLink(yhxy)">《用户协议》</text>
-					<template v-if="yhxy && yszc">及</template>
-					<text class="link" v-if="yszc" @click="openLink(yszc)">《隐私条款》</text>
+				<view v-if="type!='mobile'" class="zhuige-login-tip">
+					<template v-if="yhxy || yszc">
+						<label @click="clickAgreeLicense">
+							<radio :checked="argeeLicense" color="#ff4400" style="transform:scale(0.7)" />
+							我已阅读并同意
+						</label>
+						<text class="link" v-if="yhxy" @click="openLink(yhxy)">《用户协议》</text>
+						<template v-if="yhxy && yszc">及</template>
+						<text class="link" v-if="yszc" @click="openLink(yszc)">《隐私条款》</text>
+					</template>
+					<template v-else>
+						请在后台设置《用户协议》和《隐私条款》
+					</template>
 				</view>
 			</view>
 		</view>
@@ -191,12 +196,21 @@
 						Auth.setUser(undefined);
 						uni.$emit('zhuige_event_user_login', {});
 
-						Alert.toast(res.message);
-						setTimeout(() => {
-							uni.reLaunch({
-								url: '/pages/tabs/index/index'
-							})
-						}, 1000)
+						// Alert.toast(res.message);
+						
+						// setTimeout(() => {
+						// 	uni.reLaunch({
+						// 		url: '/pages/tabs/index/index'
+						// 	})
+						// }, 1000)
+						
+						uni.showModal({
+							content: res.message
+						})
+						
+						uni.reLaunch({
+							url: '/pages/tabs/index/index'
+						})
 					} else {
 						Auth.setUser(res.data);
 						uni.$emit('zhuige_event_user_login', {});
@@ -244,24 +258,6 @@
 					Alert.toast(e.detail.errMsg)
 					return;
 				}
-				
-				// Rest.post(Api.URL('user', 'set_mobile'), {
-				// 	encrypted_data: e.detail.encryptedData,
-				// 	iv: e.detail.iv,
-				// 	code: this.code,
-				// }).then(res => {
-				// 	Alert.toast(res.message)
-
-				// 	// 更新本地缓存的信息
-				// 	let user = Auth.getUser();
-				// 	user.mobile = res.data.mobile;
-				// 	Auth.setUser(user);
-
-				// 	uni.$emit('zhuige_event_user_mobile', {
-				// 		mobile: res.data.mobile
-				// 	});
-				// 	Util.navigateBack();
-				// })
 				
 				Rest.post(Api.URL('user', 'set_mobile2'), {
 					code: e.detail.code

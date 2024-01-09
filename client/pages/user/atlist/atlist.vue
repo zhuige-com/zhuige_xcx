@@ -64,6 +64,8 @@
 		},
 
 		onLoad(options) {
+			Util.addShareScore(options.source);
+			
 			if (options.atlist) {
 				this.atlist = options.atlist.split(',');
 			}

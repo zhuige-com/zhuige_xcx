@@ -6,7 +6,7 @@
         "积分阅读"
     ],
     "help": "https://www.zhuige.com/docs/kzcj.html",
-    "setting": "admin.php?page=zhuige-xcx",
+    "setting": "",
     "sql": [
         "zhuige-topic_score/sql.php"
     ],

@@ -540,17 +540,17 @@ if (!function_exists('zhuige_xcx_get_one_post_thumbnail')) {
  * 文章摘要
  */
 if (!function_exists('zhuige_xcx_get_post_excerpt')) {
-    function zhuige_xcx_get_post_excerpt($post)
+    function zhuige_xcx_get_post_excerpt($post, $length=50)
     {
         $content = apply_filters('the_content', $post->post_content);
-        if (mb_strlen($content) < 50) {
+        if (mb_strlen($content) < $length) {
             return wp_strip_all_tags($content);
         }
 
         if ($post->post_excerpt) {
-            return wp_strip_all_tags(wp_trim_words($post->post_excerpt, 50, '...'));
+            return wp_strip_all_tags(wp_trim_words($post->post_excerpt, $length, '...'));
         } else {
-            return wp_strip_all_tags(wp_trim_words($content, 50, '...'));
+            return wp_strip_all_tags(wp_trim_words($content, $length, '...'));
         }
     }
 }
@@ -714,6 +714,7 @@ if (!function_exists('zhuige_xcx_get_comment_tree')) {
                 'content' => $comment->comment_content,
                 'approved' => $comment->comment_approved,
                 'time' => zhuige_xcx_time_beautify($comment->comment_date_gmt),
+                'score' => (int)(get_comment_meta($comment->comment_ID, 'zhuige_xcx_score', true))
             ];
 
             $user = [
@@ -830,6 +831,34 @@ if (!function_exists('zhuige_xcx_author_info')) {
         }
 
         return $author;
+    }
+}
+
+/**
+ * 判断用户是否绑定了手机
+ */
+if (!function_exists('zhuige_xcx_is_set_mobile')) {
+    function zhuige_xcx_is_set_mobile($user_id)
+    {
+        return !empty(get_user_meta($user_id, 'zhuige_xcx_user_mobile', true));
+    }
+}
+
+/**
+ * 判断用户是否设置了头像昵称
+ */
+if (!function_exists('zhuige_xcx_is_set_avatar')) {
+    function zhuige_xcx_is_set_avatar($user_id)
+    {
+        $nickname = get_user_meta($user_id, 'nickname', true);
+        $avatar = get_user_meta($user_id, 'zhuige_xcx_user_avatar', true);
+
+        if (empty($nickname) || $nickname == '微信用户' 
+            || empty($avatar) || $avatar == '/static/avatar.jpg' || strpos($avatar, 'public/images/avatar.jpg')) {
+            return false;
+        }
+
+        return true;
     }
 }
 

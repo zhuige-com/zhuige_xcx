@@ -26,7 +26,7 @@
 										mode="aspectFit" :src="user.vip.icon"></image>
 								</view>
 								<view>
-									<text>作品 {{user.post_count}}</text>
+									<text>动态 {{user.post_count}}</text>
 									<text>/</text>
 									<text>粉丝 {{user.fans_count}}</text>
 								</view>
@@ -68,7 +68,7 @@
 										mode="aspectFit" :src="user.vip.icon"></image>
 								</view>
 								<view>
-									<text>作品 {{user.post_count}}</text>
+									<text>动态 {{user.post_count}}</text>
 									<text>/</text>
 									<text>粉丝 {{user.fans_count}}</text>
 								</view>

@@ -79,25 +79,40 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		global $wpdb;
 
 
+		// 首页-全部-文章列表限制
+		$rec_list_limit = ZhuiGe_Xcx::option_value('rec_list_limit');
+		if (empty($rec_list_limit)) {
+			$rec_list_limit = 'zhuige_bbs_topic';
+		}
+
+
 		$promotion_topics = [];
 		$promotion_post_ids = [];
-		$table_promotion_log = $wpdb->prefix . 'zhuige_xcx_promotion_log';
-		$promotion_post_ids = $wpdb->get_col(
-			$wpdb->prepare(
-				"SELECT DISTINCT(`post_id`) FROM `$table_promotion_log` WHERE `endtime`>%d AND `status`='finish' ORDER BY `createtime` ASC", time()));
-
+		
 		$sticky_topics = [];
 		$sticky_post_ids = [];
-		$table_postmeta = $wpdb->prefix . 'postmeta';
-		$sticky_post_ids = $wpdb->get_col("SELECT `post_id` FROM `$table_postmeta` WHERE `meta_key`='zhuige_bbs_home_sticky' AND `meta_value`='1'");
 		
 		$sticky_count = 0;
-		if (($post_type == 'last' || $post_type == 'any') && $offset == 0) {
+		if (($post_type == 'last' || $post_type == 'any') && $offset == 0 && is_array($rec_list_limit)) {
+			$table_promotion_log = $wpdb->prefix . 'zhuige_xcx_promotion_log';
+			$promotion_post_ids = $wpdb->get_col(
+				$wpdb->prepare(
+					"SELECT DISTINCT(`post_id`) FROM `$table_promotion_log` WHERE `endtime`>%d AND `status`='finish' ORDER BY `createtime` ASC", time()));
+
+			$table_postmeta = $wpdb->prefix . 'postmeta';
+			$sticky_post_ids = $wpdb->get_col("SELECT `post_id` FROM `$table_postmeta` WHERE `meta_key`='zhuige_bbs_home_sticky' AND `meta_value`='1'");
+
 			// -- 推广置顶的帖子 start --
 			if (!empty($promotion_post_ids)) {
+				$promotion_post_types = [];
+				foreach (['post', 'zhuige_bbs_topic', 'zhuige_vote', 'zhuige_business_card', 'zhuige_idle_goods'] as $ppt) {
+					if (in_array($ppt, $rec_list_limit)) {
+						$promotion_post_types[] = $ppt;
+					}
+				}
 				$args = [
 					'posts_per_page' => -1,
-					'post_type' => ['post', 'zhuige_bbs_topic', 'zhuige_vote'],
+					'post_type' => $promotion_post_types,
 					'ignore_sticky_posts' => 1,
 					'post__in' => $promotion_post_ids,
 					'orderby' => 'post__in',
@@ -106,6 +121,8 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$query = new WP_Query();
 				$result = $query->query($args);
 				foreach ($result as $post) {
+					$sticky_count ++;
+
 					if ($post->post_type == 'zhuige_bbs_topic' && function_exists('zhuige_bbs_topic_format')) {
 						$item = zhuige_bbs_topic_format($post);
 						$item['post_type'] = 'zhuige_bbs_topic';
@@ -129,13 +146,31 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 						$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
 						$item['stick'] = 1;
 						$promotion_topics[] = $item;
+					} else if ($post->post_type == 'zhuige_business_card' && function_exists('zhuige_business_card_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_business_card_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$item['stick'] = 1;
+						$promotion_topics[] = $item;
+					} else if ($post->post_type == 'zhuige_idle_goods' && function_exists('zhuige_idle_shop_goods_format')) {
+						$post_type_info = $this->get_post_type_info($post->post_type);
+						$item = zhuige_idle_shop_goods_format($post);
+						$item['post_type'] = $post->post_type;
+						$item['post_type_name'] = $post_type_info['name'];
+						$item['link'] = $post_type_info['link'];
+						$item['stick'] = 1;
+						$promotion_topics[] = $item;
 					}
 				}
 			}
 			// -- 推广置顶的帖子 end --
 
 			// -- 置顶的帖子 start --
+
 			if (!empty($sticky_post_ids)) {
+				// 去重 既置顶又推广的帖子
 				$temp_post_ids = [];
 				foreach ($sticky_post_ids as $spi) {
 					if (!in_array($spi, $promotion_post_ids)) {
@@ -157,6 +192,8 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$query = new WP_Query();
 				$result = $query->query($args);
 				foreach ($result as $post) {
+					$sticky_count ++;
+
 					$item = zhuige_bbs_topic_format($post);
 					$item['post_type'] = 'zhuige_bbs_topic';
 					$item['stick'] = 1;
@@ -175,10 +212,10 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		];
 
 		if ($post_type == 'any' || $post_type == 'last' || $post_type == '') {
-			$rec_list_limit = ZhuiGe_Xcx::option_value('rec_list_limit');
-			if (empty($rec_list_limit)) {
-				$rec_list_limit = 'zhuige_bbs_topic';
-			}
+			// $rec_list_limit = ZhuiGe_Xcx::option_value('rec_list_limit');
+			// if (empty($rec_list_limit)) {
+			// 	$rec_list_limit = 'zhuige_bbs_topic';
+			// }
 			$args['post_type'] = $rec_list_limit;
 		} else {
 			$args['post_type'] = $post_type;
@@ -195,7 +232,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		// 过滤置顶的帖子
 		if (!empty($promotion_post_ids) || !empty($sticky_post_ids)) {
 			$pandsids = array_merge($promotion_post_ids, $sticky_post_ids);
-			$sticky_count = count($pandsids);
+			// $sticky_count = count($pandsids);
 
 			$args['post__not_in'] = $pandsids;
 			if ($offset > 0) {
@@ -210,6 +247,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			if ($post->post_type == 'zhuige_bbs_topic' && function_exists('zhuige_bbs_topic_format')) {
 				$item = zhuige_bbs_topic_format($post);
 				$item['post_type'] = 'zhuige_bbs_topic';
+				$item['stick'] = 0;
 				$topics[] = $item;
 			} else if ($post->post_type == 'zhuige_column' && function_exists('zhuige_column_format')) {
 				$post_type_info = $this->get_post_type_info($post->post_type);
@@ -217,6 +255,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['post_type'] = $post->post_type;
 				$item['post_type_name'] = $post_type_info['name'];
 				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
 				$topics[] = $item;
 			} else if ($post->post_type == 'post' && function_exists('zhuige_cms_post_format')) {
 				$post_type_info = $this->get_post_type_info($post->post_type);
@@ -224,6 +263,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['post_type'] = $post->post_type;
 				$item['post_type_name'] = $post_type_info['name'];
 				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
 				$topics[] = $item;
 			} else if ($post->post_type == 'zhuige_res' && function_exists('zhuige_res_post_format')) {
 				$post_type_info = $this->get_post_type_info($post->post_type);
@@ -231,6 +271,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['post_type'] = $post->post_type;
 				$item['post_type_name'] = $post_type_info['name'];
 				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
 				$topics[] = $item;
 			} else if ($post->post_type == 'zhuige_activity' && function_exists('zhuige_activity_format')) {
 				$post_type_info = $this->get_post_type_info($post->post_type);
@@ -238,6 +279,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['post_type'] = $post->post_type;
 				$item['post_type_name'] = $post_type_info['name'];
 				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
 				$topics[] = $item;
 			} else if ($post->post_type == 'zhuige_goods' && function_exists('zhuige_goods_format')) {
 				$post_type_info = $this->get_post_type_info($post->post_type);
@@ -245,6 +287,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['post_type'] = $post->post_type;
 				$item['post_type_name'] = $post_type_info['name'];
 				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
 				$topics[] = $item;
 			} else if ($post->post_type == 'zhuige_vote' && function_exists('zhuige_vote_format')) {
 				$post_type_info = $this->get_post_type_info($post->post_type);
@@ -254,6 +297,23 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['link'] = $post_type_info['link'];
 				$item['author'] = zhuige_xcx_author_info($post->post_author);
 				$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
+				$item['stick'] = 0;
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_business_card' && function_exists('zhuige_business_card_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_business_card_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_idle_goods' && function_exists('zhuige_idle_shop_goods_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_idle_shop_goods_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
 				$topics[] = $item;
 			} else {
 				$post_type_info = $this->get_post_type_info($post->post_type);
@@ -266,6 +326,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 					'title' => $post->post_title,
 					'thumbnail' => zhuige_xcx_get_one_post_thumbnail($post, true),
 				];
+				$item['stick'] = 0;
 
 				$topics[] = $item;
 			}
@@ -544,6 +605,22 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 				$item['author'] = zhuige_xcx_author_info($post->post_author);
 				$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
 				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_business_card' && function_exists('zhuige_business_card_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_business_card_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
+				$topics[] = $item;
+			} else if ($post->post_type == 'zhuige_idle_goods' && function_exists('zhuige_idle_shop_goods_format')) {
+				$post_type_info = $this->get_post_type_info($post->post_type);
+				$item = zhuige_idle_shop_goods_format($post);
+				$item['post_type'] = $post->post_type;
+				$item['post_type_name'] = $post_type_info['name'];
+				$item['link'] = $post_type_info['link'];
+				$item['stick'] = 0;
+				$topics[] = $item;
 			} else if ($post->post_type == 'zhuige_bbs_forum') {
 				$post_type_info = $this->get_post_type_info($post->post_type);
 
@@ -635,18 +712,50 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 			return $this->error('缺少参数');
 		}
 
+		$offset = $this->param_int($request, 'offset', 0);
+
+		if ($tab == 'idle') {
+			if (ZhuiGe_Xcx_Addon::is_active('zhuige-idle_shop')) {
+				$args = [
+					'post_type' => ['zhuige_idle_goods'],
+					'posts_per_page' => ZhuiGe_Xcx::POSTS_PER_PAGE,
+					'offset' => $offset,
+					'orderby' => 'date',
+					'author' => $user_id 
+				];
+		
+				$goods = [];
+		
+				$query = new WP_Query();
+				$result = $query->query($args);
+				foreach ($result as $post) {
+					$goods[] = zhuige_idle_shop_goods_format($post);
+				}
+		
+				return $this->success([
+					'list' => $goods,
+					'more' => (count($result) >= ZhuiGe_Xcx::POSTS_PER_PAGE ? 'more' : 'nomore')
+				]);
+			} else {
+				return $this->success([
+					'list' => [],
+					'more' => 'nomore'
+				]);
+			}
+		}
+		
+
 		if ($my_user_id != $user_id && (int)(get_user_meta($user_id, 'zhuige_user_secret_' . $tab, true)) == 1) {
 			return $this->success(['tip' => '已关闭对他人可见', 'posts' => [], 'more' => 'nomore']);
 		}
-
-		$offset = $this->param_int($request, 'offset', 0);
+		
 
 		$topics = [];
 		if ($tab == 'publish') {
 			$args = [
 				'posts_per_page' => ZhuiGe_Xcx::POSTS_PER_PAGE,
 				'offset' => $offset,
-				'post_type' => ['zhuige_bbs_topic', 'zhuige_vote'],
+				'post_type' => ['zhuige_bbs_topic', 'zhuige_vote', 'zhuige_business_card', 'zhuige_idle_goods'],
 				'ignore_sticky_posts' => 1,
 				'author' => $user_id,
 			];
@@ -666,6 +775,22 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 					$item['link'] = $post_type_info['link'];
 					$item['author'] = zhuige_xcx_author_info($post->post_author);
 					$item['time'] = zhuige_xcx_time_beautify($post->post_date_gmt);
+					$topics[] = $item;
+				} else if ($post->post_type == 'zhuige_business_card' && function_exists('zhuige_business_card_format')) {
+					$post_type_info = $this->get_post_type_info($post->post_type);
+					$item = zhuige_business_card_format($post);
+					$item['post_type'] = $post->post_type;
+					$item['post_type_name'] = $post_type_info['name'];
+					$item['link'] = $post_type_info['link'];
+					$item['stick'] = 0;
+					$topics[] = $item;
+				} else if ($post->post_type == 'zhuige_idle_goods' && function_exists('zhuige_idle_shop_goods_format')) {
+					$post_type_info = $this->get_post_type_info($post->post_type);
+					$item = zhuige_idle_shop_goods_format($post);
+					$item['post_type'] = $post->post_type;
+					$item['post_type_name'] = $post_type_info['name'];
+					$item['link'] = $post_type_info['link'];
+					$item['stick'] = 0;
 					$topics[] = $item;
 				} else {
 					$topics[] = $post;
@@ -755,7 +880,7 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		}
 
 		return $this->success([
-			'post_ids' => $post_ids,
+			// 'post_ids' => $post_ids,
 			'posts' => $topics,
 			'more' => (count($result) >= ZhuiGe_Xcx::POSTS_PER_PAGE ? 'more' : 'nomore')
 		]);

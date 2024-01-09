@@ -2,7 +2,7 @@
 	<!-- 自定义滚动广告 -->
 	<!-- 自定义滚动广告 发现,话题聚合 class 增加 zhuige-scroll-nobox -->
 	<!-- 自定义滚动广告 商城 class 增加 zhuige-scroll-mall -->
-	<!-- 自定义滚动广告 集市 class 增加 zhuige-scroll-market -->
+	<!-- 自定义滚动广告 闲置物品 class 增加 zhuige-scroll-market -->
 	<view class="zhuige-scroll-ad-box" :class="boxClass"
 		:style="background ? 'background: url(' + background + ') no-repeat center; background-size: cover;' : ''">
 		<view class="zhuige-block-head">

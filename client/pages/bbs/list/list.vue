@@ -21,7 +21,7 @@
 				<view class="zhuige-classify-text">
 					<view>{{subject.name}}</view>
 					<view>
-						<text>{{subject.count}} 作品</text>
+						<text>{{subject.count}} 动态</text>
 					</view>
 				</view>
 			</view>

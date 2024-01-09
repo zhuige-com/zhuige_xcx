@@ -7,7 +7,7 @@
         "提醒用户"
     ],
     "help": "https://www.zhuige.com/docs/kzcj.html",
-    "setting": "admin.php?page=zhuige-xcx",
+    "setting": "",
     "sql": [
         "zhuige-at_users/sql.php"
     ],

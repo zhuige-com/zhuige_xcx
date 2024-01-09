@@ -1,45 +1,43 @@
 <template>
 	<view class="content">
 
-		<!-- <view class="zhuige-block"> -->
-			<!-- 用户卡 基于发帖用户信息，增加用户列表专用 zhuige-users-block -->
-			<template v-if="users.length>0">
-				<view v-for="(user, index) in users" :key="index"
-					@click="openLink('/pages/user/home/home?user_id=' + user.user_id)"
-					class="zhuige-social-poster-blcok zhuige-users-block">
-					<view class="zhuige-social-poster">
-						<view class="zhuige-social-poster-avatar">
-							<image mode="aspectFill" :src="user.avatar"></image>
-						</view>
-						<view class="zhuige-social-poster-info">
-							<view>
-								<text>{{user.nickname}}</text>
-								<!-- 图2 认证-->
-								<image v-if="user.certify && user.certify.status==1" mode="aspectFill"
-									:src="user.certify.icon"></image>
-								<!-- 图1 vip-->
-								<image class="zhuige-social-vip" v-if="user.vip && user.vip.status==1" mode="aspectFit"
-									:src="user.vip.icon"></image>
-							</view>
-							<view>
-								<text>作品 {{user.post_count}}</text>
-								<text>/</text>
-								<text>粉丝 {{user.fans_count}}</text>
-							</view>
-						</view>
+		<!-- 用户卡 基于发帖用户信息，增加用户列表专用 zhuige-users-block -->
+		<template v-if="users.length>0">
+			<view v-for="(user, index) in users" :key="index"
+				@click="openLink('/pages/user/home/home?user_id=' + user.user_id)"
+				class="zhuige-social-poster-blcok zhuige-users-block">
+				<view class="zhuige-social-poster">
+					<view class="zhuige-social-poster-avatar">
+						<image mode="aspectFill" :src="user.avatar"></image>
 					</view>
-					<view class="zhuige-social-opt" @click.stop="clickFollowUser(user.user_id)">
-						<view v-if="user.is_follow==1 && user.is_fans==1">已互关</view>
-						<view v-else-if="user.is_follow==1 && user.is_fans==0">已关注</view>
-						<view v-else-if="user.is_follow==0 && user.is_fans==1" class="active">回关</view>
-						<view v-else class="active">+关注</view>
+					<view class="zhuige-social-poster-info">
+						<view>
+							<text>{{user.nickname}}</text>
+							<!-- 图2 认证-->
+							<image v-if="user.certify && user.certify.status==1" mode="aspectFill"
+								:src="user.certify.icon"></image>
+							<!-- 图1 vip-->
+							<image class="zhuige-social-vip" v-if="user.vip && user.vip.status==1" mode="aspectFit"
+								:src="user.vip.icon"></image>
+						</view>
+						<view>
+							<text>动态 {{user.post_count}}</text>
+							<text>/</text>
+							<text>粉丝 {{user.fans_count}}</text>
+						</view>
 					</view>
 				</view>
-			</template>
-			<template v-else>
-				<zhuige-nodata v-if="loaded" :tip="noDataTip"></zhuige-nodata>
-			</template>
-		<!-- </view> -->
+				<view class="zhuige-social-opt" @click.stop="clickFollowUser(user.user_id)">
+					<view v-if="user.is_follow==1 && user.is_fans==1">已互关</view>
+					<view v-else-if="user.is_follow==1 && user.is_fans==0">已关注</view>
+					<view v-else-if="user.is_follow==0 && user.is_fans==1" class="active">回关</view>
+					<view v-else class="active">+关注</view>
+				</view>
+			</view>
+		</template>
+		<template v-else>
+			<zhuige-nodata v-if="loaded" :tip="noDataTip"></zhuige-nodata>
+		</template>
 
 		<uni-load-more v-if="users.length>0" :status="loadMore"></uni-load-more>
 	</view>

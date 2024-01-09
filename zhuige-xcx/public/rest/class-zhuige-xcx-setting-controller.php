@@ -462,6 +462,8 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 			];
 		}
 
+		$my_user_id = get_current_user_id();
+
 		//图标导航
 		$create_items_org = ZhuiGe_Xcx::option_value('create_items');
 		$items = [];
@@ -474,19 +476,79 @@ class ZhuiGe_Xcx_Setting_Controller extends ZhuiGe_Xcx_Base_Controller
 						'title' => $item['title'],
 					];
 
-					if (stripos($item['link'], 'bbs/post/post') !== false) {
-						$i['require_mobile'] = (ZhuiGe_Xcx::option_value('bbs_topic_mobile_switch') ? 1 : 0);
-						$i['require_mobile_tip'] = '发帖';
-					} else if (stripos($item['link'], 'bbs/forum-create/forum-create') !== false) {
-						$i['require_mobile'] = (ZhuiGe_Xcx::option_value('bbs_forum_mobile_switch') ? 1 : 0);
-						$i['require_mobile_tip'] = '建圈';
-					} else if (stripos($item['link'], 'vote/post/post') !== false) {
-						$i['require_mobile'] = (ZhuiGe_Xcx::option_value('vote_mobile_switch') ? 1 : 0);
-						$i['require_mobile_tip'] = '发起投票';
-					} else if (stripos($item['link'], 'contribution/post-edit/post-edit') !== false) {
-						$i['require_mobile'] = (ZhuiGe_Xcx::option_value('contribution_mobile_switch') ? 1 : 0);
-						$i['require_mobile_tip'] = '投稿';
+					// if (stripos($item['link'], 'bbs/post/post') !== false) {
+					// 	$i['require_mobile'] = (ZhuiGe_Xcx::option_value('bbs_topic_mobile_switch') ? 1 : 0);
+					// 	$i['require_mobile_tip'] = '发帖';
+					// } else if (stripos($item['link'], 'bbs/forum-create/forum-create') !== false) {
+					// 	$i['require_mobile'] = (ZhuiGe_Xcx::option_value('bbs_forum_mobile_switch') ? 1 : 0);
+					// 	$i['require_mobile_tip'] = '建圈';
+					// } else if (stripos($item['link'], 'vote/post/post') !== false) {
+					// 	$i['require_mobile'] = (ZhuiGe_Xcx::option_value('vote_mobile_switch') ? 1 : 0);
+					// 	$i['require_mobile_tip'] = '发起投票';
+					// } else if (stripos($item['link'], 'contribution/post-edit/post-edit') !== false) {
+					// 	$i['require_mobile'] = (ZhuiGe_Xcx::option_value('contribution_mobile_switch') ? 1 : 0);
+					// 	$i['require_mobile_tip'] = '投稿';
+					// }
+
+
+					if (!$my_user_id) {
+						$i['require_login'] = 1;
+					} else {
+						if (stripos($item['link'], 'bbs/post/post') !== false) {
+							$i['require_mobile'] = (ZhuiGe_Xcx::option_value('bbs_topic_mobile_switch') ? 1 : 0);
+							if ($i['require_mobile']) {
+								if (!zhuige_xcx_is_set_mobile($my_user_id)) {
+									$i['require_mobile_tip'] = '发帖';
+								}
+							}
+
+							if (ZhuiGe_Xcx::option_value('bbs_topic_avatar_switch')) {
+								if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+									$i['require_avatar_tip'] = '发帖';
+								}
+							}
+						} else if (stripos($item['link'], 'bbs/forum-create/forum-create') !== false) {
+							$i['require_mobile'] = (ZhuiGe_Xcx::option_value('bbs_forum_mobile_switch') ? 1 : 0);
+							if ($i['require_mobile']) {
+								if (!zhuige_xcx_is_set_mobile($my_user_id)) {
+									$i['require_mobile_tip'] = '建圈';
+								}
+							}
+							
+							if (ZhuiGe_Xcx::option_value('bbs_forum_avatar_switch')) {
+								if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+									$i['require_avatar_tip'] = '建圈';
+								}
+							}
+						} else if (stripos($item['link'], 'vote/post/post') !== false) {
+							$i['require_mobile'] = (ZhuiGe_Xcx::option_value('vote_mobile_switch') ? 1 : 0);
+							if ($i['require_mobile']) {
+								if (!zhuige_xcx_is_set_mobile($my_user_id)) {
+									$i['require_mobile_tip'] = '发起投票';
+								}
+							}
+
+							if (ZhuiGe_Xcx::option_value('vote_avatar_switch')) {
+								if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+									$i['require_avatar_tip'] = '发起投票';
+								}
+							}
+						} else if (stripos($item['link'], 'contribution/post-edit/post-edit') !== false) {
+							$i['require_mobile'] = (ZhuiGe_Xcx::option_value('contribution_mobile_switch') ? 1 : 0);
+							if ($i['require_mobile']) {
+								if (!zhuige_xcx_is_set_mobile($my_user_id)) {
+									$i['require_mobile_tip'] = '投稿';
+								}
+							}
+
+							if (ZhuiGe_Xcx::option_value('contribution_avatar_switch')) {
+								if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+									$i['require_avatar_tip'] = '投稿';
+								}
+							}
+						}
 					}
+					
 
 					$items[] = $i;
 				}

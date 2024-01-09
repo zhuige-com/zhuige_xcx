@@ -49,6 +49,8 @@
 				})
 				return;
 			}
+			
+			Util.addShareScore(options.source);
 
 			this.loadSetting()
 		},

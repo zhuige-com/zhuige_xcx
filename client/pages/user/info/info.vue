@@ -1,5 +1,6 @@
 <template>
 	<view class="content">
+		<view v-if="tip">完善{{tip}},才能继续</view>
 		<view class="zhuige-info-form-box">
 			<!-- 顶部大图及头像 -->
 			<view class="zhuige-info-header">
@@ -111,6 +112,8 @@
 		
 		data() {
 			return {
+				tip: '',
+				
 				cover: '',
 				avatar: '',
 				nickname: '',
@@ -124,13 +127,17 @@
 		},
 
 		onLoad(options) {
-			Util.addShareScore(options.source);
-
 			if (!Auth.getUser()) {
 				uni.reLaunch({
 					url: '/pages/tabs/index/index'
 				})
 				return;
+			}
+			
+			Util.addShareScore(options.source);
+			
+			if (options.tip) {
+				this.tip = options.tip;
 			}
 
 			this.loadData();

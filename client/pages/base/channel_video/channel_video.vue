@@ -26,6 +26,8 @@
 		},
 
 		onLoad(options) {
+			Util.addShareScore(options.source);
+			
 			if (options.id && options.name) {
 				this.feed_id = options.id;
 				this.finder_user_name = options.name;

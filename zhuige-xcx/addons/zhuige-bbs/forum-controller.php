@@ -161,10 +161,17 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 			return $this->error('无创建圈子权限~');
 		}
 
+		// 创建圈子是否要求手机号
 		if (ZhuiGe_Xcx::option_value('bbs_forum_mobile_switch')) {
-			$mobile = get_user_meta($my_user_id, 'zhuige_xcx_user_mobile', true);
-			if (empty($mobile)) {
+			if (!zhuige_xcx_is_set_mobile($my_user_id)) {
 				return $this->error('', 'require_mobile');
+			}
+		}
+
+		// 创建圈子是否要求头像昵称
+		if (ZhuiGe_Xcx::option_value('bbs_forum_avatar_switch')) {
+			if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+				return $this->error('', 'require_avatar');
 			}
 		}
 
@@ -210,10 +217,17 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 			return $this->error('无创建圈子权限~');
 		}
 
+		// 创建圈子是否要求手机号
 		if (ZhuiGe_Xcx::option_value('bbs_forum_mobile_switch')) {
-			$mobile = get_user_meta($my_user_id, 'zhuige_xcx_user_mobile', true);
-			if (empty($mobile)) {
+			if (!zhuige_xcx_is_set_mobile($my_user_id)) {
 				return $this->error('', 'require_mobile');
+			}
+		}
+
+		// 创建圈子是否要求头像昵称
+		if (ZhuiGe_Xcx::option_value('bbs_forum_avatar_switch')) {
+			if (!zhuige_xcx_is_set_avatar($my_user_id)) {
+				return $this->error('', 'require_avatar');
 			}
 		}
 

@@ -496,6 +496,7 @@ CSF::createSection($prefix, array(
             'multiple'    => true,
             'sortable'    => true,
             'options'     => $zhuige_xcx_post_types,
+            'dependency' => array('rec_list_tab_switch', '==', '1'),
         ),
 
         array(
@@ -902,6 +903,14 @@ CSF::createSection($prefix, array(
             'type'  => 'switcher',
             'title' => '开启/停用',
             'subtitle' => '评论是否要求绑定手机号',
+            'default' => '0'
+        ),
+
+        array(
+            'id'    => 'comment_avatar_switch',
+            'type'  => 'switcher',
+            'title' => '开启/停用',
+            'subtitle' => '评论是否要求设置头像昵称',
             'default' => '0'
         ),
 

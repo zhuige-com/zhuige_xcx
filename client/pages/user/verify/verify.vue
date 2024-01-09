@@ -10,7 +10,15 @@
 					<view class="zhuige-verify-text">点击更换头像</view>
 				</button>
 				<view class="zhuige-verify-line">
-					<view class="zhuige-verify-text">你这么帅，不换个昵称吗</view>
+					<view class="zhuige-verify-text">
+						<template v-if="tip">
+							完善头像昵称后才能{{tip}}
+						</template>
+						<template v-else>
+							你这么帅，不换个昵称吗
+						</template>
+					</view>
+					
 					<view>
 						<input type="nickname" v-model="nickname" @blur="onNicknameBlur" placeholder="请输入昵称" />
 					</view>
@@ -52,21 +60,45 @@
 		data() {
 			return {
 				nickname: '',
-				avatar: '/static/avatar.jpg'
+				avatar: '/static/avatar.jpg',
+				
+				//登录后 重新加载
+				loginReload: false,
+				
+				tip: ''
 			}
 		},
 
 		onLoad(options) {
-			let user = Auth.getUser();
-			if (user) {
-				this.nickname = user.nickname;
-				if (user.avatar) {
-					this.avatar = user.avatar;
-				}
+			Util.addShareScore(options.source);
+			
+			if (options.tip) {
+				this.tip = options.tip;
+			}
+			this.loadData();
+			uni.$on('zhuige_event_user_login', this.onSetReload);
+		},
+		
+		onUnload() {
+			uni.$off('zhuige_event_user_login', this.onSetReload);
+		},
+		
+		onShow() {
+			if (this.loginReload) {
+				this.loginReload = false;
+		
+				this.loadData();
 			}
 		},
 
 		methods: {
+			/**
+			 * 需要重新加载事件
+			 */
+			onSetReload(data) {
+				this.loginReload = true;
+			},
+			
 			/**
 			 * 点击打开链接
 			 */
@@ -118,6 +150,26 @@
 			 */
 			clickBack() {
 				Util.navigateBack()
+			},
+			
+			/**
+			 * 加载数据
+			 */
+			loadData() {
+				Rest.post(Api.URL('user', 'get_init_info'), {}).then(res => {
+					if (res.code == 0) {
+						this.nickname = res.data.nickname;
+						this.avatar = res.data.avatar;
+						
+						if (this.tip) {
+							Alert.toast('完善头像昵称后才能' + this.tip)
+						}
+					} else {
+						Alert.error(res.message);
+					}
+				}, err => {
+					console.log(err)
+				});
 			}
 		}
 	}

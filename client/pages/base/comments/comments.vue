@@ -3,7 +3,7 @@
 		<view class="zhuige-recommen">
 			<view class="zhuige-block">
 				<template v-if="comments && comments.length>0">
-					<zhuige-reply v-for="(comment, index) in comments" :key="index" :item="comment">
+					<zhuige-reply v-for="(comment, index) in comments" :key="index" :item="comment" :replyicon="0">
 					</zhuige-reply>
 				</template>
 				<template v-else-if="loaded">
