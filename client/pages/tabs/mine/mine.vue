@@ -111,7 +111,7 @@
 	 * 文档: https://www.zhuige.com/docs/zg.html
 	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
 	 * github: https://github.com/zhuige-com/zhuige_xcx
-	 * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+	 * Copyright © 2022-2024 www.zhuige.com All rights reserved.
 	 */
 
 	import Util from '@/utils/util';
@@ -320,6 +320,7 @@
 	.zhuige-mine-login-user-avatar {
 		height: 96rpx;
 		width: 96rpx;
+		flex: 0 0 96rpx;
 	}
 
 	.zhuige-mine-login-user-avatar image {
@@ -330,6 +331,7 @@
 
 	.zhuige-mine-login-user-info {
 		padding-left: 20rpx;
+		flex: 1;
 	}
 
 	.zhuige-mine-login-user-info view:nth-child(1) {
@@ -343,6 +345,7 @@
 	.zhuige-mine-login-user-info view:nth-child(1) image {
 		height: 12px;
 		width: 26px;
+		min-width: 26px;
 		margin-left: 8rpx;
 	}
 
@@ -377,6 +380,7 @@
 		font-weight: 300;
 		padding: 0 20rpx 0 30rpx;
 		margin-right: -30rpx;
+		min-width: 48px;
 	}
 
 	.zhuige-mine-data-count {

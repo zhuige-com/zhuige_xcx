@@ -2,7 +2,7 @@
 	"name": "zhuige-xcx",
 	"appid": "",
 	"description": "",
-	"versionName": "2.0.6",
+	"versionName": "2.1.0",
 	"versionCode": "100",
 	"transformPx": false,
 	/* 5+App特有相关 */
@@ -53,7 +53,9 @@
 		"appid": "",
 		"setting": {
 			"urlCheck": false,
-			"minified": true
+			"minified": true,
+			"es6": true,
+			"postcss": true
 		},
 		"usingComponents": true,
 		"plugins": {
@@ -68,7 +70,9 @@
 			}
 		},
 		"requiredPrivateInfos": ["chooseLocation", "chooseAddress"],
-		"requiredBackgroundModes": ["audio"]
+		"requiredBackgroundModes": ["audio"],
+		// "lazyCodeLoading": "requiredComponents",
+		"libVersion": "latest"
 	},
 	"mp-alipay": {
 		"usingComponents": true

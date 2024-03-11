@@ -6,7 +6,7 @@
  * 文档: https://www.zhuige.com/docs/zg.html
  * gitee: https://gitee.com/zhuige_com/zhuige_xcx
  * github: https://github.com/zhuige-com/zhuige_xcx
- * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+ * Copyright © 2022-2024 www.zhuige.com All rights reserved.
  */
 
 $content = '感谢使用追格小程序！ <br/><br/> 微信客服：jianbing2011 (加开源群、问题咨询、项目定制、购买咨询) <br/><br/> <a href="https://www.zhuige.com" target="_blank">追格官网</a>';

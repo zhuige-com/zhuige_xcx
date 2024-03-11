@@ -6,7 +6,7 @@
  * 文档: https://www.zhuige.com/docs/zg.html
  * gitee: https://gitee.com/zhuige_com/zhuige_xcx
  * github: https://github.com/zhuige-com/zhuige_xcx
- * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+ * Copyright © 2022-2024 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
@@ -89,8 +89,6 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		$session = false;
 		if ('weixin' == $channel) {
 			$session = $this->wx_code2openid($code);
-		} else if ('qq' == $channel) {
-			$session = $this->qq_code2openid($code);
 		} else if ('baidu' == $channel) {
 			$session = $this->bd_code2openid($code);
 		}
@@ -320,47 +318,6 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 		if (!is_array($result) || is_wp_error($result) || $result['response']['code'] != '200') {
 			return '网络请求异常';
 		}
-
-		$body = stripslashes($result['body']);
-		$session = json_decode($body, true);
-
-		if (!isset($session['openid']) || empty($session['openid'])) {
-			return json_encode($session);
-		}
-
-		return $session;
-	}
-
-	/**
-	 * QQ登录
-	 */
-	private function qq_code2openid($code)
-	{
-		$qq = ZhuiGe_Xcx::option_value('basic_qq');
-		$app_id = '';
-		$app_secret = '';
-		if ($qq) {
-			$app_id = $qq['appid'];
-			$app_secret = $qq['secret'];
-		}
-
-		if (empty($app_id) || empty($app_secret)) {
-			return '请在后台设置QQ appid和secret';
-		}
-
-		$params = [
-			'appid' => $app_id,
-			'secret' => $app_secret,
-			'js_code' => $code,
-			'grant_type' => 'authorization_code'
-		];
-
-		$result = wp_remote_get(add_query_arg($params, 'https://api.q.qq.com/sns/jscode2session'));
-		if (!is_array($result) || is_wp_error($result) || $result['response']['code'] != '200') {
-			return '网络请求异常';
-		}
-
-		// file_put_contents('qq_login', json_encode($result));
 
 		$body = stripslashes($result['body']);
 		$session = json_decode($body, true);

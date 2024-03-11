@@ -323,7 +323,7 @@ const state_data = {
 			let cart = payload.list;
 			for (let i = 0; i < cart.length; i++) {
 				for (let j = 0; j < state.cart.length; j++) {
-					if (state.cart[j].id == cart[i].id) {
+					if (state.cart[j].id == cart[i].id && state.cart[j].type == cart[i].type) {
 						cart[i].count = state.cart[j].count;
 						cart[i].check_buy = state.cart[j].check_buy;
 						cart[i].check_del = state.cart[j].check_del;

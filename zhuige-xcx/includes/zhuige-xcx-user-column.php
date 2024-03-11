@@ -6,7 +6,7 @@
  * 文档: https://www.zhuige.com/docs/zg.html
  * gitee: https://gitee.com/zhuige_com/zhuige_xcx
  * github: https://github.com/zhuige-com/zhuige_xcx
- * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+ * Copyright © 2022-2024 www.zhuige.com All rights reserved.
  */
 
 add_filter('manage_users_columns', 'zhuige_xcx_manage_user_columns', 10, 2);
@@ -51,8 +51,6 @@ function zhuige_xcx_manage_user_custom_columnns($value, $column_name, $user_id)
 		$channel = get_user_meta($user_id, 'zhuige_channel', true);
 		if ('weixin' == $channel) {
 			$value = '微信';
-		} else if ('qq' == $channel) {
-			$value = 'QQ';
 		} else if ('baidu' == $channel) {
 			$value = '百度';
 		} else {

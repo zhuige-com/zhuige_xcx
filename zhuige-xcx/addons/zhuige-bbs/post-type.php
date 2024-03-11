@@ -6,7 +6,7 @@
  * 文档: https://www.zhuige.com/docs/zg.html
  * gitee: https://gitee.com/zhuige_com/zhuige_xcx
  * github: https://github.com/zhuige-com/zhuige_xcx
- * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+ * Copyright © 2022-2024 www.zhuige.com All rights reserved.
  */
 
 function zhuige_xcx_bbs_create_custom_post_type()

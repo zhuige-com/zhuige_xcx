@@ -137,9 +137,6 @@
 	}
 
 	/* --- 居中tab --- */
-	.zhuige-center-tab {
-		background: none;
-	}
 
 	.zhuige-center-tab .zhuige-tab-nav {
 		display: flex;

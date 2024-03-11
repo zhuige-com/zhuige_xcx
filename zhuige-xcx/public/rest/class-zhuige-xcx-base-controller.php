@@ -6,7 +6,7 @@
  * 文档: https://www.zhuige.com/docs/zg.html
  * gitee: https://gitee.com/zhuige_com/zhuige_xcx
  * github: https://github.com/zhuige-com/zhuige_xcx
- * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+ * Copyright © 2022-2024 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Base_Controller extends WP_REST_Controller
@@ -125,11 +125,7 @@ class ZhuiGe_Xcx_Base_Controller extends WP_REST_Controller
 	 */
 	public function msg_sec_check($content, $os = 'wx')
 	{
-		if ($os == 'qq') {
-			return $this->qq_msg_sec_check($content);
-		} else {
-			return $this->wx_msg_sec_check($content);
-		}
+		return $this->wx_msg_sec_check($content);
 	}
 
 	/**
@@ -171,58 +167,11 @@ class ZhuiGe_Xcx_Base_Controller extends WP_REST_Controller
 	}
 
 	/**
-	 * QQ-检查敏感内容
-	 */
-	public function qq_msg_sec_check($content)
-	{
-		$qq_session = ZhuiGe_Xcx::get_qq_token();
-		if (!$qq_session) {
-			return false;
-		}
-
-		$access_token = $qq_session['access_token'];
-
-		$api = 'https://api.q.qq.com/api/json/security/MsgSecCheck?access_token=' . $access_token;
-
-		$qq = ZhuiGe_Xcx::option_value('basic_qq');
-		if (!$qq || empty($qq['appid'])) {
-			return false;
-		}
-
-		$args = array(
-			'method'  => 'POST',
-			'body' 	  => json_encode(['appid' => $qq['appid'], 'content' => $content], JSON_UNESCAPED_UNICODE),
-			'headers' => array(
-				'Content-Type' => 'application/json'
-			),
-			'cookies' => array()
-		);
-
-		$res = wp_remote_post($api, $args);
-		if (is_wp_error($res)) {
-			return false;
-		}
-
-		if ($res['response']['code'] == 200) {
-			$body = json_decode($res['body'], TRUE);
-			if ($body['errCode'] == 0) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	/**
 	 * 内容检查
 	 */
 	public function msg_sec_media($img, $os = 'wx')
 	{
-		if ($os == 'qq') {
-			return $this->qq_msg_sec_media($img);
-		} else {
-			return $this->wx_msg_sec_media($img);
-		}
+		return $this->wx_msg_sec_media($img);
 	}
 
 	/**
@@ -271,58 +220,6 @@ class ZhuiGe_Xcx_Base_Controller extends WP_REST_Controller
 		$data = json_decode($res, TRUE);
 		if ($data['errcode'] == 0) {
 			return true;
-		}
-
-		return false;
-	}
-
-	/*QQ 图片敏感内容检测*/
-	public function qq_msg_sec_media($img)
-	{
-		$obj = new CURLFile(realpath($img));
-		$obj->setMimeType("image/jpeg");
-		$file['media'] = $obj;
-
-		$qq_session = ZhuiGe_Xcx::get_qq_token();
-		if (!$qq_session) {
-			return false;
-		}
-
-		$access_token = $qq_session['access_token'];
-
-		$api = "https://api.q.qq.com/api/json/security/ImgSecCheck?access_token=$access_token";
-
-		$qq = ZhuiGe_Xcx::option_value('basic_qq');
-		if (!$qq || empty($qq['appid'])) {
-			return false;
-		}
-
-		$args = array(
-			'method'  => 'POST',
-			'body' 	  => ['appid' => $qq['appid'], 'media' => $obj],
-			'headers' => array(
-				'Content-Type' => 'multipart/form-data'
-			),
-			'cookies' => array()
-		);
-
-		$res = wp_remote_post($api, $args);
-		if (is_wp_error($res)) {
-			return false;
-		}
-
-		// $data = json_decode($res, TRUE);
-		// if ($data['errCode'] == 0) {
-		// 	return true;
-		// }
-
-		// file_put_contents('6677.txt', json_encode($res));
-
-		if ($res['response']['code'] == 200) {
-			$body = json_decode($res['body'], TRUE);
-			if ($body['errCode'] == 0) {
-				return true;
-			}
 		}
 
 		return false;

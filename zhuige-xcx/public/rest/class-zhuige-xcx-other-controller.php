@@ -6,7 +6,7 @@
  * 文档: https://www.zhuige.com/docs/zg.html
  * gitee: https://gitee.com/zhuige_com/zhuige_xcx
  * github: https://github.com/zhuige-com/zhuige_xcx
- * Copyright © 2022-2023 www.zhuige.com All rights reserved.
+ * Copyright © 2022-2024 www.zhuige.com All rights reserved.
  */
 
 class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
@@ -183,7 +183,7 @@ class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
 	private function uploadOne($file, $path, $max = 20000000)
 	{
 		//判定文件有效性
-		if (!isset($file['error']) || count($file) != 5) {
+		if (!isset($file['error'])) {
 			return ['error' => '错误的上传文件！'];
 		}
 
@@ -254,7 +254,7 @@ class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
 	private function uploadOne2($file, $path, $max = 20000000)
 	{
 		//判定文件有效性
-		if (!isset($file['error']) || count($file) != 5) {
+		if (!isset($file['error'])) {
 			return ['error' => '错误的上传文件！'];
 		}
 
@@ -324,7 +324,7 @@ class ZhuiGe_Xcx_Other_Controller extends ZhuiGe_Xcx_Base_Controller
 	private function uploadVideo($file, $path, $max = 100000000)
 	{
 		//判定文件有效性
-		if (!isset($file['error']) || count($file) != 5) {
+		if (!isset($file['error'])) {
 			return ['error' => '错误的上传文件！'];
 		}
 
