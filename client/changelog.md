@@ -1,3 +1,9 @@
+## 2.2.0（2024-03-20）
+1. 新增：付费推广（模块）：https://www.zhuige.com/product/zhuige-promotion
+2. 新增：圈子（圈主）管理（模块）：https://www.zhuige.com/product/zhuige-bbs_admin
+3. 新增：登录页增加滚动背景；
+4. 其他：已知问题优化。
+
 ## 2.1.0（2024-02-22）
 1. 新增：违禁词库（模块）https://www.zhuige.com/product/zhuige-ban_words；
 2. 新增：评论要求设置头像昵称（全局/评论设置）；

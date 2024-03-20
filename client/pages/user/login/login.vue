@@ -1,50 +1,63 @@
 <template>
 	<view class="content">
-		<view class="zhuige-login" :style="background?'background-image: url(' + background + ');':''">
-			<view class="zhuige-logo">
-				<image mode="aspectFill" :src="logo"></image>
-				<view v-if="title">{{title}}</view>
-				<view v-if="type=='mobile' && tip">绑定手机号才能{{tip}}</view>
+		<view class="scroll-container">
+			<view class="scroll-item">
+				<image mode="aspectFill" :src="background"></image>
 			</view>
-
-			<view class="zhuige-login-btn">
-				<template v-if="type=='login'">
-					<!-- #ifdef H5 -->
-					<view style="color: white;">H5 平台可修改public/rest/class-zhuige-xcx-user-controller.php 函数 test_login
-						用作测试</view>
-					<view style="color: white;">H5 平台仅可用作测试，部分功能尚未适配</view>
-					<!-- #endif -->
-					<button class="zhuige-button" @click="clickLogin">登录</button>
-				</template>
-				<template v-if="type=='mobile'">
-					<!-- #ifdef MP-WEIXIN -->
-					<button type="default" class="zhuige-button" open-type="getPhoneNumber"
-						@getphonenumber="getPhoneNumber">绑定手机号</button>
-					<!-- #endif -->
-
-					<!-- #ifndef MP-WEIXIN -->
-					该平台下的手机绑定功能暂未实现
-					<!-- #endif -->
-				</template>
-
-				<view @click="clickWalk" class="zhuige-button">随便逛逛</view>
-
-				<view v-if="type!='mobile'" class="zhuige-login-tip">
-					<template v-if="yhxy || yszc">
-						<label @click="clickAgreeLicense">
-							<radio :checked="argeeLicense" color="#ff4400" style="transform:scale(0.7)" />
-							我已阅读并同意
-						</label>
-						<text class="link" v-if="yhxy" @click="openLink(yhxy)">《用户协议》</text>
-						<template v-if="yhxy && yszc">及</template>
-						<text class="link" v-if="yszc" @click="openLink(yszc)">《隐私条款》</text>
-					</template>
-					<template v-else>
-						请在后台设置《用户协议》和《隐私条款》
-					</template>
-				</view>
+			<view class="scroll-item">
+				<image mode="aspectFill" :src="background"></image>
 			</view>
 		</view>
+		
+		<view class="zhuige-login-box">
+			<view class="zhuige-login">
+				<view class="zhuige-logo">
+					<image mode="aspectFit" :src="logo"></image>
+					<view v-if="title">{{title}}</view>
+					<view v-if="type=='mobile' && tip">绑定手机号才能{{tip}}</view>
+				</view>
+
+				<view class="zhuige-login-btn">
+					<template v-if="type=='login'">
+						<!-- #ifdef H5 -->
+						<view style="color: white;">H5 平台可修改public/rest/class-zhuige-xcx-user-controller.php 函数 test_login
+							用作测试</view>
+						<view style="color: white;">H5 平台仅可用作测试，部分功能尚未适配</view>
+						<!-- #endif -->
+						<button class="zhuige-button" @click="clickLogin">登录</button>
+					</template>
+					<template v-if="type=='mobile'">
+						<!-- #ifdef MP-WEIXIN -->
+						<button type="default" class="zhuige-button" open-type="getPhoneNumber"
+							@getphonenumber="getPhoneNumber">绑定手机号</button>
+						<!-- #endif -->
+
+						<!-- #ifndef MP-WEIXIN -->
+						该平台下的手机绑定功能暂未实现
+						<!-- #endif -->
+					</template>
+
+					<view @click="clickWalk" class="zhuige-button">随便逛逛</view>
+
+					<view v-if="type!='mobile'" class="zhuige-login-tip">
+						<template v-if="yhxy || yszc">
+							<label @click="clickAgreeLicense">
+								<radio :checked="argeeLicense" color="#ff4400" style="transform:scale(0.7)" />
+								我已阅读并同意
+							</label>
+							<text class="link" v-if="yhxy" @click="openLink(yhxy)">《用户协议》</text>
+							<template v-if="yhxy && yszc">及</template>
+							<text class="link" v-if="yszc" @click="openLink(yszc)">《隐私条款》</text>
+						</template>
+						<template v-else>
+							请在后台设置《用户协议》和《隐私条款》
+						</template>
+					</view>
+				</view>
+			</view>
+			
+		</view>
+	
 	</view>
 </template>
 
@@ -280,6 +293,19 @@
 </script>
 
 <style>
+	.content {
+		position: absolute;
+		height: 100%;
+		width: 100%;
+		top: 0;
+		left: 0;
+	}
+	.zhuige-login-box {
+		position: absolute;
+		z-index: 99;
+		top: 0;
+		left: 0;
+	}
 	.zhuige-login {
 		position: fixed;
 		height: 100%;
@@ -339,4 +365,75 @@
 		color: #EEEEEE;
 		text-decoration: underline;
 	}
+	
+	
+.scroll-container {
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  height: 100%; /* 设置滚动容器的高度 */
+}
+ 
+.scroll-item {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  animation: scrollUp 18s linear infinite; /* 设置动画名称，时长，速率函数和循环次数 */
+}
+.scroll-item:nth-child(2) {
+	top: 100%;
+}
+.scroll-item image {
+	height: 100%;
+	width: 100%;
+}
+/* 背景动画 */
+
+ @-webkit-keyframes scrollUp {
+            0% {
+                -webkit-transform: translateY(0);
+                transform: translateY(0);
+            }
+            100% {
+                -webkit-transform: translateY(-100%);
+                transform: translateY(-100%);
+            }
+        }
+
+        @-moz-keyframes scrollUp {
+            0% {
+                -moz-transform: translateY(0);
+                transform: translateY(0);
+            }
+            100% {
+                -moz-transform: translateY(-100%);
+                transform: translateY(-100%);
+            }
+        }
+
+        @-o-keyframes scrollUp {
+            0% {
+                -o-transform: translateY(0);
+                transform: translateY(0);
+            }
+            100% {
+                -o-transform: translateY(-100%);
+                transform: translateY(-100%);
+            }
+        }
+
+        @keyframes scrollUp {
+            0% {
+                -webkit-transform: translateY(0);
+                -moz-transform: translateY(0);
+                -o-transform: translateY(0);
+                transform: translateY(0);
+            }
+            100% {
+                -webkit-transform: translateY(-100%);
+                -moz-transform: translateY(-100%);
+                -o-transform: translateY(-100%);
+                transform: translateY(-100%);
+            }
+        }
 </style>

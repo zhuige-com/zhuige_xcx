@@ -344,6 +344,29 @@
 							</view>
 						</template>
 						
+						<!-- 百科词条 -->
+						<template v-else-if="topic.post_type=='zhuige_wiki'">
+							<view class="zhugie-info-block left-side">
+								<view class="zhugie-info-image">
+									<image mode="aspectFill" :src="topic.thumb"></image>
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">
+										{{topic.title}}
+									</view>
+									<view class="zhugie-info-summary">
+										{{topic.excerpt}}
+									</view>
+									<view class="zhuige-info-post">
+										<view class="zhuige-info-data">
+											<text v-for="(tag, itag) in topic.tags" :key="itag"
+												@click.stop="clickTag(tag)">{{tag.name}}</text>
+										</view>
+									</view>
+								</view>
+							</view>
+						</template>
+						
 						<!-- 闲置物品 -->
 						<template v-else-if="topic.post_type=='zhuige_idle_goods'">
 							<view class="zhuige_idle">
@@ -819,6 +842,15 @@
 		background: #333333;
 		color: #FFFFFF;
 		border: 1px solid #333333;
+	}
+	.zhugie-info-summary {
+		display: -webkit-box;
+		-webkit-line-clamp: 1;
+		-webkit-box-orient: vertical;
+		overflow: hidden;
+		line-height: 1.8em;
+		margin-bottom: 16rpx;
+		color: #555555;
 	}
 	
 </style>

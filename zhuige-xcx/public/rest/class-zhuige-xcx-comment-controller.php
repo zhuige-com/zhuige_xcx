@@ -107,6 +107,9 @@ class ZhuiGe_Xcx_Comment_Controller extends ZhuiGe_Xcx_Base_Controller
 			} else if ($post->post_type == 'zhuige_business_card') {
 				$auth_comment_business_card = ZhuiGe_Xcx::option_value('auth_comment_business_card');
 				$auth_comment = ($auth_comment_business_card == 'all' || ($auth_comment_business_card == 'vip' && $is_user_vip));
+			} else if ($post->post_type == 'zhuige_wiki') {
+				$auth_comment_wiki = ZhuiGe_Xcx::option_value('auth_comment_wiki');
+				$auth_comment = ($auth_comment_wiki == 'all' || ($auth_comment_wiki == 'vip' && $is_user_vip));
 			} else if ($post->post_type == 'zhuige_idle_goods') {
 				$auth_comment_idle_shop = ZhuiGe_Xcx::option_value('auth_comment_idle_shop');
 				$auth_comment = ($auth_comment_idle_shop == 'all' || ($auth_comment_idle_shop == 'vip' && $is_user_vip));

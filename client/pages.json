@@ -7,7 +7,8 @@
 				"navigationBarTitleText": "首页",
 				"enablePullDownRefresh": true
 			}
-		}, {
+		},
+		{
 			"path": "pages/tabs/forum/forum",
 			"style": {
 				"navigationBarTitleText": "全部圈子",
