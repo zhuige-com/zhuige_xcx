@@ -1,3 +1,11 @@
+## 2.3.0（2024-05-09）
+1. 新增：商家名片（模块）；https://www.zhuige.com/product/zhuige-business_card
+2. 新增：评分组件增加提示信息；
+3. 新增：投票聚合列表；
+4. 优化：投票过长撑破页面问题；
+5. 优化：购物车产品规格内容过长撑破页面问题；
+6. 其他：已知问题优化。
+
 ## 2.2.0（2024-03-20）
 1. 新增：付费推广（模块）：https://www.zhuige.com/product/zhuige-promotion
 2. 新增：圈子（圈主）管理（模块）：https://www.zhuige.com/product/zhuige-bbs_admin

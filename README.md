@@ -1,5 +1,5 @@
 
-![追格小程序](https://q.zhuige.com/imgs/banner.png) 
+![追格小程序](https://www.zhuige.com/uploads/20221016/5314433584efaecf44ca2ad8d120a1f4.jpg) 
 
 
 #### 产品概述

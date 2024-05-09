@@ -43,6 +43,7 @@ class ZhuiGe_Xcx_Base_Controller extends WP_REST_Controller
 				[
 					'callback' => [$this, $callback],
 					'methods' => $methods,
+					'permission_callback' => '__return_true',
 				]
 			]);
 		}
