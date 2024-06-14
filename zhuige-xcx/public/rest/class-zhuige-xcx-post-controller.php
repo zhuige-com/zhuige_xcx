@@ -93,11 +93,12 @@ class ZhuiGe_Xcx_Post_Controller extends ZhuiGe_Xcx_Base_Controller
 		
 		$sticky_count = 0;
 		if (($post_type == 'last' || $post_type == 'any') && $offset == 0 && is_array($rec_list_limit)) {
-			$table_promotion_log = $wpdb->prefix . 'zhuige_xcx_promotion_log';
-			$promotion_post_ids = $wpdb->get_col(
-				$wpdb->prepare(
-					"SELECT DISTINCT(`post_id`) FROM `$table_promotion_log` WHERE `endtime`>%d AND `status`='finish' ORDER BY `createtime` ASC", time()));
-
+			if (ZhuiGe_Xcx_Addon::is_active('zhuige-promotion')) {
+				$table_promotion_log = $wpdb->prefix . 'zhuige_xcx_promotion_log';
+				$promotion_post_ids = $wpdb->get_col(
+					$wpdb->prepare(
+						"SELECT DISTINCT(`post_id`) FROM `$table_promotion_log` WHERE `endtime`>%d AND `status`='finish' ORDER BY `createtime` ASC", time()));
+			}
 			$table_postmeta = $wpdb->prefix . 'postmeta';
 			$sticky_post_ids = $wpdb->get_col("SELECT `post_id` FROM `$table_postmeta` WHERE `meta_key`='zhuige_bbs_home_sticky' AND `meta_value`='1'");
 
