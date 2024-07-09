@@ -729,7 +729,7 @@ page {
 	
 } */
 
-.zhuige-icon view {
+.zhuige-icon > view {
 	width: 20%;
 	text-align: center;
 	padding-bottom: 10rpx;

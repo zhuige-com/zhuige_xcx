@@ -3,6 +3,7 @@ import store from './store'
 
 // #ifndef VUE3
 import Vue from 'vue'
+import './uni.promisify.adaptor'
 Vue.config.productionTip = false
 App.mpType = 'app'
 Vue.prototype.$store = store
@@ -17,7 +18,8 @@ app.$mount()
 import { createSSRApp } from 'vue'
 export function createApp() {
   const app = createSSRApp(App)
-  app.use(store)
+  // app.use(store)
+  app.config.globalProperties.$store = store;
   return {
     app
   }

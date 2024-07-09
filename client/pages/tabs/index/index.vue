@@ -68,177 +68,175 @@
 			</view>
 			<!-- hot tags -->
 
-			<template v-for="(post, index) in rec_posts">
-				<view class="zhuige-mini-group" :key="index">
-					<!-- 文章自定义 -->
-					<view v-if="post.post_type=='post'" class="zhuige-mini-custom">
-						<view class="zhuige-block">
-							<view class="zhuige-block-head">
-								<view>{{post.title}}</view>
-								<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
+			<view v-for="(post, index) in rec_posts" :key="index" class="zhuige-mini-group">
+				<!-- 文章自定义 -->
+				<view v-if="post.post_type=='post'" class="zhuige-mini-custom">
+					<view class="zhuige-block">
+						<view class="zhuige-block-head">
+							<view>{{post.title}}</view>
+							<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
+						</view>
+						<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block left-side"
+							@click="clickPost(item)">
+							<view v-if="item.thumbnails && item.thumbnails.length>0" class="zhugie-info-image">
+								<text v-if="item.badge">{{item.badge}}</text>
+								<image mode="aspectFill" :src="item.thumbnails[0]" />
 							</view>
-							<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block left-side"
-								@click="clickPost(item)">
-								<view v-if="item.thumbnails && item.thumbnails.length>0" class="zhugie-info-image">
-									<text v-if="item.badge">{{item.badge}}</text>
-									<image mode="aspectFill" :src="item.thumbnails[0]" />
+							<view class="zhugie-info-text">
+								<view class="zhugie-info-title">{{item.title}}</view>
+								<view class="zhuige-info-post">
+									<view class="zhuige-info-data">
+										<text
+											v-if="item.read_limit=='cost' && (!is_ios || (is_ios && item.cost_ios_switch=='1'))"
+											class="pay">￥{{item.cost_price}}</text>
+										<text v-if="item.read_limit=='score'"
+											class="pay">{{item.cost_score}}积分</text>
+										<text>浏览 {{item.views}}</text>
+										<text>点赞 {{item.likes}}</text>
+									</view>
 								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+
+				<!-- 活动自定义 -->
+				<view v-else-if="post.post_type=='zhuige_activity'" class="zhuige-mini-custom-wide">
+					<view class="zhuige-mini-act-cover" @click="openLink(post.more_link)">
+						<view>
+							<view>{{post.title}}</view>
+							<text>活动</text>
+						</view>
+						<view>{{post.subtitle}}</view>
+						<image mode="aspectFill" :src="post.banner" />
+					</view>
+					<view class="zhuige-block">
+						<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block left-side"
+							@click="clickPost(item)">
+							<view class="zhugie-info-image">
+								<image mode="aspectFill" :src="item.thumbnail" />
+							</view>
+							<view class="zhuige-info-custom">
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{item.title}}</view>
+									<view class="zhuige-info-post">
+										<view class="zhuige-info-data activity-time">
+											{{item.time.from}} - {{item.time.to}}
+										</view>
+									</view>
+								</view>
+								<view class="zhugie-info-custom-opt">
+									<view>{{item.is_end?'已结束':(item.my_enroll?'已报名':'报名')}}</view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+
+				<!-- 积分商品自定义 -->
+				<view v-else-if="post.post_type=='zhuige_goods'" class="zhuige-mini-custom-twins">
+					<view class="zhuige-block">
+						<view class="zhuige-block-head">
+							<view>{{post.title}}</view>
+							<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
+						</view>
+						<view class="zhuige-mini-twins">
+							<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block"
+								@click="clickPost(item)">
+								<view class="zhugie-info-image">
+									<image mode="aspectFill" :src="item.thumbnail" />
+								</view>
+								<view class="zhugie-info-text">
+									<view class="zhugie-info-title">{{item.title}}</view>
+									<view class="zhuige-info-post">
+										<view class="zhuige-info-pay">
+											<text>{{item.price}}</text>
+											<text>积分</text>
+										</view>
+									</view>
+								</view>
+							</view>
+						</view>
+					</view>
+				</view>
+
+				<!-- 知识库定义 -->
+				<view v-else-if="post.post_type=='zhuige_res'" class="zhuige-mini-custom">
+					<view class="zhuige-block">
+						<view class="zhuige-block-head">
+							<view>{{post.title}}</view>
+							<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
+						</view>
+						<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block left-side"
+							@click="clickPost(item)">
+							<view class="zhugie-info-image">
+								<text v-if="item.badge">{{item.badge}}</text>
+								<image mode="aspectFill" :src="item.thumbnail" />
+							</view>
+							<view class="zhuige-info-custom">
 								<view class="zhugie-info-text">
 									<view class="zhugie-info-title">{{item.title}}</view>
 									<view class="zhuige-info-post">
 										<view class="zhuige-info-data">
 											<text
-												v-if="item.read_limit=='cost' && (!is_ios || (is_ios && item.cost_ios_switch=='1'))"
-												class="pay">￥{{item.cost_price}}</text>
-											<text v-if="item.read_limit=='score'"
+												v-if="item.limit=='cost' && (!is_ios || (is_ios && item.cost_ios_switch=='1'))"
+												class="pay">￥ {{item.cost_price}}</text>
+											<text v-if="item.limit=='score'"
 												class="pay">{{item.cost_score}}积分</text>
 											<text>浏览 {{item.views}}</text>
 											<text>点赞 {{item.likes}}</text>
 										</view>
 									</view>
 								</view>
-							</view>
-						</view>
-					</view>
-
-					<!-- 活动自定义 -->
-					<view v-else-if="post.post_type=='zhuige_activity'" class="zhuige-mini-custom-wide">
-						<view class="zhuige-mini-act-cover" @click="openLink(post.more_link)">
-							<view>
-								<view>{{post.title}}</view>
-								<text>活动</text>
-							</view>
-							<view>{{post.subtitle}}</view>
-							<image mode="aspectFill" :src="post.banner" />
-						</view>
-						<view class="zhuige-block">
-							<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block left-side"
-								@click="clickPost(item)">
-								<view class="zhugie-info-image">
-									<image mode="aspectFill" :src="item.thumbnail" />
-								</view>
-								<view class="zhuige-info-custom">
-									<view class="zhugie-info-text">
-										<view class="zhugie-info-title">{{item.title}}</view>
-										<view class="zhuige-info-post">
-											<view class="zhuige-info-data activity-time">
-												{{item.time.from}} - {{item.time.to}}
-											</view>
-										</view>
-									</view>
-									<view class="zhugie-info-custom-opt">
-										<view>{{item.is_end?'已结束':(item.my_enroll?'已报名':'报名')}}</view>
-									</view>
+								<view class="zhugie-info-custom-opt">
+									<view>下载</view>
 								</view>
 							</view>
 						</view>
 					</view>
-
-					<!-- 积分商品自定义 -->
-					<view v-else-if="post.post_type=='zhuige_goods'" class="zhuige-mini-custom-twins">
-						<view class="zhuige-block">
-							<view class="zhuige-block-head">
-								<view>{{post.title}}</view>
-								<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
-							</view>
-							<view class="zhuige-mini-twins">
-								<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block"
-									@click="clickPost(item)">
-									<view class="zhugie-info-image">
-										<image mode="aspectFill" :src="item.thumbnail" />
-									</view>
-									<view class="zhugie-info-text">
-										<view class="zhugie-info-title">{{item.title}}</view>
-										<view class="zhuige-info-post">
-											<view class="zhuige-info-pay">
-												<text>{{item.price}}</text>
-												<text>积分</text>
-											</view>
-										</view>
-									</view>
-								</view>
-							</view>
-						</view>
-					</view>
-
-					<!-- 知识库定义 -->
-					<view v-else-if="post.post_type=='zhuige_res'" class="zhuige-mini-custom">
-						<view class="zhuige-block">
-							<view class="zhuige-block-head">
-								<view>{{post.title}}</view>
-								<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
-							</view>
-							<view v-for="(item, inx) in post.items" :key="inx" class="zhugie-info-block left-side"
-								@click="clickPost(item)">
-								<view class="zhugie-info-image">
-									<text v-if="item.badge">{{item.badge}}</text>
-									<image mode="aspectFill" :src="item.thumbnail" />
-								</view>
-								<view class="zhuige-info-custom">
-									<view class="zhugie-info-text">
-										<view class="zhugie-info-title">{{item.title}}</view>
-										<view class="zhuige-info-post">
-											<view class="zhuige-info-data">
-												<text
-													v-if="item.limit=='cost' && (!is_ios || (is_ios && item.cost_ios_switch=='1'))"
-													class="pay">￥ {{item.cost_price}}</text>
-												<text v-if="item.limit=='score'"
-													class="pay">{{item.cost_score}}积分</text>
-												<text>浏览 {{item.views}}</text>
-												<text>点赞 {{item.likes}}</text>
-											</view>
-										</view>
-									</view>
-									<view class="zhugie-info-custom-opt">
-										<view>下载</view>
-									</view>
-								</view>
-							</view>
-						</view>
-					</view>
-
-					<!-- 课程专栏自定义 -->
-					<view v-else-if="post.post_type=='zhuige_column'" class="zhuige-mini-custom">
-						<view class="zhuige-block">
-							<view class="zhuige-block-head">
-								<view>{{post.title}}</view>
-								<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
-							</view>
-							<view class="zhuige-scroll-ad">
-								<scroll-view scroll-x="true">
-									<view v-for="(item, inx) in post.items" :key="inx" class="zhuige-scroll-ad-block"
-										@click="clickPost(item)">
-										<view>
-											<image mode="aspectFill" :src="item.thumbnail" />
-											<text v-if="item.badges && item.badges.length>0">{{item.badges[0]}}</text>
-										</view>
-										<view class="zhuige-scroll-ad-text">
-											<view class="zhuige-scroll-ad-text-title">{{item.title}}</view>
-											<view class="zhuige-scroll-ad-text-rate">
-												<view class="zhuige-info-rate">
-													<uni-rate :value="item.score" size="12" :activeColor="'#FF6146'" />
-													<view>{{item.score}}</view>
-												</view>
-												<view class="rate-num">/ {{item.views}}人已学</view>
-											</view>
-										</view>
-									</view>
-								</scroll-view>
-							</view>
-						</view>
-					</view>
-					<!-- 帖子 -->
-					<zhuige-scroll-ad v-else-if="post.post_type=='zhuige_bbs_topic'"
-						ext-ad-class="zhuige-scroll-coterie zhuige-topic-scroll" :title="post.title"
-						:items="post.items">
-					</zhuige-scroll-ad>
-					<!-- 其他 -->
-					<zhuige-scroll-ad v-else ext-ad-class="zhuige-scroll-coterie" :title="post.title"
-						:items="post.items">
-					</zhuige-scroll-ad>
-
 				</view>
-			</template>
+
+				<!-- 课程专栏自定义 -->
+				<view v-else-if="post.post_type=='zhuige_column'" class="zhuige-mini-custom">
+					<view class="zhuige-block">
+						<view class="zhuige-block-head">
+							<view>{{post.title}}</view>
+							<view v-if="post.more_link" @click="openLink(post.more_link)">查看更多</view>
+						</view>
+						<view class="zhuige-scroll-ad">
+							<scroll-view scroll-x="true">
+								<view v-for="(item, inx) in post.items" :key="inx" class="zhuige-scroll-ad-block"
+									@click="clickPost(item)">
+									<view>
+										<image mode="aspectFill" :src="item.thumbnail" />
+										<text v-if="item.badges && item.badges.length>0">{{item.badges[0]}}</text>
+									</view>
+									<view class="zhuige-scroll-ad-text">
+										<view class="zhuige-scroll-ad-text-title">{{item.title}}</view>
+										<view class="zhuige-scroll-ad-text-rate">
+											<view class="zhuige-info-rate">
+												<uni-rate :value="item.score" size="12" :activeColor="'#FF6146'" />
+												<view>{{item.score}}</view>
+											</view>
+											<view class="rate-num">/ {{item.views}}人已学</view>
+										</view>
+									</view>
+								</view>
+							</scroll-view>
+						</view>
+					</view>
+				</view>
+				<!-- 帖子 -->
+				<zhuige-scroll-ad v-else-if="post.post_type=='zhuige_bbs_topic'"
+					ext-ad-class="zhuige-scroll-coterie zhuige-topic-scroll" :title="post.title"
+					:items="post.items">
+				</zhuige-scroll-ad>
+				<!-- 其他 -->
+				<zhuige-scroll-ad v-else ext-ad-class="zhuige-scroll-coterie" :title="post.title"
+					:items="post.items">
+				</zhuige-scroll-ad>
+
+			</view>
 
 			<view v-if="tab_switch==1" class="zhuige-block-tab"
 				:style="'top:' + tab_sticky_top + 'px;padding-top: 0rpx;'">
@@ -253,7 +251,7 @@
 					<!-- 圈子列表 近期tab -->
 					<view class="zhuige-social-list">
 						<template v-if="lastTopics && lastTopics.length>0">
-							<template v-for="(topic, index) in lastTopics">
+							<view v-for="(topic, index) in lastTopics" :key="index">
 
 								<!-- 用户列表推荐 滚动 -->
 								<zhuige-user-list v-if="rec_user && rec_user.position==(index-sticky_count)"
@@ -279,9 +277,9 @@
 										:items="imgs_embed.items"></zhuige-scroll-ad>
 								</view>
 
-								<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :key="index" :topic="topic">
+								<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :topic="topic">
 								</zhuige-topic>
-								<view v-else :key="index" class="zhuige-block" :class="topic.post_type"
+								<view v-else class="zhuige-block" :class="topic.post_type"
 									@click="clickPost(topic)">
 
 									<!-- 活动报名 -->
@@ -591,7 +589,7 @@
 												<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
 											</view>
 											<view class="zhuige-vote-list">
-												<view v-for="(item, index) in topic.options" :key="index"
+												<view v-for="(item, ito) in topic.options" :key="ito"
 													class="zhuige-vote-option" :class="item.xuan==1?'vote-check':''">
 													<view class="zhuige-vote-option-text">
 														{{item.title}}
@@ -708,7 +706,7 @@
 											<!-- 产品分类及帖子数据信息 -->
 											<view class="zhuige-social-data">
 												<view>
-													<image mode="aspectFill" src="/static/idle.png"></image>
+													<image mode="aspectFill" src="@/static/idle.png"></image>
 													<view>{{topic.cat.name}}</view>
 												</view>
 												<view>
@@ -736,7 +734,7 @@
 										</view>
 									</template>
 								</view>
-							</template>
+							</view>
 						</template>
 						<template v-else-if="lastLoaded">
 							<zhuige-nodata></zhuige-nodata>
@@ -776,7 +774,7 @@
 		</view>
 
 		<view v-if="pop_ad" class="zhugie-pop-cover">
-			<view class="" @click="clickPopAd" class="zhuige-pop-box">
+			<view @click="clickPopAd" class="zhuige-pop-box">
 				<image mode="aspectFit" :src="pop_ad.image"></image>
 				<view>
 					<uni-icons @click="clickPopAdClose" type="close" size="32" color="#FFFFFF"></uni-icons>

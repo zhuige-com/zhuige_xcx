@@ -28,7 +28,7 @@
 									<text>{{certify.name}}</text>
 								</template>
 								<template v-else>
-									<image class="no-certify" mode="aspectFill" src="/static/lvv.png"></image>
+									<image class="no-certify" mode="aspectFill" src="@/static/lvv.png"></image>
 									<text>未认证</text>
 								</template>
 							</view>
@@ -132,7 +132,7 @@
 		data() {
 			return {
 				isLogin: false,
-				avatar: '/static/avatar.jpg',
+				avatar: '@/static/avatar.jpg',
 				nickname: '立即登录',
 				certify: undefined,
 				vip: undefined,
@@ -435,14 +435,16 @@
 		font-weight: 400;
 		color: #999999;
 	}
+	.zhuige-icon .view {
+		width: auto!important;
+	}
 
-	.zhuige-mine-data .zhuige-icon view,
-	.zhuige-mine-data .zhuige-icon button {
+	.zhuige-mine-data .zhuige-icon > view,
+	.zhuige-mine-data .zhuige-icon > button {
 		width: 25%;
 		position: relative;
 		padding: 30rpx 0;
 	}
-
 	.zhuige-mine-data .zhuige-icon .image {
 		height: 64rpx !important;
 		width: 64rpx !important;

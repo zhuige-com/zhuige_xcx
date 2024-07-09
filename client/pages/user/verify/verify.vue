@@ -60,7 +60,7 @@
 		data() {
 			return {
 				nickname: '',
-				avatar: '/static/avatar.jpg',
+				avatar: '@/static/avatar.jpg',
 				
 				//登录后 重新加载
 				loginReload: false,

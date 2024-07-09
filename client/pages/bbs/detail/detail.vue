@@ -86,7 +86,7 @@
 				<view v-if="topic.subjects && topic.subjects.length>0" class="zhuige-detail-tags">
 					<view v-for="(subject, index) in topic.subjects" :key="index"
 						@click="openLink('/pages/bbs/list/list?subject_id=' + subject.id + '&title=' + subject.name)">
-						<image mode="aspectFill" src="/static/topic.png"></image>
+						<image mode="aspectFill" src="@/static/topic.png"></image>
 						<view>{{subject.name}}</view>
 					</view>
 				</view>
@@ -146,11 +146,11 @@
 				<view class="zhuige-detail-share-opt">
 					<view @click="clickPoster()">
 						<text>分享海报</text>
-						<image mode="aspectFill" src="/static/poster.png"></image>
+						<image mode="aspectFill" src="@/static/poster.png"></image>
 					</view>
 					<view v-if="topic.author && topic.author.reward" @click="clickReward">
 						<text>鼓励作者</text>
-						<image mode="aspectFill" src="/static/packet.png"></image>
+						<image mode="aspectFill" src="@/static/packet.png"></image>
 					</view>
 				</view>
 			</view>
@@ -181,7 +181,7 @@
 				<template v-else>
 					<!-- 无内容提示 -->
 					<view class="zhuige-none-tips">
-						<image mode="aspectFill" src="/static/404.png"></image>
+						<image mode="aspectFill" src="@/static/404.png"></image>
 						<view>暂无评论，抢个沙发</view>
 					</view>
 				</template>
@@ -232,14 +232,14 @@
 
 		<!-- 海报组件 -->
 		<!-- #ifdef MP-BAIDU -->
-		<view v-if="isShowPainter" isRenderImage style="position: fixed; top: 0;" @longpress="longTapPainter"
+		<view v-if="isShowPainter" style="position: fixed; top: 0;" @longpress="longTapPainter"
 			@click="clickPainter()">
-			<l-painter isRenderImage :board="base" @success="onPainterSuccess" />
+			<l-painter isCanvasToTempFilePath :board="base" @success="onPainterSuccess" />
 		</view>
 		<!-- #endif -->
 
 		<!-- #ifdef MP-WEIXIN || H5 -->
-		<l-painter v-if="isShowPainter" isRenderImage custom-style="position: fixed; left: 200%;" :board="base"
+		<l-painter v-if="isShowPainter" isCanvasToTempFilePath custom-style="position: fixed; left: 200%;" :board="base"
 			@success="onPainterSuccess" />
 		<!-- #endif -->
 
@@ -274,7 +274,6 @@
 	import Api from '@/utils/api';
 	import Rest from '@/utils/rest';
 
-	import lPainter from '@/uni_modules/lime-painter/components/lime-painter/'
 	import ZhuigeTopic from "@/components/zhuige-topic";
 	import ZhuigeReply from "@/components/zhuige-reply";
 	import ZhuigeSwiper from "@/components/zhuige-swiper";
@@ -282,7 +281,6 @@
 
 	export default {
 		components: {
-			lPainter,
 			ZhuigeTopic,
 			ZhuigeReply,
 			ZhuigeSwiper,
@@ -849,14 +847,17 @@
 				this.isShowPainter = true;
 
 				this.base = {
-					width: '750rpx',
-					height: '1334rpx',
-					// backgroundColor: '#FFFFFF',
+					css: {
+						width: '750rpx',
+						height: '1334rpx',
+						// backgroundColor: '#FFFFFF',
+					},
 					views: [{
 							type: 'image',
 							src: this.poster.background,
 							mode: 'aspectFill',
 							css: {
+								position: 'absolute',
 								left: '0rpx',
 								top: '0rpx',
 								width: '750rpx',
@@ -868,6 +869,7 @@
 							src: this.topic.author.avatar,
 							mode: 'aspectFill',
 							css: {
+								position: 'absolute',
 								left: '30rpx',
 								top: '70rpx',
 								width: '120rpx',
@@ -879,31 +881,34 @@
 							type: 'text',
 							text: this.topic.author.nickname,
 							css: {
+								position: 'absolute',
 								left: '165rpx',
 								top: '90rpx',
 								width: '525rpx',
 								color: '#FFFFFF',
 								fontSize: '38rpx',
 								textAlign: 'left',
-								maxLines: 1,
+								lineClamp: 1,
 							}
 						},
 						{
 							type: 'text',
 							text: this.topic.author.sign ? this.topic.author.sign : this.poster.title,
 							css: {
+								position: 'absolute',
 								left: '165rpx',
 								top: '140rpx',
 								width: '525rpx',
 								color: '#FFFFFF',
 								fontSize: '24rpx',
 								textAlign: 'left',
-								maxLines: 1,
+								lineClamp: 1,
 							}
 						},
 						{
 							type: 'view',
 							css: {
+								position: 'absolute',
 								left: '30rpx',
 								top: '240rpx',
 								width: '690rpx',
@@ -917,6 +922,7 @@
 							src: this.poster.thumb,
 							mode: 'aspectFill',
 							css: {
+								position: 'absolute',
 								left: '30rpx',
 								top: '240rpx',
 								width: '690rpx',
@@ -928,13 +934,14 @@
 							type: 'text',
 							text: this.contentText(),
 							css: {
+								position: 'absolute',
 								left: '70rpx',
 								top: '790rpx',
 								width: '610rpx',
 								color: '#000000',
 								fontSize: '28rpx',
 								lineHeight: '50rpx',
-								maxLines: 2,
+								lineClamp: 2,
 							}
 						},
 
@@ -942,6 +949,7 @@
 						{
 							type: 'view',
 							css: {
+								position: 'absolute',
 								left: '255rpx',
 								top: '940rpx',
 								width: '240rpx',
@@ -955,6 +963,7 @@
 							src: this.acode,
 							mode: 'aspectFill',
 							css: {
+								position: 'absolute',
 								left: '275rpx',
 								top: '960rpx',
 								width: '200rpx',
@@ -970,6 +979,7 @@
 						{
 							type: 'view',
 							css: {
+								position: 'absolute',
 								left: '255rpx',
 								top: '940rpx',
 								width: '240rpx',
@@ -983,6 +993,7 @@
 							src: this.acode,
 							mode: 'aspectFill',
 							css: {
+								position: 'absolute',
 								left: '275rpx',
 								top: '960rpx',
 								width: '200rpx',
@@ -995,6 +1006,7 @@
 							type: 'text',
 							text: getApp().globalData.appName,
 							css: {
+								position: 'absolute',
 								left: '30rpx',
 								top: '1200rpx',
 								width: '690rpx',

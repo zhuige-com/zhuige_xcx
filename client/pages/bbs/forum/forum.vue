@@ -16,7 +16,7 @@
 			</view>
 		</view>
 
-		<view class="zhuige-coterie-info">
+		<view v-if="forum" class="zhuige-coterie-info">
 			<!-- 圈子头部信息 -->
 			<view class="zhuige-block">
 				<view class="zhuige-classify-box">
@@ -100,7 +100,7 @@
 			<!-- 圈子列表 近期tab -->
 			<view class="zhuige-social-list">
 				<template v-if="topics && topics.length>0">
-					<template v-for="(topic, index) in topics">
+					<view v-for="(topic, index) in topics" :key="index">
 						<!-- #ifdef MP-WEIXIN -->
 						<view class="zhuige-block zhuige-ad-cust"
 							v-if="traffic_list && traffic_list.frequency>0 && (index+1)%traffic_list.frequency==0">
@@ -111,8 +111,8 @@
 							</view>
 						</view>
 						<!-- #endif -->
-						<zhuige-topic :key="index" :topic="topic"></zhuige-topic>
-					</template>
+						<zhuige-topic :topic="topic"></zhuige-topic>
+					</view>
 				</template>
 				<template v-else>
 					<zhuige-nodata v-if="loaded"></zhuige-nodata>

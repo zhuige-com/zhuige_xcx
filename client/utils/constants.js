@@ -1,4 +1,4 @@
-module.exports = {
+export default {
 	// 搜索词 做多缓存个数
 	ZHUIGE_SEARCH_MAX_COUNT: 10,
 

@@ -76,7 +76,7 @@
 
 				<view v-if="user" class="zhuige-user-line">
 					<view>
-						<image mode="aspectFill" src="/static/icon_sg.png"></image>
+						<image mode="aspectFill" src="@/static/icon_sg.png"></image>
 						<text>签名：</text>
 					</view>
 					<text>{{user.sign}}</text>
@@ -84,7 +84,7 @@
 				<view v-if="user.certify && user.certify.status==1" class="zhuige-user-line">
 					<view>
 						<image mode="aspectFill" :src="user.certify.icon"></image>
-						<!-- <image mode="aspectFill" src="/static/icon_id.png"></image> -->
+						<!-- <image mode="aspectFill" src="@/static/icon_id.png"></image> -->
 						<text>认证：</text>
 					</view>
 					<text>{{user.certify.name}}</text>
@@ -115,7 +115,7 @@
 						@click="openLink('/pages/idle-shop/detail/detail?id=' + item.id)" class="zhuige-waterfall-block"
 						:style="item.height?'opacity: 1;':''">
 						<view class="zhuige-waterfall-img">
-							<view v-if="topic.stick" class="waterfall-mark">推广</view>
+							<view v-if="item.stick" class="waterfall-mark">推广</view>
 							<image mode="aspectFill" :src="item.thumb" :data-a="listIndex" :data-b="index"
 								@load="onImageLoad" :style="item.height?('height:' + item.height + 'rpx;'):''"></image>
 						</view>
@@ -146,12 +146,12 @@
 		<template v-else>
 			<view class="zhuige-home-list">
 				<template v-if="posts && posts.length>0">
-					<template v-for="(topic, index) in posts">
-						<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :key="index" :topic="topic"
+					<view v-for="(topic, index) in posts" :key="index">
+						<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :topic="topic"
 							:trash="cur_tab=='publish' && user.delete_topic==1"
 							:promotion="cur_tab=='publish' && user.is_me==1" @deleteTopic="onDeleteTopic">
 						</zhuige-topic>
-						<view v-else :key="index" class="zhuige-block" :class="topic.post_type"
+						<view v-else class="zhuige-block" :class="topic.post_type"
 							@click="clickPost(topic)">
 							<!-- 投票 -->
 							<template v-if="topic.post_type=='zhuige_vote'">
@@ -254,7 +254,7 @@
 										<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
 									</view>
 									<view class="zhuige-vote-list">
-										<view v-for="(item, index) in topic.options" :key="index"
+										<view v-for="(item, ito) in topic.options" :key="ito"
 											class="zhuige-vote-option" :class="item.xuan==1?'vote-check':''">
 											<view class="zhuige-vote-option-text">
 												{{item.title}}
@@ -404,7 +404,7 @@
 									<!-- 产品分类及数据 -->
 									<view class="zhuige-social-data">
 										<view>
-											<image mode="aspectFill" src="/static/idle.png"></image>
+											<image mode="aspectFill" src="@/static/idle.png"></image>
 											<view>{{topic.cat.name}}</view>
 										</view>
 										<view>
@@ -422,7 +422,7 @@
 							</template>
 
 						</view>
-					</template>
+					</view>
 				</template>
 				<template v-else-if="loaded">
 					<zhuige-nodata :tip="noDataTip"></zhuige-nodata>

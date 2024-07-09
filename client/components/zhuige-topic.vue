@@ -108,7 +108,7 @@
 		<!-- 圈子及帖子数据信息 -->
 		<view v-if="topic" class="zhuige-social-data">
 			<view v-if="topic.forum" @click="openLink('/pages/bbs/forum/forum?forum_id=' + topic.forum.id)">
-				<image mode="aspectFill" src="/static/quan.png"></image>
+				<image mode="aspectFill" src="@/static/quan.png"></image>
 				<view>{{topic.forum.name}}</view>
 			</view>
 			<view @click="clickDetail">

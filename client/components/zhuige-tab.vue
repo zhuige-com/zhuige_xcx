@@ -83,7 +83,7 @@
 		white-space: nowrap;
 	}
 
-	.zhuige-tab-scroll *::-webkit-scrollbar {
+	.zhuige-tab-scroll::-webkit-scrollbar {
 		display: none;
 	}
 

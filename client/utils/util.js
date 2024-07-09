@@ -401,7 +401,7 @@ function loadCart() {
 	return uni.getStorageSync('zhuige_wpmall_cart');
 }
 
-module.exports = {
+export default {
 	navigateBack,
 
 	htmlEncode,

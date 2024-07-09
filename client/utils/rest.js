@@ -1,5 +1,5 @@
-const Auth = require("./auth.js");
-const Constant = require('./constants.js');
+import Auth from "./auth.js";
+import Constant from './constants.js';
 
 /**
  * request封装
@@ -155,7 +155,7 @@ function post(url, data = {}, redirect = false) {
 	return request(url, data, 'POST', redirect);
 }
 
-module.exports = {
+export default {
 	get,
 	post,
 	upload,

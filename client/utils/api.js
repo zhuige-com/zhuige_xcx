@@ -14,6 +14,6 @@ function URL(module, action) {
 	return `https://${YOUR_DOMIAN}/wp-json/zhuige/${module}/${action}`;
 }
 
-module.exports = {
+export default {
 	URL
 };

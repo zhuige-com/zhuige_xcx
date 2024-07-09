@@ -30,7 +30,7 @@
 		<!-- 帖子列表 -->
 		<view class="zhuige-social-list">
 			<template v-if="topics && topics.length>0">
-				<template v-for="(topic, index) in topics">
+				<view v-for="(topic, index) in topics" :key="index">
 					<!-- #ifdef MP-WEIXIN -->
 					<view class="zhuige-block zhuige-ad-cust"
 						v-if="traffic_list && traffic_list.frequency>0 && (index+1)%traffic_list.frequency==0">
@@ -41,8 +41,8 @@
 						</view>
 					</view>
 					<!-- #endif -->
-					<zhuige-topic :key="index" :topic="topic"></zhuige-topic>
-				</template>
+					<zhuige-topic :topic="topic"></zhuige-topic>
+				</view>
 			</template>
 			<template v-else-if="loaded">
 				<zhuige-nodata></zhuige-nodata>

@@ -1,7 +1,7 @@
 <template>
-	<view class="uni-navbar" :class="{'uni-dark':dark}">
-		<view :class="{ 'uni-navbar--fixed': fixed, 'uni-navbar--shadow': shadow, 'uni-navbar--border': border }"
-			:style="{ 'background-color': themeBgColor, 'opacity': opacity }" class="uni-navbar__content">
+	<view class="uni-navbar" :class="{'uni-dark':dark, 'uni-nvue-fixed': fixed}">
+		<view class="uni-navbar__content" :class="{ 'uni-navbar--fixed': fixed, 'uni-navbar--shadow': shadow, 'uni-navbar--border': border }"
+			:style="{ 'background-color': themeBgColor, 'border-bottom-color':themeColor }" >
 			<status-bar v-if="statusBar" />
 			<view :style="{ color: themeColor,backgroundColor: themeBgColor ,height:navbarHeight}"
 				class="uni-navbar__header">
@@ -38,10 +38,12 @@
 				</view>
 			</view>
 		</view>
-		<view class="uni-navbar__placeholder" v-if="fixed && placeholder">
+		<!-- #ifndef APP-NVUE -->
+		<view class="uni-navbar__placeholder" v-if="fixed">
 			<status-bar v-if="statusBar" />
 			<view class="uni-navbar__placeholder-view" :style="{ height:navbarHeight}" />
 		</view>
+		<!-- #endif -->
 	</view>
 </template>
 
@@ -50,6 +52,8 @@
 	const getVal = (val) => typeof val === 'number' ? val + 'px' : val;
 
 	/**
+	 * 
+	 * 
 	 * NavBar 自定义导航栏
 	 * @description 导航栏组件，主要用于头部导航
 	 * @tutorial https://ext.dcloud.net.cn/plugin?id=52
@@ -139,14 +143,6 @@
 			stat: {
 				type: [Boolean, String],
 				default: ''
-			},
-			opacity: {
-				type: Number,
-				default: 1
-			},
-			placeholder: {
-				type: [String, Boolean],
-				default: true
 			}
 		},
 		computed: {
@@ -204,17 +200,21 @@
 <style lang="scss" scoped>
 	$nav-height: 44px;
 
+	.uni-nvue-fixed {
+		/* #ifdef APP-NVUE */
+		position: sticky;
+		/* #endif */
+	}
 	.uni-navbar {
 		// box-sizing: border-box;
 	}
 
 	.uni-nav-bar-text {
 		/* #ifdef APP-PLUS */
-		font-size: 36rpx;
+		font-size: 34rpx;
 		/* #endif */
 		/* #ifndef APP-PLUS */
-		font-size: 36rpx;
-		font-weight: 600;
+		font-size: 14px;
 		/* #endif */
 	}
 

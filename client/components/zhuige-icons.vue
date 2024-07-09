@@ -8,57 +8,57 @@
 
 		<!-- 自定义图标模块 自动换行模式 -->
 		<view v-if="type=='wrap'" class="zhuige-icon zhuige-wrap-icon">
-			<template v-for="(item, index) in items">
-				<view v-if="item.type && item.type=='clear'" :key="index" class="view" @click="clickClear()">
+			<view v-for="(item, index) in items" :key="index">
+				<view v-if="item.type && item.type=='clear'" class="view" @click="clickClear()">
 					<image class="image" mode="aspectFill" :src="item.image"></image>
 					<text class="text">{{item.title}}</text>
 				</view>
-				<view v-else-if="item.type && item.type=='score'" :key="index" class="view" @click="clickScore()">
+				<view v-else-if="item.type && item.type=='score'" class="view" @click="clickScore()">
 					<image class="image" mode="aspectFill" :src="item.image"></image>
 					<text class="text">{{item.title}}</text>
 				</view>
 				<template v-else-if="item.type && item.type=='contact'">
 					<!-- #ifdef MP-WEIXIN -->
-					<button :key="index" open-type="contact" class="button-view">
+					<button open-type="contact" class="button-view">
 						<image class="image" mode="aspectFill" :src="item.image"></image>
 						<text class="text">{{item.title}}</text>
 					</button>
 					<!-- #endif -->
 				</template>
-				<view v-else :key="index" class="view" @click="openLink(item.link)">
+				<view v-else @click="openLink(item.link)">
 					<uni-badge v-if="item.badage" text="12" size="normal" type="error" absolute="rightTop" />
 					<image class="image" mode="aspectFill" :src="item.image"></image>
 					<text class="text">{{item.title}}</text>
 				</view>
-			</template>
+			</view>
 		</view>
 
 		<!-- 自定义图标模块 滚动模式 -->
 		<view v-else class="zhuige-icon zhuige-scroll-icon">
 			<scroll-view class="scroll-view" scroll-x="true">
-				<template v-for="(item, index) in items">
-					<view v-if="item.type && item.type=='clear'" :key="index" class="view" @click="clickClear()">
+				<view v-for="(item, index) in items" :key="index" class="view">
+					<view v-if="item.type && item.type=='clear'" @click="clickClear()">
 						<image class="image" mode="aspectFill" :src="item.image"></image>
 						<text class="text">{{item.title}}</text>
 					</view>
-					<view v-else-if="item.type && item.type=='score'" :key="index" class="view" @click="clickScore()">
+					<view v-else-if="item.type && item.type=='score'" @click="clickScore()">
 						<image class="image" mode="aspectFill" :src="item.image"></image>
 						<text class="text">{{item.title}}</text>
 					</view>
 					<template v-else-if="item.type && item.type=='contact'">
 						<!-- #ifdef MP-WEIXIN -->
-						<button :key="index" open-type="contact">
+						<button open-type="contact">
 							<image class="image" mode="aspectFill" :src="item.image"></image>
 							<text class="text">{{item.title}}</text>
 						</button>
 						<!-- #endif -->
 					</template>
-					<view v-else :key="index" class="view" @click="openLink(item.link)">
+					<view v-else @click="openLink(item.link)">
 						<uni-badge v-if="item.badage" text="12" size="normal" type="error" absolute="rightTop" />
 						<image class="image" mode="aspectFill" :src="item.image"></image>
 						<text class="text">{{item.title}}</text>
 					</view>
-				</template>
+				</view>
 			</scroll-view>
 		</view>
 	</view>
@@ -162,7 +162,6 @@
 		background: none;
 		border: none;
 		margin: 0;
-		padding: 30rpx 0;
 		line-height: normal;
 	}
 

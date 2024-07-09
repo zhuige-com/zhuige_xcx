@@ -2,10 +2,10 @@
 	<view class="content">
 		<view class="zhuige-social-list zhuige-mini-custom">
 			<template v-if="topics && topics.length>0">
-				<template v-for="(topic, index) in topics">
-					<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :key="index" :topic="topic">
+				<view v-for="(topic, index) in topics" :key="index">
+					<zhuige-topic v-if="topic.post_type=='zhuige_bbs_topic'" :topic="topic">
 					</zhuige-topic>
-					<view v-else :key="index" class="zhuige-block" :class="topic.post_type" @click="clickPost(topic)">
+					<view v-else class="zhuige-block" :class="topic.post_type" @click="clickPost(topic)">
 
 						<!-- 活动报名 -->
 						<template v-if="topic.post_type=='zhuige_activity'">
@@ -301,7 +301,7 @@
 									<text v-if="topic.is_end==1" class="vote-end">(已结束)</text>
 								</view>
 								<view class="zhuige-vote-list">
-									<view v-for="(item, index) in topic.options" :key="index" class="zhuige-vote-option"
+									<view v-for="(item, ito) in topic.options" :key="ito" class="zhuige-vote-option"
 										:class="item.xuan==1?'vote-check':''">
 										<view class="zhuige-vote-option-text">
 											{{item.title}}
@@ -418,7 +418,7 @@
 								<!-- 产品分类及帖子数据信息 -->
 								<view class="zhuige-social-data">
 									<view>
-										<image mode="aspectFill" src="/static/idle.png"></image>
+										<image mode="aspectFill" src="@/static/idle.png"></image>
 										<view>{{topic.cat.name}}</view>
 									</view>
 									<view>
@@ -463,7 +463,7 @@
 							</view>
 						</template>
 					</view>
-				</template>
+				</view>
 			</template>
 			<template v-else-if="loaded">
 				<zhuige-nodata></zhuige-nodata>

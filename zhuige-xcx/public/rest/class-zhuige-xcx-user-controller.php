@@ -1489,6 +1489,15 @@ class ZhuiGe_Xcx_User_Controller extends ZhuiGe_Xcx_Base_Controller
 				} else if ($post->post_type == 'zhuige_res') {
 					$content = $post->post_title;
 					$notify['link'] = '/pages/resource/detail/detail?id=' . $notify['post_id'];
+				} else if ($post->post_type == 'zhuige_business_card') {
+					$content = $post->post_title;
+					$notify['link'] = '/pages/business-card/detail/detail?id=' . $notify['post_id'];
+				} else if ($post->post_type == 'zhuige_wiki') {
+					$content = $post->post_title;
+					$notify['link'] = '/pages/wiki/detail/detail?id=' . $notify['post_id'];
+				} else if ($post->post_type == 'zhuige_idle_goods') {
+					$content = $post->post_title;
+					$notify['link'] = '/pages/idle-shop/detail/detail?id=' . $notify['post_id'];
 				} else {
 					$content = $post->post_title;
 				}

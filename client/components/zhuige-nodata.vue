@@ -2,7 +2,7 @@
 	<view class="zhuige-block">
 		<!-- 无内容提示 -->
 		<view class="zhuige-none-tips">
-			<image class="image" mode="aspectFill" src="/static/404.png"></image>
+			<image class="image" mode="aspectFill" src="@/static/404.png"></image>
 			<template v-if="buttons && !isLogin">
 				<view class="view">什么也没有，登录后再看看</view>
 				<view class="zhuige-form-btn">
