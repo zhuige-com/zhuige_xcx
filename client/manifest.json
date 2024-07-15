@@ -72,7 +72,10 @@
         "requiredPrivateInfos" : [ "chooseLocation", "chooseAddress" ],
         "requiredBackgroundModes" : [ "audio" ],
         // "lazyCodeLoading": "requiredComponents",
-        "libVersion" : "latest"
+        "libVersion" : "latest",
+		"optimization" : {
+			"subPackages" : true
+		}
     },
     "mp-alipay" : {
         "usingComponents" : true

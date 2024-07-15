@@ -132,7 +132,7 @@
 		data() {
 			return {
 				isLogin: false,
-				avatar: '@/static/avatar.jpg',
+				avatar: '/static/avatar.jpg',
 				nickname: '立即登录',
 				certify: undefined,
 				vip: undefined,
