@@ -50,6 +50,10 @@
 		
 		data() {
 			this.cache = false;
+			
+			//登录后 重新加载
+			this.loginReload = false;
+			
 			return {
 				ad: undefined,
 				items: [],
@@ -59,16 +63,28 @@
 
 		onLoad(options) {
 			Util.addShareScore(options.source);
+			
+			uni.$on('zhuige_event_user_login', this.onSetReload);
+		},
+		
+		onUnload() {
+			uni.$off('zhuige_event_user_login', this.onSetReload);
 		},
 
 		onShow() {
-			if (this.cache && this.cache.length > 0) {
-				this.items = this.cache;
-				setTimeout(() => {
-					this.active = true;
-				}, 100);
-			} else {
+			if (this.loginReload) {
+				this.loginReload = false;
+			
 				this.loadSetting();
+			} else {
+				if (this.cache && this.cache.length > 0) {
+					this.items = this.cache;
+					setTimeout(() => {
+						this.active = true;
+					}, 100);
+				} else {
+					this.loadSetting();
+				}
 			}
 		},
 
@@ -94,6 +110,15 @@
 		// #endif
 
 		methods: {
+			// ------- event start ---------
+			/**
+			 * 需要重新加载事件
+			 */
+			onSetReload(data) {
+				this.loginReload = true;
+			},
+			// ------- event end ---------
+			
 			/**
 			 * 点击打开链接
 			 */
