@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<uni-nav-bar leftIcon="back" @clickLeft="clickBack" :title="title" :fixed="true" :statusBar="true"
+		<uni-nav-bar leftIcon="back" @clickLeft="clickBack" :title="title" :fixed="true" :border="false" :statusBar="true"
 			:opacity="nav_opacity" :placeholder="false">
 		</uni-nav-bar>
 		

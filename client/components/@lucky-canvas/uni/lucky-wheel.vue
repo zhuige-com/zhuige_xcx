@@ -191,7 +191,9 @@
               // 动态设置按钮
               _this.btnWidth = this.maxBtnRadius * 2
               _this.btnHeight = this.maxBtnRadius * 2
+			  // #ifndef VUE3
               _this.$forceUpdate()
+			  // #endif
             },
             afterStart: () => {
               this.imgSrc = ''

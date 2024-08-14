@@ -635,7 +635,9 @@
 					});
 				}
 
+				// #ifndef VUE3
 				this.$forceUpdate();
+				// #endif
 			},
 
 			/**
@@ -794,7 +796,9 @@
 							this.lists[dist].push(this.list[i]);
 						}
 
+						// #ifndef VUE3
 						this.$forceUpdate();
+						// #endif
 					} else {
 						this.posts = refresh ? res.data.posts : this.posts.concat(res.data.posts);
 						this.loadMore = res.data.more;

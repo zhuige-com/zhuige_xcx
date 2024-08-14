@@ -245,7 +245,7 @@
 
 		<!-- 弹窗 -->
 		<uni-popup ref="popup" type="bottom">
-			<view class="zhuige-pop-textarea" :style="{'margin-bottom': '' + comment_bottom + 'px'}">
+			<view class="zhuige-pop-textarea" :style="comment_bottom?'margin-bottom:' + comment_bottom + 'px':''">
 				<view>
 					<textarea v-model="comment_content" maxlength="140" placeholder="友善是交流的起点......"
 						@focus="focusCommentTextarea" @blur="blurCommentTextarea" fixed="true"></textarea>
@@ -301,6 +301,9 @@
 			// 微信广告
 			this.traffic_chp = null;
 			// #endif
+			
+			//登录后 重新加载
+			this.loginReload = false;
 
 			return {
 				curImage: 100, // 只有类型是图片时有效
@@ -325,9 +328,6 @@
 				// 微信广告
 				traffic_ad: undefined,
 				// #endif
-
-				//登录后 重新加载
-				loginReload: false,
 			}
 		},
 
@@ -639,7 +639,8 @@
 			 * 评论框获取焦点
 			 */
 			focusCommentTextarea(e) {
-				this.comment_bottom = e.detail.height;
+				// this.comment_bottom = e.detail.height;
+				this.comment_bottom =  220;
 			},
 			
 			/**
@@ -1231,7 +1232,7 @@
 	}
 
 	/* 评论弹框 start */
-	.zhuige-pop-textarea {
+	/* .zhuige-pop-textarea {
 		padding: 30rpx 30rpx 0rpx;
 		background: #FFFFFF;
 		border-radius: 12rpx 12rpx 0 0;
@@ -1272,7 +1273,7 @@
 		text-align: center;
 		background: #010101;
 		width: 160rpx;
-	}
+	} */
 
 	/* 评论弹框 end */
 

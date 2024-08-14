@@ -255,7 +255,9 @@
                 ])
                 _this.btns[index] = { top, left, width, height }
               })
+			  // #ifndef VUE3
               _this.$forceUpdate()
+			  // #endif
             },
             afterStart: () => {
               this.imgSrc = ''

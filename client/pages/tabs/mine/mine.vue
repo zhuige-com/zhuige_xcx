@@ -1,6 +1,6 @@
 <template>
 	<view class="content">
-		<uni-nav-bar title="我的" :fixed="true" :statusBar="true" :opacity="nav_opacity" :placeholder="false">
+		<uni-nav-bar title="我的" :fixed="true" :statusBar="true" :border="false" :opacity="nav_opacity" :placeholder="false">
 		</uni-nav-bar>
 
 		<!-- 顶部背景 -->
@@ -303,6 +303,7 @@
 		background: #FFFFFF;
 		border-radius: 12rpx;
 		margin-bottom: 20rpx;
+		overflow: hidden;
 	}
 
 	.zhuige-mine-data-user {
