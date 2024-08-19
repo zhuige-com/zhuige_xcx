@@ -129,11 +129,10 @@ class ZhuiGe_Xcx_Public
 	function transition_post_status($new_status, $old_status, $post)
 	{
 		// file_put_contents('post-status.txt', $post->post_title . '-' . $new_status . '-' . $old_status . PHP_EOL, FILE_APPEND);
-
+		$result = false;
 		if (ZhuiGe_Xcx_Addon::is_active('zhuige-system_notice')) {
 			global $wpdb;
 
-			$result = false;
 			if ($new_status == 'publish' && $old_status == 'pending') { // 审核通过
 				$result = '1';
 			} else if ($new_status == 'trash' && $old_status == 'pending') { // 审核未通过
