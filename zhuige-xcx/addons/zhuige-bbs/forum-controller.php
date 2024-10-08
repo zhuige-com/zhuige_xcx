@@ -265,15 +265,17 @@ class ZhuiGe_Xcx_Bbs_Forum_Controller extends ZhuiGe_Xcx_Base_Controller
 			'post_status' 	=> $status,
 			'post_type' 	=> 'zhuige_bbs_forum',
 			'post_author' 	=> $my_user_id,
-			'tax_input'   	=> array(
-				"zhuige_bbs_forum_cat" => array($cat_id)
-			),
+// 			'tax_input'   	=> array(
+// 				"zhuige_bbs_forum_cat" => $cat_id
+// 			),
 		);
 
 		$post_id = wp_insert_post($post);
 		if (!$post_id) {
 			return $this->error('系统异常');
 		}
+		
+		wp_set_post_terms($post_id, $cat_id, 'zhuige_bbs_forum_cat');
 
 		$marker = $this->param($request, 'marker', '');
 		$address = $this->param($request, 'address', '');

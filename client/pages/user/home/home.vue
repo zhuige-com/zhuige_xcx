@@ -1038,12 +1038,12 @@
 		font-weight: 400;
 	}
 
-	.zhuige-user-info-block+view view:nth-child(2) {
+	.zhuige-user-info-block+view view:last-child {
 		background: #333333;
 		color: #FFFFFF;
 	}
 
-	.zhuige-user-info-block+view view:nth-child(2).active {
+	.zhuige-user-info-block+view view:last-child.active {
 		background: #F1F3F5;
 		color: #333333;
 	}
@@ -1079,7 +1079,7 @@
 
 	.zhuige-user-info-btn view.follow {
 		background: #f5f5f5;
-		color: #ffffff;
+		/* color: #ffffff; */
 		width: 110rpx;
 	}
 

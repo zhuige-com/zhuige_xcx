@@ -224,7 +224,7 @@
 					Alert.toast('提交成功，请耐心等待审核')
 
 					setTimeout(() => {
-						uni.redirectTo({
+						uni.switchTab({
 							url: '/pages/tabs/forum/forum'
 						})
 					}, 1500);

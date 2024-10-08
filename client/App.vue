@@ -1,6 +1,6 @@
 <script>
 	/*
-	 * 追格小程序 v2.5.0
+	 * 追格小程序 v2.5.8
 	 * 作者: 追格
 	 * 文档: https://www.zhuige.com/docs/zg.html
 	 * gitee: https://gitee.com/zhuige_com/zhuige_xcx
